@@ -1,3 +1,4 @@
+#!/bin/bash
 NGINX_VER=1.9.12
 NPS_VER=1.10.33.6
 apt-get install build-essential ca-certificates zlib1g-dev libpcre3 libpcre3-dev tar unzip libssl-dev -y
