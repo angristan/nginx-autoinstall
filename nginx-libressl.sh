@@ -1,6 +1,6 @@
 NGINX_VER=1.9.12
 LIBRESSL_VER=2.3.2
-apt-get install build-essential libpcre3 libpcre3-dev git tar libssl-dev -y
+apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
 cd /opt
 rm -r /opt/libressl-$LIBRESSL_VER
 mkdir /opt/libressl-$LIBRESSL_VER
