@@ -1,9 +1,9 @@
 NGINX_VER=1.9.12
 apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
-rm -r /opt/nginx-$NGINX_VER
+rm -r /opt/nginx-${NGINX_VER}
 cd /opt/
-wget -qO- http://nginx.org/download/nginx-$NGINX_VER.tar.gz | tar zxf -
-cd nginx-$NGINX_VER
+wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
+cd nginx-${NGINX_VER}
 ./configure \
 	--prefix=/etc/nginx \
 	--sbin-path=/usr/sbin/nginx \
