@@ -1,21 +1,22 @@
+#!/bin/bash
 NGINX_VER=1.9.12
 LIBRESSL_VER=2.3.2
 apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
 cd /opt
-rm -r /opt/libressl-$LIBRESSL_VER
-mkdir /opt/libressl-$LIBRESSL_VER
-cd /opt/libressl-$LIBRESSL_VER
-wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$LIBRESSL_VER.tar.gz | tar xz --strip 1
+rm -r /opt/libressl-${LIBRESSL_VER}
+mkdir /opt/libressl-${LIBRESSL_VER}
+cd /opt/libressl-${LIBRESSL_VER}
+wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${LIBRESSL_VER}.tar.gz | tar xz --strip 1
 ./configure \
 	LDFLAGS=-lrt \
 	CFLAGS=-fstack-protector-strong \
-	--prefix=/opt/libressl-$LIBRESSL_VER/.openssl/ \
+	--prefix=/opt/libressl-${LIBRESSL_VER}/.openssl/ \
 	--enable-shared=no
 make install-strip -j $(nproc)
-rm -r /opt/nginx-$NGINX_VER
+rm -r /opt/nginx-${NGINX_VER}
 cd /opt
-wget -qO- http://nginx.org/download/nginx-$NGINX_VER.tar.gz | tar zxf -
-cd nginx-$NGINX_VER
+wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
+cd nginx-${NGINX_VER}
 # Fix for Nginx 1.9.12
 sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
 ./configure \
@@ -40,6 +41,6 @@ sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
 	--with-http_slice_module \
 	--with-file-aio \
 	--with-cc-opt='-g -O2 -fstack-protector-strong -Wformat -Werror=format-security' \
-	--with-openssl=/opt/libressl-$LIBRESSL_VER
+	--with-openssl=/opt/libressl-${LIBRESSL_VER}
 make -j $(nproc)
 make install
