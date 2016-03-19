@@ -4,7 +4,8 @@ rm -r /opt/nginx-$NGINX_VER
 cd /opt/
 wget -qO- http://nginx.org/download/nginx-$NGINX_VER.tar.gz | tar zxf -
 cd nginx-$NGINX_VER
-./configure --prefix=/etc/nginx \
+./configure \
+	--prefix=/etc/nginx \
 	--sbin-path=/usr/sbin/nginx \
 	--conf-path=/etc/nginx/nginx.conf \
 	--error-log-path=/var/log/nginx/error.log \
