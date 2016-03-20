@@ -1,7 +1,9 @@
 #!/bin/bash
 NGINX_VER=1.9.12
 NPS_VER=1.10.33.6
+# Dependencies
 apt-get install build-essential ca-certificates zlib1g-dev libpcre3 libpcre3-dev tar unzip libssl-dev -y
+# PageSpeed
 cd /opt
 rm -r /opt/ngx_pagespeed-release-${NPS_VER}-beta
 cd /opt/
@@ -12,6 +14,7 @@ cd ngx_pagespeed-release-${NPS_VER}-beta
 wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
 tar -xzvf ${NPS_VER}.tar.gz
 rm ${NPS_VER}.tar.gz
+# Nginx
 rm -r /opt/nginx-${NGINX_VER}
 cd /opt
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
