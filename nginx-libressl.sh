@@ -1,7 +1,9 @@
 #!/bin/bash
 NGINX_VER=1.9.12
 LIBRESSL_VER=2.3.2
+# Dependencies
 apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
+# LibreSSL
 cd /opt
 rm -r /opt/libressl-${LIBRESSL_VER}
 mkdir /opt/libressl-${LIBRESSL_VER}
@@ -13,11 +15,12 @@ wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${LIBRESSL_VER}.t
 	--prefix=/opt/libressl-${LIBRESSL_VER}/.openssl/ \
 	--enable-shared=no
 make install-strip -j $(nproc)
+# Nginx
 rm -r /opt/nginx-${NGINX_VER}
 cd /opt
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 cd nginx-${NGINX_VER}
-# Fix for Nginx 1.9.12
+# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
 sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
 ./configure \
 	--prefix=/etc/nginx \
