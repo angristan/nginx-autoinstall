@@ -11,6 +11,7 @@ cd libbrotli
 ./configure
 make -j $(nproc)
 make install
+ldconfig
 cd /opt
 git clone https://github.com/google/ngx_brotli
 # Nginx
