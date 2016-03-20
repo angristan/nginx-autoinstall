@@ -1,7 +1,7 @@
 #!/bin/bash
 NGINX_VER=1.9.12
 # Dependencies
-apt-get install build-essential ca-certificates libpcre3 libpcre3-dev autoconf libtool 	tar git libssl-dev -y
+apt-get install build-essential ca-certificates libpcre3 libpcre3-dev autoconf automake libtool 	tar git libssl-dev -y
 # Brotli
 cd /opt
 rm -r libbrotli
