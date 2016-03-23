@@ -178,6 +178,8 @@ fi
 if [[ ! -e /lib/systemd/system/nginx.service ]]; then
 	cd /lib/systemd/system/
 	wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service
+	# Enable nginx start at boot
+	systemctl enable nginx
 fi
 
 # Restart Nginx
