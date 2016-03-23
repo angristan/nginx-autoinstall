@@ -40,7 +40,7 @@ cd nginx-${NGINX_VER}
 	--without-http_empty_gif_module \
 	--without-http_browser_module \
 	--with-threads \
-	-with-file-aio \
+	--with-file-aio \
 	--with-http_ssl_module \
 	--with-http_v2_module \
 	--with-ipv6 \
