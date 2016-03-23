@@ -29,3 +29,6 @@ Just re-lauch the script.
 
 You can install nginx over and over again, to add or remove modules or just to update nginx.
 
+## LICENSE
+
+GPL v3.0
