@@ -182,6 +182,11 @@ if [[ ! -e /lib/systemd/system/nginx.service ]]; then
 	systemctl enable nginx
 fi
 
+# Nginx's cache directory is not created by default
+if [[ ! -d /var/cache/nginx ]]; then
+	mkdir -p /var/cache/nginx
+fi
+
 # Restart Nginx
 systemctl restart nginx
 
