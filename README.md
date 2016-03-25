@@ -12,7 +12,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [LibreSSL](https://github.com/libressl-portable/portable) 2.3.2 (HTTP/2 + ALPN support)
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) 1.10.33.6
 - [ngx_brotli](https://github.com/google/ngx_brotli)
-- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module)
+- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) 0.29
 
 ## Installation
 
