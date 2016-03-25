@@ -15,13 +15,16 @@ echo "If you select none, Nginx will be installed with its default modules."
 echo ""
 echo "Modules to install :"
 while [[ $LIBRESSL !=  "y" && $LIBRESSL != "n" ]]; do
-		read -p "	LibreSSL [y/n]: " -e LIBRESSL
+	read -p "	LibreSSL [y/n]: " -e LIBRESSL
 done
 while [[ $PAGESPEED !=  "y" && $PAGESPEED != "n" ]]; do
-		read -p "	PageSpeed [y/n]: " -e PAGESPEED
+	read -p "	PageSpeed [y/n]: " -e PAGESPEED
 done
 while [[ $BROTLI !=  "y" && $BROTLI != "n" ]]; do
-		read -p "	Brotli [y/n]: " -e BROTLI
+	read -p "	Brotli [y/n]: " -e BROTLI
+done
+while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
+	read -p "	Headers More [y/n]: " -e HEADERMOD
 done
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
@@ -34,9 +37,9 @@ if [[ "$LIBRESSL" = 'y' ]]; then
 	LIBRESSL_VER=2.3.2
 	cd /opt
 	# Cleaning up in case of update
-	rm -r /opt/libressl-${LIBRESSL_VER}
-	mkdir /opt/libressl-${LIBRESSL_VER}
-	cd /opt/libressl-${LIBRESSL_VER}
+	rm -r libressl-${LIBRESSL_VER}
+	mkdir libressl-${LIBRESSL_VER}
+	cd libressl-${LIBRESSL_VER}
 	# LibreSSL download
 	wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${LIBRESSL_VER}.tar.gz | tar xz --strip 1
 	./configure \
@@ -53,8 +56,7 @@ if [[ "$PAGESPEED" = 'y' ]]; then
 	NPS_VER=1.10.33.6
 	cd /opt
 	# Cleaning up in case of update
-	rm -r /opt/ngx_pagespeed-release-${NPS_VER}-beta
-	cd /opt/
+	rm -r ngx_pagespeed-release-${NPS_VER}-beta
 	# Download and extract of PageSpeed module
 	wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip
 	unzip release-${NPS_VER}-beta.zip
@@ -86,6 +88,17 @@ if [[ "$BROTLI" = 'y' ]]; then
 	git clone https://github.com/google/ngx_brotli
 fi
 
+# More Headers
+if [[ "$HEADERMOD" = 'y' ]]; then
+	HEADERMOD_VER=0.29rc1
+	cd /opt
+	# Cleaning up in case of update
+	rm -r headers-more-nginx-module-${HEADERMOD_VER}
+	wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
+	tar xzf v${HEADERMOD_VER}.tar.gz
+	rm v${HEADERMOD_VER}.tar.gz
+fi
+
 NGINX_VER=1.9.12
 # Cleaning up in case of update
 rm -r /opt/nginx-${NGINX_VER}
@@ -109,69 +122,35 @@ cd /opt/nginx-${NGINX_VER}
 NGINX_OPTIONS="--prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --user=nginx --group=nginx"
 NGINX_MODULES="--without-http_ssi_module --without-http_scgi_module --without-http_uwsgi_module --without-http_geo_module --without-http_map_module --without-http_split_clients_module --without-http_memcached_module --without-http_empty_gif_module --without-http_browser_module --with-threads --with-file-aio --with-http_ssl_module --with-http_v2_module --with-ipv6 --with-http_mp4_module --with-http_auth_request_module --with-http_slice_module"
 
-# No module
-if [[ "$LIBRESSL" = 'n' ]] && [[ "$PAGESPEED" = 'n' ]] && [[ "$BROTLI" = 'n' ]]; then
-	./configure $NGINX_OPTIONS $NGINX_MODULES
-make -j $(nproc)
-make install
-fi
-
-# All modules (LibreSSL + PageSpeed + Brotli)
-if [[ "$LIBRESSL" = 'y' ]] && [[ "$PAGESPEED" = 'y' ]] && [[ "$BROTLI" = 'y' ]]; then
-	# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
-	sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
-	./configure $NGINX_OPTIONS $NGINX_MODULES --with-openssl=/opt/libressl-${LIBRESSL_VER} --add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta --add-module=/opt/ngx_brotli
-	make -j $(nproc)
-	make install
-fi
-
+# Optional modules
 # LibreSSL 
-if [[ "$LIBRESSL" = 'y' ]] && [[ "$PAGESPEED" = 'n' ]] && [[ "$BROTLI" = 'n' ]]; then
+if [[ "$LIBRESSL" = 'y' ]]; then
 	# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
 	sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
-	./configure $NGINX_OPTIONS $NGINX_MODULES --with-openssl=/opt/libressl-${LIBRESSL_VER} 
-	make -j $(nproc)
-	make install
+	NGINX_MODULES=$(echo $NGINX_MODULES; echo --with-openssl=/opt/libressl-${LIBRESSL_VER})
 fi
 
 # PageSpeed
-if [[ "$LIBRESSL" = 'n' ]] && [[ "$PAGESPEED" = 'y' ]] && [[ "$BROTLI" = 'n' ]]; then
-	./configure $NGINX_OPTIONS $NGINX_MODULES --add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta
-	make -j $(nproc)
-	make install
+if [[ "$PAGESPEED" = 'y' ]]; then
+	NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta")
 fi
 
 # Brotli
-if [[ "$LIBRESSL" = 'n' ]] && [[ "$PAGESPEED" = 'n' ]] && [[ "$BROTLI" = 'y' ]]; then
-	./configure $NGINX_OPTIONS $NGINX_MODULES --add-module=/opt/ngx_brotli
-	make -j $(nproc)
-	make install
+if [[ "$BROTLI" = 'y' ]]; then
+	NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/ngx_brotli")
 fi
 
-# LibreSSL + PageSpeed
-if [[ "$LIBRESSL" = 'y' ]] && [[ "$PAGESPEED" = 'y' ]] && [[ "$BROTLI" = 'n' ]]; then
-	# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
-	sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
-	./configure $NGINX_OPTIONS $NGINX_MODULES --with-openssl=/opt/libressl-${LIBRESSL_VER} --add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta
-	make -j $(nproc)
-	make install
+# More Headers
+if [[ "$HEADERMOD" = 'y' ]]; then
+	NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/headers-more-nginx-module-${HEADERMOD_VER}")
 fi
 
-# LibreSSL + Brotli
-if [[ "$LIBRESSL" = 'y' ]] && [[ "$PAGESPEED" = 'n' ]] && [[ "$BROTLI" = 'y' ]]; then
-	# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
-	sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
-	./configure $NGINX_OPTIONS $NGINX_MODULES --with-openssl=/opt/libressl-${LIBRESSL_VER} --add-module=/opt/ngx_brotli
-	make -j $(nproc)
-	make install
-fi
-
-# PageSpeed + Brotli
-if [[ "$LIBRESSL" = 'n' ]] && [[ "$PAGESPEED" = 'y' ]] && [[ "$BROTLI" = 'y' ]]; then
-	./configure $NGINX_OPTIONS $NGINX_MODULES --add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta --add-module=/opt/ngx_brotli
-	make -j $(nproc)
-	make install
-fi
+# We configure Nginx
+./configure $NGINX_OPTIONS $NGINX_MODULES
+# Then we compile
+make -j $(nproc)
+# Then we install \o/
+make install
 
 # Nginx installation from source does not add an init script for systemd.
 # Using the official systemd script from nginx.org
