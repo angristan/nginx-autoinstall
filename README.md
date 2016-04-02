@@ -18,7 +18,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 
 Just download and execute the script :
 ```
-wget --no-check-certificate https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh
+wget --no-check-certificate https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
 chmod +x nginx-autoinstall.sh
 ./nginx-autoinstall.sh
 ```
@@ -27,7 +27,7 @@ You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinsta
 
 ## Update
 
-Just re-lauch the script.
+Just re-lauch the script. (you may re-download it if I made changes with the command above)
 
 You can install nginx over and over again, to add or remove modules or just to update nginx.
 
