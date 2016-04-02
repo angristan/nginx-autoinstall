@@ -1,6 +1,6 @@
 #!/bin/bash
-NGINX_VER=1.9.12
-HEADERMOD_VER=0.29rc1
+NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
+HEADERMOD_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/headermod)
 # Dependencies
 apt-get install build-essential ca-certificates libpcre3 libpcre3-dev autoconf automake libtool tar git libssl-dev -y
 #Headers More
