@@ -1,5 +1,5 @@
 #!/bin/bash
-# If you want to check the latest version of Nginx/modules, you can use these command. 
+# If you want to check the latest version of Nginx/modules, you can use these commands. 
 # I don't know if I'm gonna put them in the script...
 
 curl -s http://nginx.org/en/CHANGES | awk 'NR==2' | awk '{print $4}'
