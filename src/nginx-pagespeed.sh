@@ -1,6 +1,6 @@
 #!/bin/bash
-NGINX_VER=1.9.12
-NPS_VER=1.10.33.6
+NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
+NPS_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/pagespeed)
 apt-get install build-essential ca-certificates zlib1g-dev libpcre3 libpcre3-dev tar unzip libssl-dev -y
 cd /opt
 rm -r /opt/ngx_pagespeed-release-${NPS_VER}-beta
