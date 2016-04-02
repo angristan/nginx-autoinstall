@@ -1,6 +1,6 @@
 #!/bin/bash
-NGINX_VER=1.9.12
-LIBRESSL_VER=2.3.2
+NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
+LIBRESSL_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/libressl)
 apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
 cd /opt
 rm -r /opt/libressl-${LIBRESSL_VER}
