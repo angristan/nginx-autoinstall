@@ -26,11 +26,14 @@ done
 while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
         read -p "       Headers More [y/n]: " -e HEADERMOD
 done
+while [[ $RTMP !=  "y" && $RTMP != "n" ]]; do
+        read -p "       RTMP [y/n]: " -e RTMP
+done
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 
 # Dependencies
-apt-get install build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
+apt-get install curl build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
 
 # LibreSSL
 if [[ "$LIBRESSL" = 'y' ]]; then
@@ -67,7 +70,7 @@ if [[ "$PAGESPEED" = 'y' ]]; then
         rm ${NPS_VER}.tar.gz
 fi
 
-#Brotli
+# Brotli
 if [[ "$BROTLI" = 'y' ]]; then
         cd /opt
         # Cleaning up in case of update
@@ -97,6 +100,14 @@ if [[ "$HEADERMOD" = 'y' ]]; then
         wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
         tar xzf v${HEADERMOD_VER}.tar.gz
         rm v${HEADERMOD_VER}.tar.gz
+fi
+
+# RTMP
+if [[ "$RTMP" = 'y' ]]; then
+        cd /opt
+        # Cleaning up in case of update        
+        rm -r nginx-rtmp-module-${RTMP_VER}
+        git clone https://github.com/arut/nginx-rtmp-module
 fi
 
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
@@ -170,6 +181,11 @@ fi
 # More Headers
 if [[ "$HEADERMOD" = 'y' ]]; then
         NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/headers-more-nginx-module-${HEADERMOD_VER}")
+fi
+
+# RTMP
+if [[ "$RTMP" = 'y' ]]; then
+        NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/nginx-rtmp-module")
 fi
 
 # We configure Nginx
