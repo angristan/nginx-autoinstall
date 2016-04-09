@@ -4,7 +4,6 @@ NPS_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/
 apt-get install build-essential ca-certificates zlib1g-dev libpcre3 libpcre3-dev tar unzip libssl-dev -y
 cd /opt
 rm -r /opt/ngx_pagespeed-release-${NPS_VER}-beta
-cd /opt/
 wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip
 unzip release-${NPS_VER}-beta.zip
 rm release-${NPS_VER}-beta.zip
