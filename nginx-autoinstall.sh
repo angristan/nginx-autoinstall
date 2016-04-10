@@ -30,7 +30,7 @@ echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 
 # Dependencies
-apt-get install build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
+apt-get install curl build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
 
 # LibreSSL
 if [[ "$LIBRESSL" = 'y' ]]; then
