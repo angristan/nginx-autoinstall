@@ -26,9 +26,9 @@ done
 while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
         read -p "       Headers More [y/n]: " -e HEADERMOD
 done
-while [[ $RTMP !=  "y" && $RTMP != "n" ]]; do
-        read -p "       RTMP [y/n]: " -e RTMP
-done
+while [[ $RTMP !=  "y" && $RTMP != "n" ]]; do 
+        read -p "       RTMP [y/n]: " -e RTMP 
+done 
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 
@@ -102,13 +102,13 @@ if [[ "$HEADERMOD" = 'y' ]]; then
         rm v${HEADERMOD_VER}.tar.gz
 fi
 
-# RTMP
-if [[ "$RTMP" = 'y' ]]; then
-        cd /opt
-        # Cleaning up in case of update        
-        rm -r nginx-rtmp-module-${RTMP_VER}
-        git clone https://github.com/arut/nginx-rtmp-module
-fi
+# RTMP 
+if [[ "$RTMP" = 'y' ]]; then 
+        cd /opt 
+        # Cleaning up in case of update         
+        rm -r nginx-rtmp-module
+        git clone https://github.com/arut/nginx-rtmp-module 
+fi 
 
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 # Cleaning up in case of update
@@ -181,11 +181,6 @@ fi
 # More Headers
 if [[ "$HEADERMOD" = 'y' ]]; then
         NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/headers-more-nginx-module-${HEADERMOD_VER}")
-fi
-
-# RTMP
-if [[ "$RTMP" = 'y' ]]; then
-        NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/nginx-rtmp-module")
 fi
 
 # We configure Nginx

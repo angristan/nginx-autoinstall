@@ -13,7 +13,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) 1.11.33.0
 - [ngx_brotli](https://github.com/google/ngx_brotli)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) 0.29
-- [nginx-rtmp-module](https://github.com/arut/nginx-rtmp-module)
+- [nginx-rtmp-module](https://github.com/arut/nginx-rtmp-module) 
 
 ## Installation
 
