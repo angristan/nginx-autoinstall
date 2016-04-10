@@ -7,7 +7,7 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 clear
-echo "Welcome, to the nginx-autoinstall script."
+echo "Welcome to the nginx-autoinstall script."
 echo "This script will install the latest Nginx Mainline version (1.9.12) with some optional famous modules."
 echo ""
 echo "Please tell me which modules you want to install."
@@ -30,7 +30,7 @@ echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 
 # Dependencies
-apt-get install build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
+apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
 
 # LibreSSL
 if [[ "$LIBRESSL" = 'y' ]]; then
