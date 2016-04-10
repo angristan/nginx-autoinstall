@@ -1,7 +1,7 @@
 #!/bin/bash
+apt-get install build-essential ca-certificates curl libpcre3 libpcre3-dev tar libssl-dev -y
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 LIBRESSL_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/libressl)
-apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
 cd /opt
 rm -r /opt/libressl-${LIBRESSL_VER}
 mkdir /opt/libressl-${LIBRESSL_VER}
