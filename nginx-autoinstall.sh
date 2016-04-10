@@ -26,11 +26,14 @@ done
 while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
         read -p "       Headers More [y/n]: " -e HEADERMOD
 done
+while [[ $RTMP !=  "y" && $RTMP != "n" ]]; do 
+        read -p "       RTMP [y/n]: " -e RTMP 
+done 
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 
 # Dependencies
-apt-get install build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
+apt-get install curl build-essential ca-certificates wget libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
 
 # LibreSSL
 if [[ "$LIBRESSL" = 'y' ]]; then
@@ -67,7 +70,7 @@ if [[ "$PAGESPEED" = 'y' ]]; then
         rm ${NPS_VER}.tar.gz
 fi
 
-#Brotli
+# Brotli
 if [[ "$BROTLI" = 'y' ]]; then
         cd /opt
         # Cleaning up in case of update
@@ -98,6 +101,14 @@ if [[ "$HEADERMOD" = 'y' ]]; then
         tar xzf v${HEADERMOD_VER}.tar.gz
         rm v${HEADERMOD_VER}.tar.gz
 fi
+
+# RTMP 
+if [[ "$RTMP" = 'y' ]]; then 
+        cd /opt 
+        # Cleaning up in case of update         
+        rm -r nginx-rtmp-module
+        git clone https://github.com/arut/nginx-rtmp-module 
+fi 
 
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 # Cleaning up in case of update
