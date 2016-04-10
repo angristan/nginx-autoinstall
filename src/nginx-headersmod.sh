@@ -1,18 +1,13 @@
 #!/bin/bash
+apt-get install build-essential ca-certificates curl libpcre3 libpcre3-dev autoconf automake libtool tar git libssl-dev -y
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 HEADERMOD_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/headermod)
-# Dependencies
-apt-get install build-essential ca-certificates libpcre3 libpcre3-dev autoconf automake libtool tar git libssl-dev -y
-#Headers More
 cd /opt
-# Cleaning up in case of update
 rm -r headers-more-nginx-module-${HEADERMOD_VER}
 wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
 tar xzf v${HEADERMOD_VER}.tar.gz
 rm v${HEADERMOD_VER}.tar.gz
-# Nginx
 rm -r /opt/nginx-${NGINX_VER}
-cd /opt
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 cd nginx-${NGINX_VER}
 ./configure \
