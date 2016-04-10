@@ -1,6 +1,6 @@
 #!/bin/bash
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
-apt-get install build-essential ca-certificates libpcre3 libpcre3-dev autoconf automake libtool tar git libssl-dev -y
+apt-get install build-essential ca-certificates curl libpcre3 libpcre3-dev autoconf automake libtool tar git libssl-dev -y
 cd /opt
 rm -r libbrotli
 git clone https://github.com/bagder/libbrotli
@@ -13,7 +13,6 @@ ldconfig
 cd /opt
 git clone https://github.com/google/ngx_brotli
 rm -r /opt/nginx-${NGINX_VER}
-cd /opt
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 cd nginx-${NGINX_VER}
 ./configure \
