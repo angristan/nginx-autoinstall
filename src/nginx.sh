@@ -1,6 +1,6 @@
 #!/bin/bash
+apt-get install build-essential ca-certificates curl libpcre3 libpcre3-dev tar libssl-dev -y
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
-apt-get install build-essential ca-certificates libpcre3 libpcre3-dev tar libssl-dev -y
 rm -r /opt/nginx-${NGINX_VER}
 cd /opt/
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
