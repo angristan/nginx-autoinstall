@@ -8,7 +8,7 @@ fi
 
 clear
 echo "Welcome to the nginx-autoinstall script."
-echo "This script will install the latest Nginx Mainline version (1.9.12) with some optional famous modules."
+echo "This script will install the latest Nginx Mainline version with some optional famous modules."
 echo ""
 echo "Please tell me which modules you want to install."
 echo "If you select none, Nginx will be installed with its default modules."
