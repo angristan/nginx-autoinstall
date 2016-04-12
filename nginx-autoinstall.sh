@@ -1,9 +1,15 @@
 #!/bin/bash
 
+# Colors
+CSI="\033["
+CEND="${CSI}0m"
+CRED="${CSI}1;31m"
+CGREEN="${CSI}1;32m"
+
 # Check root access
 if [[ "$EUID" -ne 0 ]]; then
-        echo "Sorry, you need to run this as root"
-        exit 1
+	echo -e "${CRED}Sorry, you need to run this as root${CEND}"
+  	exit 1
 fi
 
 clear
@@ -28,9 +34,19 @@ while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
 done
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
+echo ""
 
 # Dependencies
-apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y
+echo -ne "       Installaling dependencies      [..]\r"
+apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y &>/dev/null
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Installing dependencies        [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "        Installing dependencies      [${CRED}FAIL${CEND}]"
+	exit 1
+fi
 
 # LibreSSL
 if [[ "$LIBRESSL" = 'y' ]]; then
@@ -41,14 +57,43 @@ if [[ "$LIBRESSL" = 'y' ]]; then
         mkdir libressl-${LIBRESSL_VER}
         cd libressl-${LIBRESSL_VER}
         # LibreSSL download
+        echo -ne "       Downloading LibreSSL           [..]\r"
         wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${LIBRESSL_VER}.tar.gz | tar xz --strip 1
+
+		if [ $? -eq 0 ]; then
+			echo -ne "       Downloading LibreSSL           [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading LibreSSL           [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
+		echo -ne "       Configuring LibreSSL           [..]\r"
         ./configure \
                 LDFLAGS=-lrt \
                 CFLAGS=-fstack-protector-strong \
                 --prefix=/opt/libressl-${LIBRESSL_VER}/.openssl/ \
-                --enable-shared=no
+                --enable-shared=no &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Configuring LibreSSL           [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Configuring LibreSSL         [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
         # LibreSSL install
-        make install-strip -j $(nproc)
+        echo -ne "       Installing LibreSSL            [..]\r"
+        make install-strip -j $(nproc) &>/dev/null
+
+		if [ $? -eq 0 ]; then
+			echo -ne "       Installing LibreSSL            [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Installing LibreSSL            [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
 fi
 
 # PageSpeed
@@ -58,13 +103,22 @@ if [[ "$PAGESPEED" = 'y' ]]; then
         # Cleaning up in case of update
         rm -r ngx_pagespeed-release-${NPS_VER}-beta
         # Download and extract of PageSpeed module
-        wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip
-        unzip release-${NPS_VER}-beta.zip
+        echo -ne "       Downloading ngx_pagespeed      [..]\r"
+        wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip &>/dev/null
+        unzip release-${NPS_VER}-beta.zip &>/dev/null
         rm release-${NPS_VER}-beta.zip
         cd ngx_pagespeed-release-${NPS_VER}-beta
-        wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
-        tar -xzvf ${NPS_VER}.tar.gz
+        wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz &>/dev/null
+        tar -xzf ${NPS_VER}.tar.gz 
         rm ${NPS_VER}.tar.gz
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Downloading ngx_pagespeed      [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading ngx_pagespeed      [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
 fi
 
 #Brotli
@@ -74,18 +128,68 @@ if [[ "$BROTLI" = 'y' ]]; then
         rm -r libbrotli
         # libbrolti is needed for the ngx_brotli module
         # libbrotli download
-        git clone https://github.com/bagder/libbrotli
+        echo -ne "       Downloading libbrotli          [..]\r"
+        git clone https://github.com/bagder/libbrotli &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Downloading libbrotli          [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading libbrotli          [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
         cd libbrotli
-        ./autogen.sh
-        ./configure
-        make -j $(nproc)
+        echo -ne "       Configuring libbrotli          [..]\r"
+        ./autogen.sh &>/dev/null
+        ./configure &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Configuring libbrotli          [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Configuring libbrotli          [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
+		echo -ne "       Compiling libbrotli            [..]\r"
+        make -j $(nproc) &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Compiling libbrotli            [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Compiling libbrotli            [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
         # libbrotli install
-        make install
+        echo -ne "       Installing libbrotli           [..]\r"
+        make install &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Installing libbrotli           [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Installing libbrotli           [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+
         # Linking libraries to avoid errors
-        ldconfig
+        ldconfig &>/dev/null
         # ngx_brotli module download
         cd /opt
-        git clone https://github.com/google/ngx_brotli
+        rm -r ngx_brotli
+        echo -ne "       Downloading ngx_brotli         [..]\r"
+        git clone https://github.com/google/ngx_brotli &>/dev/null
+
+        if [ $? -eq 0 ]; then
+			echo -ne "       Downloading ngx_brotli         [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading ngx_brotli         [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
 fi
 
 # More Headers
@@ -94,18 +198,36 @@ if [[ "$HEADERMOD" = 'y' ]]; then
         cd /opt
         # Cleaning up in case of update
         rm -r headers-more-nginx-module-${HEADERMOD_VER}
-        wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
+        echo -ne "       Downloading ngx_headers_more   [..]\r"
+        wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz &>/dev/null
         tar xzf v${HEADERMOD_VER}.tar.gz
         rm v${HEADERMOD_VER}.tar.gz
+        
+        if [ $? -eq 0 ]; then
+			echo -ne "       Downloading ngx_headers_more   [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading ngx_headers_more   [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
 fi
 
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 # Cleaning up in case of update
-rm -r /opt/nginx-${NGINX_VER}
+rm -r /opt/nginx-${NGINX_VER} &>/dev/null
 # Download and extract of Nginx source code
 cd /opt/
+echo -ne "       Downloading Nginx              [..]\r"
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 cd nginx-${NGINX_VER}
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Downloading Nginx              [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "       Downloading Nginx              [${CRED}FAIL${CEND}]"
+	exit 1
+fi
 
 # As the default nginx.conf does not work
 # We download a clean and working conf from my GitHub.
@@ -113,7 +235,7 @@ cd nginx-${NGINX_VER}
 if [[ ! -e /etc/nginx/nginx.conf ]]; then
         mkdir -p /etc/nginx
         cd /etc/nginx
-        wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf
+        wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf &>/dev/null
 fi
 cd /opt/nginx-${NGINX_VER}
 
@@ -173,19 +295,48 @@ if [[ "$HEADERMOD" = 'y' ]]; then
 fi
 
 # We configure Nginx
-./configure $NGINX_OPTIONS $NGINX_MODULES
+echo -ne "       Configuring Nginx              [..]\r"
+./configure $NGINX_OPTIONS $NGINX_MODULES &>/dev/null
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Configuring Nginx              [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "       Configuring Nginx              [${CRED}FAIL${CEND}]"
+	exit 1
+fi
+
 # Then we compile
-make -j $(nproc)
+echo -ne "       Compiling Nginx                [..]\r"
+make -j $(nproc) &>/dev/null
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Compiling Nginx                [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "       Compiling Nginx                [${CRED}FAIL${CEND}]"
+	exit 1
+fi
+
 # Then we install \o/
-make install
+echo -ne "       Installing Nginx               [..]\r"
+make install &>/dev/null
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Installing Nginx               [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "       Installing Nginx               [${CRED}FAIL${CEND}]"
+	exit 1
+fi
 
 # Nginx installation from source does not add an init script for systemd.
 # Using the official systemd script from nginx.org
 if [[ ! -e /lib/systemd/system/nginx.service ]]; then
         cd /lib/systemd/system/
-        wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service
+        wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service &>/dev/null
         # Enable nginx start at boot
-        systemctl enable nginx
+        systemctl enable nginx &>/dev/null
 fi
 
 # Nginx's cache directory is not created by default
@@ -194,7 +345,18 @@ if [[ ! -d /var/cache/nginx ]]; then
 fi
 
 # Restart Nginx
-systemctl restart nginx
+echo -ne "       Restarting Nginx               [..]\r"
+systemctl restart nginx &>/dev/null
+
+if [ $? -eq 0 ]; then
+	echo -ne "       Restarting Nginx               [${CGREEN}OK${CEND}]\r"
+	echo -ne "\n"
+else
+	echo -e "       Restarting Nginx               [${CRED}FAIL${CEND}]"
+	exit 1
+fi
 
 # We're done !
-echo "Installation succcessful !"
+echo ""
+echo -e "       ${CGREEN}Installation succcessful !${CEND}"
+echo ""
