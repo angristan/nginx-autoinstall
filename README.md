@@ -27,7 +27,7 @@ You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinsta
 
 ## Update
 
-Just re-lauch the script. (you may re-download it if I made changes with the command above)
+Just re-launch the script. (you may re-download it if I made changes with the command above)
 
 You can install nginx over and over again, to add or remove modules or just to update nginx.
 
