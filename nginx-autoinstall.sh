@@ -53,7 +53,7 @@ if [[ "$LIBRESSL" = 'y' ]]; then
         LIBRESSL_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/libressl)
         cd /opt
         # Cleaning up in case of update
-        rm -r libressl-${LIBRESSL_VER}
+        rm -r libressl-${LIBRESSL_VER} >/dev/null 
         mkdir libressl-${LIBRESSL_VER}
         cd libressl-${LIBRESSL_VER}
         # LibreSSL download
@@ -101,7 +101,7 @@ if [[ "$PAGESPEED" = 'y' ]]; then
         NPS_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/pagespeed)
         cd /opt
         # Cleaning up in case of update
-        rm -r ngx_pagespeed-release-${NPS_VER}-beta
+        rm -r ngx_pagespeed-release-${NPS_VER}-beta >/dev/null 
         # Download and extract of PageSpeed module
         echo -ne "       Downloading ngx_pagespeed      [..]\r"
         wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip &>/dev/null
@@ -125,7 +125,7 @@ fi
 if [[ "$BROTLI" = 'y' ]]; then
         cd /opt
         # Cleaning up in case of update
-        rm -r libbrotli
+        rm -r libbrotli >/dev/null 
         # libbrolti is needed for the ngx_brotli module
         # libbrotli download
         echo -ne "       Downloading libbrotli          [..]\r"
@@ -179,7 +179,7 @@ if [[ "$BROTLI" = 'y' ]]; then
         ldconfig &>/dev/null
         # ngx_brotli module download
         cd /opt
-        rm -r ngx_brotli
+        rm -r ngx_brotli >/dev/null 
         echo -ne "       Downloading ngx_brotli         [..]\r"
         git clone https://github.com/google/ngx_brotli &>/dev/null
 
@@ -197,7 +197,7 @@ if [[ "$HEADERMOD" = 'y' ]]; then
         HEADERMOD_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/headermod)
         cd /opt
         # Cleaning up in case of update
-        rm -r headers-more-nginx-module-${HEADERMOD_VER}
+        rm -r headers-more-nginx-module-${HEADERMOD_VER} >/dev/null 
         echo -ne "       Downloading ngx_headers_more   [..]\r"
         wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz &>/dev/null
         tar xzf v${HEADERMOD_VER}.tar.gz
@@ -214,7 +214,7 @@ fi
 
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 # Cleaning up in case of update
-rm -r /opt/nginx-${NGINX_VER} &>/dev/null
+rm -r /opt/nginx-${NGINX_VER} >/dev/null
 # Download and extract of Nginx source code
 cd /opt/
 echo -ne "       Downloading Nginx              [..]\r"
