@@ -17,8 +17,6 @@ rm -r /opt/nginx-${NGINX_VER}
 cd /opt
 wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 cd nginx-${NGINX_VER}
-# Fix for Nginx 1.9.12 and LibreSSL 2.3.2
-sed -i -e "s/install_sw/install/g" auto/lib/openssl/make
 ./configure \
 	--prefix=/etc/nginx \
 	--sbin-path=/usr/sbin/nginx \
