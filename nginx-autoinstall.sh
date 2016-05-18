@@ -32,6 +32,9 @@ done
 while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
         read -p "       Headers More [y/n]: " -e HEADERMOD
 done
+while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
+        read -p "       GeoIP [y/n]: " -e GEOIP
+done
 echo ""
 read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 echo ""
@@ -212,6 +215,30 @@ if [[ "$HEADERMOD" = 'y' ]]; then
 		fi
 fi
 
+# GeoIP
+if [[ "$GEOIP" = 'y' ]]; then
+        cd /opt
+        # Cleaning up in case of update
+        rm -r geoip-db &>/dev/null 
+        mkdir geoip-db
+        cd geoip-db
+        echo -ne "       Downloading GeoIP databases    [..]\r"
+		wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz &>/dev/null
+		wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz &>/dev/null
+		gunzip GeoIP.dat.gz
+		gunzip GeoLiteCity.dat.gz
+		mv GeoIP.dat GeoIP-Country.dat
+		mv GeoLiteCity.dat GeoIP-City.dat
+        
+        if [ $? -eq 0 ]; then
+			echo -ne "       Downloading GeoIP databases    [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Downloading GeoIP databases    [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+fi
+
 NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
 # Cleaning up in case of update
 rm -r /opt/nginx-${NGINX_VER} &>/dev/null
@@ -291,6 +318,11 @@ fi
 # More Headers
 if [[ "$HEADERMOD" = 'y' ]]; then
         NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/headers-more-nginx-module-${HEADERMOD_VER}")
+fi
+
+# GeoIP
+if [[ "$GEOIP" = 'y' ]]; then
+        NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_geoip_module")
 fi
 
 # We configure Nginx
