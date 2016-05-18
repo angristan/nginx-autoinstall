@@ -218,7 +218,7 @@ fi
 # GeoIP
 if [[ "$GEOIP" = 'y' ]]; then
 	# Dependence
-	apt-get install libgeoip-dev
+	apt-get install libgeoip-dev -y
         cd /opt
         # Cleaning up in case of update
         rm -r geoip-db &>/dev/null 
