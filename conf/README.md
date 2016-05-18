@@ -50,3 +50,12 @@ brotli on;
 Add this cipher suite in you server block :
 
 `ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;`
+
+### GeoIP
+
+Add the path of the 2 GeoIP databases to your http block :
+
+```
+geoip_country  /opt/geoip-db/GeoIP-Country.dat;
+geoip_city     /opt/geoip-db/GeoIP-City.dat;
+```
