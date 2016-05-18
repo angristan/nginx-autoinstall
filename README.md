@@ -3,7 +3,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 
 ![screen](https://lut.im/EEscHb4LDY/SIZZkDIeoGJFPNji.png)
 ## Features
-- Latest mainline version (1.9.15), from source
+- Latest mainline version, from source
 - Optional modules (see below)
 - Removed useless modules
 - [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
@@ -14,6 +14,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) 1.11.33.0
 - [ngx_brotli](https://github.com/google/ngx_brotli)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) 0.29
+- GeoIP module and databases
 
 ## Installation
 
