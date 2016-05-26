@@ -363,13 +363,19 @@ else
 	exit 1
 fi
 
-# Nginx installation from source does not add an init script for systemd.
-# Using the official systemd script from nginx.org
+# Nginx installation from source does not add an init script for systemd and logrotate
+# Using the official systemd script and logrotate conf from nginx.org
 if [[ ! -e /lib/systemd/system/nginx.service ]]; then
         cd /lib/systemd/system/
         wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service &>/dev/null
         # Enable nginx start at boot
         systemctl enable nginx &>/dev/null
+fi
+https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate
+
+if [[ ! -e /etc/logrotate.d/nginx ]]; then
+        cd /etc/logrotate.d/
+        wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx &>/dev/null
 fi
 
 # Nginx's cache directory is not created by default
