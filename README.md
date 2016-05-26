@@ -7,7 +7,8 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - Optional modules (see below)
 - Removed useless modules
 - [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
-- [Init script for systemd](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.service) (not privded by default)
+- [Init script for systemd](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.service) (not provided by default)
+- [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
 
 ### Optional modules
 - [LibreSSL](https://github.com/libressl-portable/portable) 2.3.3 (HTTP/2 + ALPN support)
