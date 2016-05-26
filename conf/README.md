@@ -16,6 +16,7 @@ pagespeed GlobalAdminPath /pagespeed_global_admin;
 # Use tmpfs for best performance.
 pagespeed FileCachePath /var/ngx_pagespeed_cache;
 ```
+More info here : https://angristan.fr/compiler-installer-nginx-module-pagespeed-debian/
 
 ### Brotli
 
