@@ -371,7 +371,6 @@ if [[ ! -e /lib/systemd/system/nginx.service ]]; then
         # Enable nginx start at boot
         systemctl enable nginx &>/dev/null
 fi
-https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate
 
 if [[ ! -e /etc/logrotate.d/nginx ]]; then
         cd /etc/logrotate.d/
