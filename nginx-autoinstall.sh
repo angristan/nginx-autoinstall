@@ -299,7 +299,8 @@ NGINX_MODULES="--without-http_ssi_module \
 --with-ipv6 \
 --with-http_mp4_module \
 --with-http_auth_request_module \
---with-http_slice_module"
+--with-http_slice_module \
+--with-http_stub_status_module"
 
 # Optional modules
 # LibreSSL 
