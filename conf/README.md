@@ -52,6 +52,18 @@ Add this cipher suite in you server block :
 
 `ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;`
 
+### Cloudflare's ChaCha20 patch
+
+Add this cipher suite in your server block :
+
+`EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AESGCM:EECDH+AES;`
+
+### Cloudflare's SPDY patch
+
+You can add this in your HTTPS server block :
+
+`listen  443 ssl spdy http2;`
+
 ### GeoIP
 
 Add the path of the 2 GeoIP databases to your http block :
