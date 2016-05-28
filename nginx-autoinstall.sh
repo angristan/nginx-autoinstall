@@ -23,6 +23,7 @@ NPS_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/
 HEADERMOD_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/headermod)
 
 clear
+echo ""
 echo "Welcome to the nginx-autoinstall script."
 echo "This script will install the latest Nginx Mainline version with some optional famous modules."
 echo ""
