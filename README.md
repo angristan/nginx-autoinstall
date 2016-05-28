@@ -11,10 +11,10 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
 
 ### Optional modules
-- [LibreSSL](https://github.com/libressl-portable/portable) 2.3.3 (HTTP/2 + ALPN support)
-- [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) 1.11.33.0
+- [LibreSSL](https://github.com/libressl-portable/portable) (ChaCha20 cipher, HTTP/2 + ALPN support)
+- [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed)
 - [ngx_brotli](https://github.com/google/ngx_brotli)
-- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) 0.29
+- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module)
 - GeoIP module and databases
 
 ## Installation
@@ -30,7 +30,9 @@ You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinsta
 
 ## Update
 
-Just re-launch the script. (you may re-download it if I made changes with the command above)
+Just re-launch the script.
+
+If change was made to this repository, you may re-download the script.
 
 You can install nginx over and over again, to add or remove modules or just to update nginx.
 
