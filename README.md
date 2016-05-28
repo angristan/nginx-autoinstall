@@ -20,6 +20,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [Cloudflare's SPDY patch](https://github.com/felixbuenemann/sslconfig/blob/b8ebac6a337e8e4e373dfee76e7dfac3cc6c56e6/patches/nginx_1_9_15_http2_spdy.patch) : enables the use of SPDY along with HTTP/2
 - [Cloudflare's Chacha20 patch](https://github.com/cloudflare/sslconfig/blob/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch) : add the ChaCha20 + Poly1305 cipher suite
 
+You can check the different versions [here](https://github.com/Angristan/nginx-autoinstall/tree/master/var)
 ## Installation
 
 Just download and execute the script :
