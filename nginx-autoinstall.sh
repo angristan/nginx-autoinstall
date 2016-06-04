@@ -348,6 +348,8 @@ cd /opt/nginx-${NGINX_VER}
 NGINX_OPTIONS="
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
+--with-cc-opt=\"-g -O3 -D_FORTIFY_SOURCE=2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security\" \
+--with-ld-opt=\"-Wl,-Bsymbolic-functions -Wl,-z,relro\" \
 --conf-path=/etc/nginx/nginx.conf \
 --error-log-path=/var/log/nginx/error.log \
 --http-log-path=/var/log/nginx/access.log \
