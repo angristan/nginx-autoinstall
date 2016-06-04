@@ -344,21 +344,6 @@ fi
 cd /opt/nginx-${NGINX_VER}
 
 # Modules configuration
-# Common configuration 
-NGINX_OPTIONS="
---prefix=/etc/nginx \
---sbin-path=/usr/sbin/nginx \
---conf-path=/etc/nginx/nginx.conf \
---error-log-path=/var/log/nginx/error.log \
---http-log-path=/var/log/nginx/access.log \
---pid-path=/var/run/nginx.pid \
---lock-path=/var/run/nginx.lock \
---http-client-body-temp-path=/var/cache/nginx/client_temp \
---http-proxy-temp-path=/var/cache/nginx/proxy_temp \
---http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
---user=nginx \
---group=nginx"
-
 NGINX_MODULES="--without-http_ssi_module \
 --without-http_scgi_module \
 --without-http_uwsgi_module \
@@ -426,7 +411,22 @@ fi
 
 # We configure Nginx
 echo -ne "       Configuring Nginx              [..]\r"
-./configure $NGINX_OPTIONS $NGINX_MODULES &>/dev/null
+./configure \
+    --prefix=/etc/nginx \
+    --sbin-path=/usr/sbin/nginx \
+    --with-cc-opt="-g -O3 -fPIE -fstack-protector-strong -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro" \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --pid-path=/var/run/nginx.pid \
+    --lock-path=/var/run/nginx.lock \
+    --http-client-body-temp-path=/var/cache/nginx/client_temp \
+    --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+    --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+    --user=nginx \
+    --group=nginx \
+    $NGINX_MODULES &>/dev/null
 
 if [ $? -eq 0 ]; then
 	echo -ne "       Configuring Nginx              [${CGREEN}OK${CEND}]\r"
