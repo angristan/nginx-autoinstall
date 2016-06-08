@@ -12,15 +12,12 @@ if [[ "$EUID" -ne 0 ]]; then
 	exit 1
 fi
 
-# We need curl
-apt-get install curl -y
-
 # Variables
-NGINX_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/nginx)
-LIBRESSL_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/libressl)
-OPENSSL_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/openssl)
-NPS_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/pagespeed)
-HEADERMOD_VER=$(curl -s https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/var/headermod)
+NGINX_VER=1.11.1
+LIBRESSL_VER=2.4.1
+OPENSSL_VER=1.0.2h
+NPS_VER=1.11.33.2
+HEADERMOD_VER=0.30
 
 clear
 echo ""
