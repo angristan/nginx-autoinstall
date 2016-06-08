@@ -25,7 +25,7 @@ You can check the different versions [here](https://github.com/Angristan/nginx-a
 
 Just download and execute the script :
 ```
-wget --no-check-certificate https://bit.ly/nginx-autoinstall -O nginx-autoinstall.sh
+wget -https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh
 chmod +x nginx-autoinstall.sh
 ./nginx-autoinstall.sh
 ```
