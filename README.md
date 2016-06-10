@@ -17,9 +17,9 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [ngx_brotli](https://github.com/google/ngx_brotli)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module)
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) module and databases
-- [Cloudflare's SPDY patch](https://github.com/felixbuenemann/sslconfig/blob/b8ebac6a337e8e4e373dfee76e7dfac3cc6c56e6/patches/nginx_1_9_15_http2_spdy.patch) : enables the use of SPDY along with HTTP/2
-- [Cloudflare's Chacha20 patch](https://github.com/cloudflare/sslconfig/blob/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch) : add the ChaCha20 + Poly1305 cipher suite
-
+- [Cloudflare's SPDY patch](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) : enables the use of SPDY along with HTTP/2
+- [Cloudflare's Chacha20 patch](https://blog.cloudflare.com/do-the-chacha-better-mobile-performance-with-cryptography/) : add the ChaCha20 + Poly1305 cipher suite
+- [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/)
 You can check the different versions [here](https://github.com/Angristan/nginx-autoinstall/tree/master/var)
 ## Installation
 
@@ -34,9 +34,9 @@ You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinsta
 
 ## Update
 
-Just re-launch the script.
+Select the update option to get the latest fixes and modules version.
 
-If change was made to this repository, you may re-download the script.
+![update](https://lut.im/CbjoOphOFa/RuLJ82QCnlnBIviW.png)
 
 You can install nginx over and over again, to add or remove modules or just to update nginx.
 
