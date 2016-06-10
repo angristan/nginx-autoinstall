@@ -420,7 +420,7 @@ case $option in
 		# Cloudflare's SPDY + HTTP/2 patch
 		if [[ "$SPDY" = 'y' ]]; then
 			echo -ne "       Adding SPDY support            [..]\r"
-			wget wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch &>/dev/null
+			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch &>/dev/null
 			patch -p1 < spdy.patch &>/dev/null
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_spdy_module")
 		        
