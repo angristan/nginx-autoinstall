@@ -52,6 +52,9 @@ case $option in
 		while [[ $SPDY !=  "y" && $SPDY != "n" ]]; do
 			read -p "       Cloudflare's HTTP/2 + SPDY patch [y/n]: " -e SPDY
 		done
+		while [[ $TCP !=  "y" && $TCP != "n" ]]; do
+			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
+		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
 		echo "   1) System's OpenSSL (default)"
@@ -426,6 +429,21 @@ case $option in
 				echo -ne "\n"
 			else
 				echo -e "       Adding SPDY support            [${CRED}FAIL${CEND}]"
+				exit 1
+			fi
+		fi
+
+		# Cloudflare's TLS Dynamic Record Resizing patch
+		if [[ "$SPDY" = 'y' ]]; then
+			echo -ne "       Adding SPDY support            [..]\r"
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch &>/dev/null
+			patch -p1 < tcp-tls.patch &>/dev/null
+		        
+			if [ $? -eq 0 ]; then
+				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
+				echo -ne "\n"
+			else
+				echo -e "       TLS Dynamic Records support    [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
