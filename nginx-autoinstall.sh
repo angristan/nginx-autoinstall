@@ -31,7 +31,7 @@ read -p "Select an option [1-4]: " option
 echo ""
 case $option in
 	1)
-		echo "This script will install the latest Nginx Mainline version with some optional famous modules."
+		echo "This script will install Nginx ${NGINX_VER} (mainline) with some optional famous modules."
 		echo ""
 		echo "Please tell me which modules you want to install."
 		echo "If you select none, Nginx will be installed with its default modules."
@@ -507,6 +507,9 @@ case $option in
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
 		chmod +x nginx-autoinstall.sh
 		./nginx-autoinstall.sh
+		echo ""
+		echo "Update : OK"
+		sleep 3
 	exit
 	;;
 esac
