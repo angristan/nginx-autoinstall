@@ -27,7 +27,7 @@ echo "What do you want to do?"
 echo "   1) Install Nginx"
 echo "   2) Update the script to update softwares' version"
 echo ""
-read -p "Select an option [1-4]: " option
+read -p "Select an option [1-2]: " option
 echo ""
 case $option in
 	1)
