@@ -506,10 +506,10 @@ case $option in
 	2) # Update the script
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
 		chmod +x nginx-autoinstall.sh
-		./nginx-autoinstall.sh
 		echo ""
 		echo "Update : OK"
 		sleep 3
+		./nginx-autoinstall.sh
 	exit
 	;;
 esac
