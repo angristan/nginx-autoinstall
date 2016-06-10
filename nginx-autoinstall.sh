@@ -434,8 +434,8 @@ case $option in
 		fi
 
 		# Cloudflare's TLS Dynamic Record Resizing patch
-		if [[ "$SPDY" = 'y' ]]; then
-			echo -ne "       Adding SPDY support            [..]\r"
+		if [[ "$TCP" = 'y' ]]; then
+			echo -ne "       TLS Dynamic Records support    [..]\r"
 			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch &>/dev/null
 			patch -p1 < tcp-tls.patch &>/dev/null
 		        
