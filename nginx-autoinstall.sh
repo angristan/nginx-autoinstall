@@ -25,9 +25,10 @@ echo "Welcome to the nginx-autoinstall script."
 echo ""
 echo "What do you want to do?"
 echo "   1) Install Nginx"
-echo "   2) Update the script"
+echo "   2) Uninstall Nginx"
+echo "   3) Update the script"
 echo ""
-read -p "Select an option [1-2]: " option
+read -p "Select an option [1-3]: " option
 echo ""
 case $option in
 	1)
@@ -521,12 +522,71 @@ case $option in
 		echo ""
 	exit
 	;;
-	2) # Update the script
-		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
+	2) # Uninstall Nginx
+		while [[ $CONF !=  "y" && $CONF != "n" ]]; do
+			read -p "       Remove configuration files ? [y/n]: " -e CONF
+		done
+		while [[ $LOGS !=  "y" && $LOGS != "n" ]]; do
+			read -p "       Remove logs files ? [y/n]: " -e LOGS
+		done
+		# Stop Nginx
+		echo -ne "       Stopping Nginx                 [..]\r"
+		systemctl stop nginx
+		if [ $? -eq 0 ]; then
+			echo -ne "       Stopping Nginx                 [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		else
+			echo -e "       Stopping Nginx                 [${CRED}FAIL${CEND}]"
+			exit 1
+		fi
+		# Removing Nginx files and modules files
+		echo -ne "       Removing Nginx files           [..]\r"
+		rm -r /opt/geoip-db* \
+		/opt/nginx-* \
+		/opt/headers-more-nginx-module-* \
+		/opt/ngx_brotli \
+		/opt/libbrotli \
+		/opt/ngx_pagespeed-release-* \
+		/opt/libressl-* \
+		/opt/openssl-* \
+		/usr/sbin/nginx* \
+		/etc/logrotate.d/nginx \
+		/var/cache/nginx \
+		/lib/systemd/system/nginx.service \
+		/etc/systemd/system/multi-user.target.wants/nginx.service &>/dev/null
+
+		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
+		echo -ne "\n"
+
+		# Remove conf files
+		if [[ "$CONF" = 'y' ]]; then
+			echo -ne "       Removing configuration files   [..]\r"
+			rm -r /etc/nginx/ &>/dev/null
+			echo -ne "       Removing configuration files   [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		fi
+
+		# Remove logs
+		if [[ "$LOGS" = 'y' ]]; then
+			echo -ne "       Removing log files             [..]\r"
+			rm -r /var/log/nginx &>/dev/null
+			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		fi
+
+		#We're done !
+		echo ""
+		echo -e "       ${CGREEN}Uninstallation succcessful !${CEND}"
+		echo ""
+
+	exit
+	;;
+	3) # Update the script
+		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh &>/dev/null
 		chmod +x nginx-autoinstall.sh
 		echo ""
-		echo "Update : OK"
-		sleep 3
+		echo -e "       ${CGREEN}Update succcessful !${CEND}"
+		sleep 2
 		./nginx-autoinstall.sh
 	exit
 	;;
