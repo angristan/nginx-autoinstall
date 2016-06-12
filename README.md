@@ -32,9 +32,19 @@ chmod +x nginx-autoinstall.sh
 
 You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinstall/tree/master/conf).
 
+## Uninstallation
+
+Just select the option when running the script :
+
+![update](https://lut.im/Gbz5D0EH9Z/kbXb0nQ49NN52VI9.png)
+
+You have te choice to delete the logs and the conf.
+
 ## Update
 
-Select the update option to get the latest fixes and modules version.
+Select the update option to get the latest fixes and modules version. 
+
+Warning : It will override all you modifications to the script !
 
 ![update](https://lut.im/CbjoOphOFa/RuLJ82QCnlnBIviW.png)
 
