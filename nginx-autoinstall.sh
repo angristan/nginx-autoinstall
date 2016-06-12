@@ -518,7 +518,7 @@ case $option in
 
 		# We're done !
 		echo ""
-		echo -e "       ${CGREEN}Installation succcessful !${CEND}"
+		echo -e "       ${CGREEN}Installation successful !${CEND}"
 		echo ""
 	exit
 	;;
@@ -576,7 +576,7 @@ case $option in
 
 		#We're done !
 		echo ""
-		echo -e "       ${CGREEN}Uninstallation succcessful !${CEND}"
+		echo -e "       ${CGREEN}Uninstallation successful !${CEND}"
 		echo ""
 
 	exit
