@@ -476,6 +476,9 @@ case $option in
 		# Then we install \o/
 		echo -ne "       Installing Nginx               [..]\r"
 		make install &>/dev/null
+		
+		# remove debugging symbols
+		strip -s /usr/sbin/nginx
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Installing Nginx               [${CGREEN}OK${CEND}]\r"
