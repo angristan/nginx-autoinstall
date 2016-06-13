@@ -21,6 +21,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [Cloudflare's Chacha20 patch](https://blog.cloudflare.com/do-the-chacha-better-mobile-performance-with-cryptography/) : add the ChaCha20 + Poly1305 cipher suite
 - [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/)
 You can check the different versions [here](https://github.com/Angristan/nginx-autoinstall/tree/master/var)
+
 ## Installation
 
 Just download and execute the script :
