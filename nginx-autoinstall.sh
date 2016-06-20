@@ -385,7 +385,8 @@ case $option in
 		--with-http_mp4_module \
 		--with-http_auth_request_module \
 		--with-http_slice_module \
-		--with-http_stub_status_module"
+                --with-http_stub_status_module \
+                --with-http_realip_module"
 
 		# Optional modules
 		# LibreSSL 
