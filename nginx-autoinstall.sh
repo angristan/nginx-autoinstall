@@ -98,7 +98,7 @@ case $option in
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r ngx_pagespeed-release-${NPS_VER}-beta &>/dev/null 
 			# Download and extract of PageSpeed module
@@ -122,7 +122,7 @@ case $option in
 
 		#Brotli
 		if [[ "$BROTLI" = 'y' ]]; then
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r libbrotli &>/dev/null 
 			# libbrolti is needed for the ngx_brotli module
@@ -177,7 +177,7 @@ case $option in
 			# Linking libraries to avoid errors
 			ldconfig &>/dev/null
 			# ngx_brotli module download
-			cd /opt
+			cd //usr/local/src
 			rm -r ngx_brotli &>/dev/null 
 			echo -ne "       Downloading ngx_brotli         [..]\r"
 			git clone https://github.com/google/ngx_brotli &>/dev/null
@@ -193,7 +193,7 @@ case $option in
 
 		# More Headers
 		if [[ "$HEADERMOD" = 'y' ]]; then
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r headers-more-nginx-module-${HEADERMOD_VER} &>/dev/null 
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
@@ -214,7 +214,7 @@ case $option in
 		if [[ "$GEOIP" = 'y' ]]; then
 			# Dependence
 			apt-get install libgeoip-dev -y &>/dev/null
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r geoip-db &>/dev/null 
 			mkdir geoip-db
@@ -238,7 +238,7 @@ case $option in
 
 		# LibreSSL
 		if [[ "$LIBRESSL" = 'y' ]]; then
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r libressl-${LIBRESSL_VER} &>/dev/null 
 			mkdir libressl-${LIBRESSL_VER}
@@ -259,7 +259,7 @@ case $option in
 			./configure \
 				LDFLAGS=-lrt \
 				CFLAGS=-fstack-protector-strong \
-				--prefix=/opt/libressl-${LIBRESSL_VER}/.openssl/ \
+				--prefix=//usr/local/src/libressl-${LIBRESSL_VER}/.openssl/ \
 				--enable-shared=no &>/dev/null
 
 			if [ $? -eq 0 ]; then
@@ -285,7 +285,7 @@ case $option in
 
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
-			cd /opt
+			cd //usr/local/src
 			# Cleaning up in case of update
 			rm -r openssl-${OPENSSL_VER} &>/dev/null
 			# OpenSSL download
@@ -328,9 +328,9 @@ case $option in
 		fi
 
 		# Cleaning up in case of update
-		rm -r /opt/nginx-${NGINX_VER} &>/dev/null
+		rm -r //usr/local/src/nginx-${NGINX_VER} &>/dev/null
 		# Download and extract of Nginx source code
-		cd /opt/
+		cd //usr/local/src/
 		echo -ne "       Downloading Nginx              [..]\r"
 		wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 		cd nginx-${NGINX_VER}
@@ -351,7 +351,7 @@ case $option in
 			cd /etc/nginx
 			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf &>/dev/null
 		fi
-		cd /opt/nginx-${NGINX_VER}
+		cd //usr/local/src/nginx-${NGINX_VER}
 
 		# Modules configuration
 		# Common configuration 
@@ -391,22 +391,22 @@ case $option in
 		# Optional modules
 		# LibreSSL 
 		if [[ "$LIBRESSL" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo --with-openssl=/opt/libressl-${LIBRESSL_VER})
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo --with-openssl=//usr/local/src/libressl-${LIBRESSL_VER})
 		fi
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/ngx_pagespeed-release-${NPS_VER}-beta")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=//usr/local/src/ngx_pagespeed-release-${NPS_VER}-beta")
 		fi
 
 		# Brotli
 		if [[ "$BROTLI" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/ngx_brotli")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=//usr/local/src/ngx_brotli")
 		fi
 
 		# More Headers
 		if [[ "$HEADERMOD" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/opt/headers-more-nginx-module-${HEADERMOD_VER}")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=//usr/local/src/headers-more-nginx-module-${HEADERMOD_VER}")
 		fi
 
 		# GeoIP
@@ -416,7 +416,7 @@ case $option in
 
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/opt/openssl-${OPENSSL_VER}")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=//usr/local/src/openssl-${OPENSSL_VER}")
 		fi
 
 		# Cloudflare's SPDY + HTTP/2 patch
@@ -545,14 +545,14 @@ case $option in
 		fi
 		# Removing Nginx files and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
-		rm -r /opt/geoip-db* \
-		/opt/nginx-* \
-		/opt/headers-more-nginx-module-* \
-		/opt/ngx_brotli \
-		/opt/libbrotli \
-		/opt/ngx_pagespeed-release-* \
-		/opt/libressl-* \
-		/opt/openssl-* \
+		rm -r //usr/local/src/geoip-db* \
+		//usr/local/src/nginx-* \
+		//usr/local/src/headers-more-nginx-module-* \
+		//usr/local/src/ngx_brotli \
+		//usr/local/src/libbrotli \
+		//usr/local/src/ngx_pagespeed-release-* \
+		//usr/local/src/libressl-* \
+		//usr/local/src/openssl-* \
 		/usr/sbin/nginx* \
 		/etc/logrotate.d/nginx \
 		/var/cache/nginx \
