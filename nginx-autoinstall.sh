@@ -103,11 +103,11 @@ case $option in
 			rm -r ngx_pagespeed-release-${NPS_VER}-beta > /dev/null 
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
-			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip > /dev/null
+			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip 2>&1 | grep -v '\-> "'
 			unzip release-${NPS_VER}-beta.zip > /dev/null
 			rm release-${NPS_VER}-beta.zip
 			cd ngx_pagespeed-release-${NPS_VER}-beta
-			wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz > /dev/null
+			wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz 2>&1 | grep -v '\-> "'
 			tar -xaf ${NPS_VER}.tar.gz 
 			rm ${NPS_VER}.tar.gz
 
@@ -197,7 +197,7 @@ case $option in
 			# Cleaning up in case of update
 			rm -r headers-more-nginx-module-${HEADERMOD_VER} > /dev/null 
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
-			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz > /dev/null
+			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz 2>&1 | grep -v '\-> "'
 			tar xaf v${HEADERMOD_VER}.tar.gz
 			rm v${HEADERMOD_VER}.tar.gz
 		        
@@ -220,8 +220,8 @@ case $option in
 			mkdir geoip-db
 			cd geoip-db
 			echo -ne "       Downloading GeoIP databases    [..]\r"
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz > /dev/null
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz > /dev/null
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz 2>&1 | grep -v '\-> "'
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz 2>&1 | grep -v '\-> "'
 			gunzip GeoIP.dat.gz
 			gunzip GeoLiteCity.dat.gz
 			mv GeoIP.dat GeoIP-Country.dat
@@ -290,7 +290,7 @@ case $option in
 			rm -r openssl-${OPENSSL_VER} > /dev/null
 			# OpenSSL download
 			echo -ne "       Downloading OpenSSL            [..]\r"
-			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz > /dev/null 
+			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz 2>&1 | grep -v '\-> "'
 			tar xaf openssl-${OPENSSL_VER}.tar.gz
 			rm openssl-${OPENSSL_VER}.tar.gz
 			cd openssl-${OPENSSL_VER}	
@@ -304,7 +304,7 @@ case $option in
 
 		# Cloudflare patch
 		if [[ $CHACHA = "y" ]]; then
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch > /dev/null 
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch 2>&1 | grep -v '\-> "'
 			patch -p1 < chacha.patch > /dev/null 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Adding ChaCha20 to OpenSSL     [${CGREEN}OK${CEND}]\r"
@@ -349,7 +349,7 @@ case $option in
 		if [[ ! -e /etc/nginx/nginx.conf ]]; then
 			mkdir -p /etc/nginx
 			cd /etc/nginx
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf > /dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf 2>&1 | grep -v '\-> "'
 		fi
 		cd /opt/nginx-${NGINX_VER}
 
@@ -422,7 +422,7 @@ case $option in
 		# Cloudflare's SPDY + HTTP/2 patch
 		if [[ "$SPDY" = 'y' ]]; then
 			echo -ne "       Adding SPDY support            [..]\r"
-			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch > /dev/null
+			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch 2>&1 | grep -v '\-> "'
 			patch -p1 < spdy.patch > /dev/null
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_spdy_module")
 		        
@@ -438,7 +438,7 @@ case $option in
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TCP" = 'y' ]]; then
 			echo -ne "       TLS Dynamic Records support    [..]\r"
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch > /dev/null
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch 2>&1 | grep -v '\-> "'
 			patch -p1 < tcp-tls.patch > /dev/null
 		        
 			if [ $? -eq 0 ]; then
@@ -493,14 +493,14 @@ case $option in
 		# Using the official systemd script and logrotate conf from nginx.org
 		if [[ ! -e /lib/systemd/system/nginx.service ]]; then
 			cd /lib/systemd/system/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service > /dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service 2>&1 | grep -v '\-> "'
 			# Enable nginx start at boot
 			systemctl enable nginx > /dev/null
 		fi
 
 		if [[ ! -e /etc/logrotate.d/nginx ]]; then
 			cd /etc/logrotate.d/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx > /dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx 2>&1 | grep -v '\-> "'
 		fi
 
 		# Nginx's cache directory is not created by default
@@ -586,7 +586,7 @@ case $option in
 	exit
 	;;
 	3) # Update the script
-		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh > /dev/null
+		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh 2>&1 | grep -v '\-> "'
 		chmod +x nginx-autoinstall.sh
 		echo ""
 		echo -e "       ${CGREEN}Update succcessful !${CEND}"
