@@ -85,8 +85,8 @@ case $option in
 
 		# Dependencies
 		echo -ne "       Installaling dependencies      [..]\r"
-		apt-get update &>/dev/null
-		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y &>/dev/null
+		apt-get update > /dev/null
+		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y > /dev/null
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Installing dependencies        [${CGREEN}OK${CEND}]\r"
@@ -100,14 +100,14 @@ case $option in
 		if [[ "$PAGESPEED" = 'y' ]]; then
 			cd /opt
 			# Cleaning up in case of update
-			rm -r ngx_pagespeed-release-${NPS_VER}-beta &>/dev/null 
+			rm -r ngx_pagespeed-release-${NPS_VER}-beta > /dev/null 
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
-			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip &>/dev/null
-			unzip release-${NPS_VER}-beta.zip &>/dev/null
+			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip > /dev/null
+			unzip release-${NPS_VER}-beta.zip > /dev/null
 			rm release-${NPS_VER}-beta.zip
 			cd ngx_pagespeed-release-${NPS_VER}-beta
-			wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz &>/dev/null
+			wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz > /dev/null
 			tar -xaf ${NPS_VER}.tar.gz 
 			rm ${NPS_VER}.tar.gz
 
@@ -124,11 +124,11 @@ case $option in
 		if [[ "$BROTLI" = 'y' ]]; then
 			cd /opt
 			# Cleaning up in case of update
-			rm -r libbrotli &>/dev/null 
+			rm -r libbrotli > /dev/null 
 			# libbrolti is needed for the ngx_brotli module
 			# libbrotli download
 			echo -ne "       Downloading libbrotli          [..]\r"
-			git clone https://github.com/bagder/libbrotli &>/dev/null
+			git clone https://github.com/bagder/libbrotli > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading libbrotli          [${CGREEN}OK${CEND}]\r"
@@ -140,8 +140,8 @@ case $option in
 
 			cd libbrotli
 			echo -ne "       Configuring libbrotli          [..]\r"
-			./autogen.sh &>/dev/null
-			./configure &>/dev/null
+			./autogen.sh > /dev/null
+			./configure > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring libbrotli          [${CGREEN}OK${CEND}]\r"
@@ -152,7 +152,7 @@ case $option in
 			fi
 
 			echo -ne "       Compiling libbrotli            [..]\r"
-			make -j $(nproc) &>/dev/null
+			make -j $(nproc) > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Compiling libbrotli            [${CGREEN}OK${CEND}]\r"
@@ -164,7 +164,7 @@ case $option in
 
 			# libbrotli install
 			echo -ne "       Installing libbrotli           [..]\r"
-			make install &>/dev/null
+			make install > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Installing libbrotli           [${CGREEN}OK${CEND}]\r"
@@ -175,12 +175,12 @@ case $option in
 			fi
 
 			# Linking libraries to avoid errors
-			ldconfig &>/dev/null
+			ldconfig > /dev/null
 			# ngx_brotli module download
 			cd /opt
-			rm -r ngx_brotli &>/dev/null 
+			rm -r ngx_brotli > /dev/null 
 			echo -ne "       Downloading ngx_brotli         [..]\r"
-			git clone https://github.com/google/ngx_brotli &>/dev/null
+			git clone https://github.com/google/ngx_brotli > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading ngx_brotli         [${CGREEN}OK${CEND}]\r"
@@ -195,9 +195,9 @@ case $option in
 		if [[ "$HEADERMOD" = 'y' ]]; then
 			cd /opt
 			# Cleaning up in case of update
-			rm -r headers-more-nginx-module-${HEADERMOD_VER} &>/dev/null 
+			rm -r headers-more-nginx-module-${HEADERMOD_VER} > /dev/null 
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
-			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz &>/dev/null
+			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz > /dev/null
 			tar xaf v${HEADERMOD_VER}.tar.gz
 			rm v${HEADERMOD_VER}.tar.gz
 		        
@@ -213,15 +213,15 @@ case $option in
 		# GeoIP
 		if [[ "$GEOIP" = 'y' ]]; then
 			# Dependence
-			apt-get install libgeoip-dev -y &>/dev/null
+			apt-get install libgeoip-dev -y > /dev/null
 			cd /opt
 			# Cleaning up in case of update
-			rm -r geoip-db &>/dev/null 
+			rm -r geoip-db > /dev/null 
 			mkdir geoip-db
 			cd geoip-db
 			echo -ne "       Downloading GeoIP databases    [..]\r"
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz &>/dev/null
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz &>/dev/null
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz > /dev/null
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz > /dev/null
 			gunzip GeoIP.dat.gz
 			gunzip GeoLiteCity.dat.gz
 			mv GeoIP.dat GeoIP-Country.dat
@@ -240,7 +240,7 @@ case $option in
 		if [[ "$LIBRESSL" = 'y' ]]; then
 			cd /opt
 			# Cleaning up in case of update
-			rm -r libressl-${LIBRESSL_VER} &>/dev/null 
+			rm -r libressl-${LIBRESSL_VER} > /dev/null 
 			mkdir libressl-${LIBRESSL_VER}
 			cd libressl-${LIBRESSL_VER}
 			# LibreSSL download
@@ -260,7 +260,7 @@ case $option in
 				LDFLAGS=-lrt \
 				CFLAGS=-fstack-protector-strong \
 				--prefix=/opt/libressl-${LIBRESSL_VER}/.openssl/ \
-				--enable-shared=no &>/dev/null
+				--enable-shared=no > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring LibreSSL           [${CGREEN}OK${CEND}]\r"
@@ -272,7 +272,7 @@ case $option in
 
 			# LibreSSL install
 			echo -ne "       Installing LibreSSL            [..]\r"
-			make install-strip -j $(nproc) &>/dev/null
+			make install-strip -j $(nproc) > /dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Installing LibreSSL            [${CGREEN}OK${CEND}]\r"
@@ -287,10 +287,10 @@ case $option in
 		if [[ "$OPENSSL" = 'y' ]]; then
 			cd /opt
 			# Cleaning up in case of update
-			rm -r openssl-${OPENSSL_VER} &>/dev/null
+			rm -r openssl-${OPENSSL_VER} > /dev/null
 			# OpenSSL download
 			echo -ne "       Downloading OpenSSL            [..]\r"
-			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz &>/dev/null 
+			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz > /dev/null 
 			tar xaf openssl-${OPENSSL_VER}.tar.gz
 			rm openssl-${OPENSSL_VER}.tar.gz
 			cd openssl-${OPENSSL_VER}	
@@ -304,8 +304,8 @@ case $option in
 
 		# Cloudflare patch
 		if [[ $CHACHA = "y" ]]; then
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch &>/dev/null 
-			patch -p1 < chacha.patch &>/dev/null 
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch > /dev/null 
+			patch -p1 < chacha.patch > /dev/null 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Adding ChaCha20 to OpenSSL     [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
@@ -316,7 +316,7 @@ case $option in
 		fi
 
 			echo -ne "       Configuring OpenSSL            [..]\r"
-			./config &>/dev/null 
+			./config > /dev/null 
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring OpenSSL            [${CGREEN}OK${CEND}]\r"
@@ -328,7 +328,7 @@ case $option in
 		fi
 
 		# Cleaning up in case of update
-		rm -r /opt/nginx-${NGINX_VER} &>/dev/null
+		rm -r /opt/nginx-${NGINX_VER} > /dev/null
 		# Download and extract of Nginx source code
 		cd /opt/
 		echo -ne "       Downloading Nginx              [..]\r"
@@ -349,7 +349,7 @@ case $option in
 		if [[ ! -e /etc/nginx/nginx.conf ]]; then
 			mkdir -p /etc/nginx
 			cd /etc/nginx
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf &>/dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf > /dev/null
 		fi
 		cd /opt/nginx-${NGINX_VER}
 
@@ -422,8 +422,8 @@ case $option in
 		# Cloudflare's SPDY + HTTP/2 patch
 		if [[ "$SPDY" = 'y' ]]; then
 			echo -ne "       Adding SPDY support            [..]\r"
-			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch &>/dev/null
-			patch -p1 < spdy.patch &>/dev/null
+			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch > /dev/null
+			patch -p1 < spdy.patch > /dev/null
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_spdy_module")
 		        
 			if [ $? -eq 0 ]; then
@@ -438,8 +438,8 @@ case $option in
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TCP" = 'y' ]]; then
 			echo -ne "       TLS Dynamic Records support    [..]\r"
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch &>/dev/null
-			patch -p1 < tcp-tls.patch &>/dev/null
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch > /dev/null
+			patch -p1 < tcp-tls.patch > /dev/null
 		        
 			if [ $? -eq 0 ]; then
 				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
@@ -452,7 +452,7 @@ case $option in
 
 		# We configure Nginx
 		echo -ne "       Configuring Nginx              [..]\r"
-		./configure $NGINX_OPTIONS $NGINX_MODULES &>/dev/null
+		./configure $NGINX_OPTIONS $NGINX_MODULES > /dev/null
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Configuring Nginx              [${CGREEN}OK${CEND}]\r"
@@ -464,7 +464,7 @@ case $option in
 
 		# Then we compile
 		echo -ne "       Compiling Nginx                [..]\r"
-		make -j $(nproc) &>/dev/null
+		make -j $(nproc) > /dev/null
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Compiling Nginx                [${CGREEN}OK${CEND}]\r"
@@ -476,7 +476,7 @@ case $option in
 
 		# Then we install \o/
 		echo -ne "       Installing Nginx               [..]\r"
-		make install &>/dev/null
+		make install > /dev/null
 		
 		# remove debugging symbols
 		strip -s /usr/sbin/nginx
@@ -493,14 +493,14 @@ case $option in
 		# Using the official systemd script and logrotate conf from nginx.org
 		if [[ ! -e /lib/systemd/system/nginx.service ]]; then
 			cd /lib/systemd/system/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service &>/dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service > /dev/null
 			# Enable nginx start at boot
-			systemctl enable nginx &>/dev/null
+			systemctl enable nginx > /dev/null
 		fi
 
 		if [[ ! -e /etc/logrotate.d/nginx ]]; then
 			cd /etc/logrotate.d/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx &>/dev/null
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx > /dev/null
 		fi
 
 		# Nginx's cache directory is not created by default
@@ -510,7 +510,7 @@ case $option in
 
 		# Restart Nginx
 		echo -ne "       Restarting Nginx               [..]\r"
-		systemctl restart nginx &>/dev/null
+		systemctl restart nginx > /dev/null
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Restarting Nginx               [${CGREEN}OK${CEND}]\r"
@@ -557,7 +557,7 @@ case $option in
 		/etc/logrotate.d/nginx \
 		/var/cache/nginx \
 		/lib/systemd/system/nginx.service \
-		/etc/systemd/system/multi-user.target.wants/nginx.service &>/dev/null
+		/etc/systemd/system/multi-user.target.wants/nginx.service > /dev/null
 
 		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
 		echo -ne "\n"
@@ -565,7 +565,7 @@ case $option in
 		# Remove conf files
 		if [[ "$CONF" = 'y' ]]; then
 			echo -ne "       Removing configuration files   [..]\r"
-			rm -r /etc/nginx/ &>/dev/null
+			rm -r /etc/nginx/ > /dev/null
 			echo -ne "       Removing configuration files   [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
@@ -573,7 +573,7 @@ case $option in
 		# Remove logs
 		if [[ "$LOGS" = 'y' ]]; then
 			echo -ne "       Removing log files             [..]\r"
-			rm -r /var/log/nginx &>/dev/null
+			rm -r /var/log/nginx >/dev/null
 			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
@@ -586,7 +586,7 @@ case $option in
 	exit
 	;;
 	3) # Update the script
-		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh &>/dev/null
+		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh > /dev/null
 		chmod +x nginx-autoinstall.sh
 		echo ""
 		echo -e "       ${CGREEN}Update succcessful !${CEND}"
