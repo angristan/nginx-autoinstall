@@ -15,7 +15,7 @@ fi
 # Variables
 NGINX_VER=1.11.3
 LIBRESSL_VER=2.4.2
-OPENSSL_VER=1.0.2h
+OPENSSL_VER=1.1.0
 NPS_VER=1.11.33.3
 HEADERMOD_VER=0.31
 
@@ -69,11 +69,6 @@ case $option in
 			;;
 			2)
 				OPENSSL=y
-				echo ""
-				echo "Do you want Cloudflare's patch for OpenSSL ?"
-				while [[ $CHACHA !=  "y" && $CHACHA != "n" ]]; do
-					read -p "       ChaCha20 + Poly1305 cipher support [y/n]: " -e CHACHA
-				done
 			;;
 			3)
 				LIBRESSL=y
@@ -84,15 +79,15 @@ case $option in
 		echo ""
 
 		# Dependencies
-		echo -ne "       Installaling dependencies      [..]\r"
+		echo -ne "       Installaling dependencies         [..]\r"
 		apt-get update &>/dev/null
 		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y &>/dev/null
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Installing dependencies        [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Installing dependencies           [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "        Installing dependencies      [${CRED}FAIL${CEND}]"
+			echo -e "        Installing dependencies         [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
@@ -102,7 +97,7 @@ case $option in
 			# Cleaning up in case of update
 			rm -r ngx_pagespeed-release-${NPS_VER}-beta &>/dev/null 
 			# Download and extract of PageSpeed module
-			echo -ne "       Downloading ngx_pagespeed      [..]\r"
+			echo -ne "       Downloading ngx_pagespeed         [..]\r"
 			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip &>/dev/null
 			unzip release-${NPS_VER}-beta.zip &>/dev/null
 			rm release-${NPS_VER}-beta.zip
@@ -112,10 +107,10 @@ case $option in
 			rm ${NPS_VER}.tar.gz
 
 			if [ $? -eq 0 ]; then
-			echo -ne "       Downloading ngx_pagespeed      [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Downloading ngx_pagespeed         [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading ngx_pagespeed      [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading ngx_pagespeed         [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -127,50 +122,50 @@ case $option in
 			rm -r libbrotli &>/dev/null 
 			# libbrolti is needed for the ngx_brotli module
 			# libbrotli download
-			echo -ne "       Downloading libbrotli          [..]\r"
+			echo -ne "       Downloading libbrotli             [..]\r"
 			git clone https://github.com/bagder/libbrotli &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading libbrotli          [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading libbrotli             [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading libbrotli          [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading libbrotli             [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
 			cd libbrotli
-			echo -ne "       Configuring libbrotli          [..]\r"
+			echo -ne "       Configuring libbrotli             [..]\r"
 			./autogen.sh &>/dev/null
 			./configure &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Configuring libbrotli          [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Configuring libbrotli             [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Configuring libbrotli          [${CRED}FAIL${CEND}]"
+				echo -e "       Configuring libbrotli             [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
-			echo -ne "       Compiling libbrotli            [..]\r"
+			echo -ne "       Compiling libbrotli               [..]\r"
 			make -j $(nproc) &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Compiling libbrotli            [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Compiling libbrotli               [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Compiling libbrotli            [${CRED}FAIL${CEND}]"
+				echo -e "       Compiling libbrotli               [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
 			# libbrotli install
-			echo -ne "       Installing libbrotli           [..]\r"
+			echo -ne "       Installing libbrotli              [..]\r"
 			make install &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Installing libbrotli           [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Installing libbrotli              [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Installing libbrotli           [${CRED}FAIL${CEND}]"
+				echo -e "       Installing libbrotli              [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
@@ -179,14 +174,14 @@ case $option in
 			# ngx_brotli module download
 			cd /opt
 			rm -r ngx_brotli &>/dev/null 
-			echo -ne "       Downloading ngx_brotli         [..]\r"
+			echo -ne "       Downloading ngx_brotli            [..]\r"
 			git clone https://github.com/google/ngx_brotli &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading ngx_brotli         [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading ngx_brotli            [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading ngx_brotli         [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading ngx_brotli            [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -196,16 +191,16 @@ case $option in
 			cd /opt
 			# Cleaning up in case of update
 			rm -r headers-more-nginx-module-${HEADERMOD_VER} &>/dev/null 
-			echo -ne "       Downloading ngx_headers_more   [..]\r"
+			echo -ne "       Downloading ngx_headers_more      [..]\r"
 			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz &>/dev/null
 			tar xaf v${HEADERMOD_VER}.tar.gz
 			rm v${HEADERMOD_VER}.tar.gz
 		        
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading ngx_headers_more   [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading ngx_headers_more      [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading ngx_headers_more   [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading ngx_headers_more      [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -219,7 +214,7 @@ case $option in
 			rm -r geoip-db &>/dev/null 
 			mkdir geoip-db
 			cd geoip-db
-			echo -ne "       Downloading GeoIP databases    [..]\r"
+			echo -ne "       Downloading GeoIP databases       [..]\r"
 			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz &>/dev/null
 			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz &>/dev/null
 			gunzip GeoIP.dat.gz
@@ -228,10 +223,10 @@ case $option in
 			mv GeoLiteCity.dat GeoIP-City.dat
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading GeoIP databases    [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading GeoIP databases       [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading GeoIP databases    [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading GeoIP databases       [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -244,18 +239,18 @@ case $option in
 			mkdir libressl-${LIBRESSL_VER}
 			cd libressl-${LIBRESSL_VER}
 			# LibreSSL download
-			echo -ne "       Downloading LibreSSL           [..]\r"
+			echo -ne "       Downloading LibreSSL              [..]\r"
 			wget -qO- http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${LIBRESSL_VER}.tar.gz | tar xz --strip 1
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading LibreSSL           [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading LibreSSL              [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading LibreSSL           [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading LibreSSL              [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
-			echo -ne "       Configuring LibreSSL           [..]\r"
+			echo -ne "       Configuring LibreSSL              [..]\r"
 			./configure \
 				LDFLAGS=-lrt \
 				CFLAGS=-fstack-protector-strong \
@@ -263,22 +258,22 @@ case $option in
 				--enable-shared=no &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Configuring LibreSSL           [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Configuring LibreSSL              [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Configuring LibreSSL         [${CRED}FAIL${CEND}]"
+				echo -e "       Configuring LibreSSL            [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
 			# LibreSSL install
-			echo -ne "       Installing LibreSSL            [..]\r"
+			echo -ne "       Installing LibreSSL               [..]\r"
 			make install-strip -j $(nproc) &>/dev/null
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Installing LibreSSL            [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Installing LibreSSL               [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Installing LibreSSL            [${CRED}FAIL${CEND}]"
+				echo -e "       Installing LibreSSL               [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -289,40 +284,27 @@ case $option in
 			# Cleaning up in case of update
 			rm -r openssl-${OPENSSL_VER} &>/dev/null
 			# OpenSSL download
-			echo -ne "       Downloading OpenSSL            [..]\r"
+			echo -ne "       Downloading OpenSSL               [..]\r"
 			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz &>/dev/null 
 			tar xaf openssl-${OPENSSL_VER}.tar.gz
 			rm openssl-${OPENSSL_VER}.tar.gz
 			cd openssl-${OPENSSL_VER}	
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading OpenSSL            [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading OpenSSL               [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading OpenSSL            [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading OpenSSL               [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 
-		# Cloudflare patch
-		if [[ $CHACHA = "y" ]]; then
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch &>/dev/null 
-			patch -p1 < chacha.patch &>/dev/null 
-			if [ $? -eq 0 ]; then
-				echo -ne "       Adding ChaCha20 to OpenSSL     [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Adding ChaCha20 to OpenSSL     [${CRED}FAIL${CEND}]"
-				exit 1
-				fi
-		fi
-
-			echo -ne "       Configuring OpenSSL            [..]\r"
+			echo -ne "       Configuring OpenSSL               [..]\r"
 			./config &>/dev/null 
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Configuring OpenSSL            [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Configuring OpenSSL               [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Configuring OpenSSL          [${CRED}FAIL${CEND}]"
+				echo -e "       Configuring OpenSSL             [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
@@ -331,15 +313,15 @@ case $option in
 		rm -r /opt/nginx-${NGINX_VER} &>/dev/null
 		# Download and extract of Nginx source code
 		cd /opt/
-		echo -ne "       Downloading Nginx              [..]\r"
+		echo -ne "       Downloading Nginx                 [..]\r"
 		wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 		cd nginx-${NGINX_VER}
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Downloading Nginx              [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Downloading Nginx                 [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "       Downloading Nginx              [${CRED}FAIL${CEND}]"
+			echo -e "       Downloading Nginx                 [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
@@ -421,71 +403,86 @@ case $option in
 
 		# Cloudflare's SPDY + HTTP/2 patch
 		if [[ "$SPDY" = 'y' ]]; then
-			echo -ne "       Adding SPDY support            [..]\r"
+			echo -ne "       Adding SPDY support               [..]\r"
 			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch &>/dev/null
 			patch -p1 < spdy.patch &>/dev/null
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_spdy_module")
 		        
 			if [ $? -eq 0 ]; then
-				echo -ne "       Adding SPDY support            [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Adding SPDY support               [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Adding SPDY support            [${CRED}FAIL${CEND}]"
+				echo -e "       Adding SPDY support               [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
 
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TCP" = 'y' ]]; then
-			echo -ne "       TLS Dynamic Records support    [..]\r"
+			echo -ne "       TLS Dynamic Records support       [..]\r"
 			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch &>/dev/null
 			patch -p1 < tcp-tls.patch &>/dev/null
 		        
 			if [ $? -eq 0 ]; then
-				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
+				echo -ne "       TLS Dynamic Records support       [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       TLS Dynamic Records support    [${CRED}FAIL${CEND}]"
+				echo -e "       TLS Dynamic Records support       [${CRED}FAIL${CEND}]"
+				exit 1
+			fi
+		fi
+		
+		# Nginx 1.11.3 patch
+		if [[ $NGINX_VER = "1.11.3" ]]; then
+			echo -ne "       Patching nginx for openssl 1.1.x  [..]\r"
+			wget https://github.com/nginx/nginx/commit/af9e72533a69de3b8b7ed59be7be9b37203b5c82.patch -O af9e72533a69de3b8b7ed59be7be9b37203b5c82.patch &>/dev/null 
+			patch -p1 < af9e72533a69de3b8b7ed59be7be9b37203b5c82.patch &>/dev/null 
+			if [ $? -eq 0 ]; then
+				echo -ne "       Patching nginx for openssl 1.1.x  [${CGREEN}OK${CEND}]\r"
+				echo -ne "\n"
+			else
+				echo -ne "       Patching nginx for openssl 1.1.x  [${CRED}FAIL${CEND}]"
 				exit 1
 			fi
 		fi
 
+
 		# We configure Nginx
-		echo -ne "       Configuring Nginx              [..]\r"
+		echo -ne "       Configuring Nginx                 [..]\r"
 		./configure $NGINX_OPTIONS $NGINX_MODULES &>/dev/null
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Configuring Nginx              [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Configuring Nginx                 [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "       Configuring Nginx              [${CRED}FAIL${CEND}]"
+			echo -e "       Configuring Nginx                 [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
 		# Then we compile
-		echo -ne "       Compiling Nginx                [..]\r"
+		echo -ne "       Compiling Nginx                   [..]\r"
 		make -j $(nproc) &>/dev/null
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Compiling Nginx                [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Compiling Nginx                   [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "       Compiling Nginx                [${CRED}FAIL${CEND}]"
+			echo -e "       Compiling Nginx                   [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
 		# Then we install \o/
-		echo -ne "       Installing Nginx               [..]\r"
+		echo -ne "       Installing Nginx                  [..]\r"
 		make install &>/dev/null
 		
 		# remove debugging symbols
 		strip -s /usr/sbin/nginx
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Installing Nginx               [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Installing Nginx                  [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "       Installing Nginx               [${CRED}FAIL${CEND}]"
+			echo -e "       Installing Nginx                  [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
@@ -509,14 +506,14 @@ case $option in
 		fi
 
 		# Restart Nginx
-		echo -ne "       Restarting Nginx               [..]\r"
+		echo -ne "       Restarting Nginx                  [..]\r"
 		systemctl restart nginx &>/dev/null
 
 		if [ $? -eq 0 ]; then
-			echo -ne "       Restarting Nginx               [${CGREEN}OK${CEND}]\r"
+			echo -ne "       Restarting Nginx                  [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		else
-			echo -e "       Restarting Nginx               [${CRED}FAIL${CEND}]"
+			echo -e "       Restarting Nginx                  [${CRED}FAIL${CEND}]"
 			exit 1
 		fi
 
