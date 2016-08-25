@@ -84,7 +84,7 @@ case $option in
 		echo ""
 
 		# Dependencies
-		echo -ne "       Installaling dependencies      [..]\r"
+		echo -ne "       Installing dependencies      [..]\r"
 		apt-get update &>/dev/null
 		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev -y &>/dev/null
 
