@@ -53,9 +53,6 @@ case $option in
 		while [[ $SPDY !=  "y" && $SPDY != "n" ]]; do
 			read -p "       Cloudflare's HTTP/2 + SPDY patch [y/n]: " -e SPDY
 		done
-		while [[ $TCP !=  "y" && $TCP != "n" ]]; do
-			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
-		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
 		echo "   1) System's OpenSSL (default)"
