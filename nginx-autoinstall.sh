@@ -50,9 +50,6 @@ case $option in
 		while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
 		done
-		while [[ $SPDY !=  "y" && $SPDY != "n" ]]; do
-			read -p "       Cloudflare's HTTP/2 + SPDY patch [y/n]: " -e SPDY
-		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
 		echo "   1) System's OpenSSL (default)"
@@ -413,22 +410,6 @@ case $option in
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/usr/local/src/openssl-${OPENSSL_VER}")
-		fi
-
-		# Cloudflare's SPDY + HTTP/2 patch
-		if [[ "$SPDY" = 'y' ]]; then
-			echo -ne "       Adding SPDY support            [..]\r"
-			wget https://raw.githubusercontent.com/felixbuenemann/sslconfig/updated-nginx-1.9.15-spdy-patch/patches/nginx_1_9_15_http2_spdy.patch -O spdy.patch &>/dev/null
-			patch -p1 < spdy.patch &>/dev/null
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-http_spdy_module")
-		        
-			if [ $? -eq 0 ]; then
-				echo -ne "       Adding SPDY support            [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Adding SPDY support            [${CRED}FAIL${CEND}]"
-				exit 1
-			fi
 		fi
 
 		# We configure Nginx
