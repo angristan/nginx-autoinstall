@@ -19,8 +19,6 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) module and databases
 - [Cloudflare's SPDY patch](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) : enables the use of SPDY along with HTTP/2
 - [Cloudflare's Chacha20 patch](https://blog.cloudflare.com/do-the-chacha-better-mobile-performance-with-cryptography/) : add the ChaCha20 + Poly1305 cipher suite
-- [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/)
-You can check the different versions [here](https://github.com/Angristan/nginx-autoinstall/tree/master/var)
 
 ## Installation
 
