@@ -17,7 +17,6 @@ Automatically compile from source and install Nginx mainline, on Debian 8.
 - [ngx_brotli](https://github.com/google/ngx_brotli)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module)
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) module and databases
-- [Cloudflare's SPDY patch](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) : enables the use of SPDY along with HTTP/2
 - [Cloudflare's Chacha20 patch](https://blog.cloudflare.com/do-the-chacha-better-mobile-performance-with-cryptography/) : add the ChaCha20 + Poly1305 cipher suite
 
 ## Installation
