@@ -434,21 +434,6 @@ case $option in
 			fi
 		fi
 
-		# Cloudflare's TLS Dynamic Record Resizing patch
-		if [[ "$TCP" = 'y' ]]; then
-			echo -ne "       TLS Dynamic Records support    [..]\r"
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__dynamic_tls_records.patch -O tcp-tls.patch &>/dev/null
-			patch -p1 < tcp-tls.patch &>/dev/null
-		        
-			if [ $? -eq 0 ]; then
-				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       TLS Dynamic Records support    [${CRED}FAIL${CEND}]"
-				exit 1
-			fi
-		fi
-
 		# We configure Nginx
 		echo -ne "       Configuring Nginx              [..]\r"
 		./configure $NGINX_OPTIONS $NGINX_MODULES &>/dev/null
