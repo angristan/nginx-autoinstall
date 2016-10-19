@@ -361,7 +361,9 @@ case $option in
 		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--user=nginx \
-		--group=nginx"
+                --group=nginx \
+                --with-cc-opt=-Wno-deprecated-declarations"
+
 
 		NGINX_MODULES="--without-http_ssi_module \
 		--without-http_scgi_module \
