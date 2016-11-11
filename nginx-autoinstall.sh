@@ -553,7 +553,7 @@ case $option in
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh &>/dev/null
 		chmod +x nginx-autoinstall.sh
 		echo ""
-		echo -e "       ${CGREEN}Update succcessful !${CEND}"
+		echo -e "${CGREEN}Update succcessful !${CEND}"
 		sleep 2
 		./nginx-autoinstall.sh
 	exit
