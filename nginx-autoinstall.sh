@@ -177,6 +177,8 @@ case $option in
 			rm -r ngx_brotli &>/dev/null 
 			echo -ne "       Downloading ngx_brotli         [..]\r"
 			git clone https://github.com/google/ngx_brotli &>/dev/null
+			cd ngx_brotli
+			git submodule update --init &>/dev/null
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading ngx_brotli         [${CGREEN}OK${CEND}]\r"
