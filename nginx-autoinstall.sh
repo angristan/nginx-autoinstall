@@ -27,10 +27,12 @@ echo "What do you want to do?"
 echo "   1) Install or update Nginx"
 echo "   2) Uninstall Nginx"
 echo "   3) Update the script"
+echo "   4) Exit"
 echo ""
-read -p "Select an option [1-3]: " option
-echo ""
-case $option in
+while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]]; do
+	read -p "Select an option [1-4]: " OPTION
+done
+case $OPTION in
 	1)
 		echo "This script will install Nginx ${NGINX_VER} (mainline) with some optional famous modules."
 		echo ""
@@ -56,8 +58,10 @@ case $option in
 		echo "   2) OpenSSL $OPENSSL_VER from source"
 		echo "   3) LibreSSL $LIBRESSL_VER from source "
 		echo ""
-		read -p "Select an option [1-3]: " ssl
-		case $ssl in
+		while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
+			read -p "Select an option [1-3]: " SSL
+		done
+		case $SSL in
 			1)
 			#we do nothing
 			;;
@@ -562,4 +566,8 @@ case $option in
 		./nginx-autoinstall.sh
 	exit
 	;;
+	4) # Exit
+        	exit
+        ;;
+
 esac
