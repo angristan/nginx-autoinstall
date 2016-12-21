@@ -395,7 +395,7 @@ case $option in
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/ngx_pagespeed-release-${NPS_VER}-beta")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/ngx_pagespeed-${NPS_VER}-beta")
 		fi
 
 		# Brotli
