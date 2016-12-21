@@ -101,10 +101,11 @@ case $option in
 			unzip v${NPS_VER}-beta.zip &>/dev/null
 			rm v${NPS_VER}-beta.zip
 			cd ngx_pagespeed-${NPS_VER}-beta
-			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz &>/dev/null
+			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
 			[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+			wget ${psol_url} &>/dev/null
 			tar -xzvf $(basename ${psol_url}) &>/dev/null
-			rm ${NPS_VER}.tar.gz
+			rm ${NPS_VER}-x64.tar.gz
 
 			if [ $? -eq 0 ]; then
 			echo -ne "       Downloading ngx_pagespeed      [${CGREEN}OK${CEND}]\r"
