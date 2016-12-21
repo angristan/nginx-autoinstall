@@ -94,15 +94,16 @@ case $option in
 		if [[ "$PAGESPEED" = 'y' ]]; then
 			cd /usr/local/src
 			# Cleaning up in case of update
-			rm -r ngx_pagespeed-release-${NPS_VER}-beta &>/dev/null 
+			rm -r ngx_pagespeed-${NPS_VER}-beta &>/dev/null 
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
-			wget https://github.com/pagespeed/ngx_pagespeed/archive/release-${NPS_VER}-beta.zip &>/dev/null
-			unzip release-${NPS_VER}-beta.zip &>/dev/null
-			rm release-${NPS_VER}-beta.zip
-			cd ngx_pagespeed-release-${NPS_VER}-beta
-			wget https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz &>/dev/null
-			tar -xaf ${NPS_VER}.tar.gz 
+			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-beta.zip &>/dev/null
+			unzip v${NPS_VER}-beta.zip &>/dev/null
+			rm v${NPS_VER}-beta.zip
+			cd ngx_pagespeed-${NPS_VER}-beta
+			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz &>/dev/null
+			[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+			tar -xzvf $(basename ${psol_url}) &>/dev/null
 			rm ${NPS_VER}.tar.gz
 
 			if [ $? -eq 0 ]; then
