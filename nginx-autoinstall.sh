@@ -18,6 +18,7 @@ LIBRESSL_VER=2.4.4
 OPENSSL_VER=1.0.2h
 NPS_VER=1.12.34.2
 HEADERMOD_VER=0.32
+TESTCOOKIE_VER=b20b5fde6516303eaec6e83f4154db5c03b7e609
 
 clear
 echo ""
@@ -51,6 +52,9 @@ case $OPTION in
 		done
 		while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
+		done
+		while [[ $TESTCOOKIE !=  "y" && $TESTCOOKIE != "n" ]]; do
+			read -p "       TestCookie [y/n]: " -e TESTCOOKIE
 		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
@@ -237,6 +241,24 @@ case $OPTION in
 				exit 1
 			fi
 		fi
+    
+    if [[ "$TESTCOOKIE" = 'y' ]]; then
+			cd /usr/local/src
+			# Cleaning up in case of update
+			rm -r testcookie-nginx-module-${TESTCOOKIE_VER} &>/dev/null 
+			echo -ne "       Downloading ngx_testcookie       [..]\r"
+			wget https://github.com/kyprizel/testcookie-nginx-module/archive/${TESTCOOKIE_VER}.zip &>/dev/null
+			unzip testcookie-nginx-module-${TESTCOOKIE_VER}.zip &>/dev/null 
+			rm testcookie-nginx-module-${TESTCOOKIE_VER}.zip
+		        
+			if [ $? -eq 0 ]; then
+				echo -ne "       Downloading ngx_testcookie       [${CGREEN}OK${CEND}]\r"
+				echo -ne "\n"
+			else
+				echo -e "       Downloading ngx_testcookie        [${CRED}FAIL${CEND}]"
+				exit 1
+			fi
+    fi
 
 		# LibreSSL
 		if [[ "$LIBRESSL" = 'y' ]]; then
@@ -410,6 +432,10 @@ case $OPTION in
 		# More Headers
 		if [[ "$HEADERMOD" = 'y' ]]; then
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/headers-more-nginx-module-${HEADERMOD_VER}")
+		fi
+    # Test Cookie
+		if [[ "$TESTCOOKIE" = 'y' ]]; then
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/testcookie-nginx-module-${TESTCOOKIE_VER}")
 		fi
 
 		# GeoIP
