@@ -12,7 +12,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8 (64 bi
 
 ### Optional modules/features
 - [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
-- [OpenSSL from source](https://www.openssl.org/) from source (ChaCha20 cipher, HTTP/2 + ALPN support)
+- [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
 - [ngx_brotli](https://github.com/google/ngx_brotli) (Brotli compression algorithm)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
