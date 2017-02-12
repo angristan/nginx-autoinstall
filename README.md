@@ -1,7 +1,7 @@
 # nginx-autoinstall
 Automatically compile from source and install Nginx mainline, on Debian 8 (64 bits).
 
-![screen](https://lut.im/0bANC53xTu/DIob0ZeX2wG2vdAW.png)
+![screen](https://lut.im/cQ5J1pvOuX/aLcI1sR2LIQKIQxn.png)
 ## Features
 - Latest mainline version, from source
 - Optional modules (see below)
@@ -11,15 +11,14 @@ Automatically compile from source and install Nginx mainline, on Debian 8 (64 bi
 - [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
 
 ### Optional modules/features
-- [LibreSSL](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
-- [OpenSSL](https://www.openssl.org/) from source (HTTP/2 + ALPN support)
-- [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed)
-- [ngx_brotli](https://github.com/google/ngx_brotli)
-- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module)
-- [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) module and databases
-- [Cloudflare's Chacha20 patch](https://blog.cloudflare.com/do-the-chacha-better-mobile-performance-with-cryptography/) : add the ChaCha20 + Poly1305 cipher suite
+- [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
+- [OpenSSL from source](https://www.openssl.org/) from source (ChaCha20 cipher, HTTP/2 + ALPN support)
+- [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
+- [ngx_brotli](https://github.com/google/ngx_brotli) (Brotli compression algorithm)
+- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
+- [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
 
-## Installation
+## Install Nginx
 
 Just download and execute the script :
 ```
@@ -30,23 +29,23 @@ chmod +x nginx-autoinstall.sh
 
 You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinstall/tree/master/conf).
 
-## Uninstallation
+## Uninstall Nginx
 
 Just select the option when running the script :
 
-![update](https://lut.im/Gbz5D0EH9Z/kbXb0nQ49NN52VI9.png)
+![update](https://lut.im/Hj7wJKWwke/WZqeHT1QwwGfKXFf.png)
 
 You have te choice to delete the logs and the conf.
 
-## Update
+## Update Nginx
 
-Select the update option to get the latest fixes and modules version. 
+To update Nginx, run the script and install Nginx again. It will overwrite current Nginx files and/or modules.
 
-Warning : It will override all you modifications to the script !
+## Update the script
 
-![update](https://lut.im/CbjoOphOFa/RuLJ82QCnlnBIviW.png)
+The update feature downloads the script from this repository, and overwrite the current `nginx-autoinstall.sh` file in the working directory. This allows you to get the latest features, bug fixes, and module versions automatically.
 
-You can install nginx over and over again, to add or remove modules or just to update nginx.
+![update](https://lut.im/uQSSVxAz09/zhZRuvJjZp2paLHm.png)
 
 ## LICENSE
 
