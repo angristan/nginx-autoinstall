@@ -2,7 +2,7 @@
 
 ### PageSpeed
 
-Add this in you http block :
+Add this in your http block :
 
 ```
 pagespeed on;
@@ -46,23 +46,11 @@ brotli on;
                 image/svg+xml;
 ```
 
-### LibreSSL 
+### LibreSSL / OpenSSL from source
 
-Add this cipher suite in you server block :
+You can now use ChaCha20 in addition to AES.
 
 `ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;`
-
-### Cloudflare's ChaCha20 patch
-
-Add this cipher suite in your server block :
-
-`EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AESGCM:EECDH+AES;`
-
-### Cloudflare's SPDY patch
-
-You can add this in your HTTPS server block :
-
-`listen  443 ssl spdy http2;`
 
 ### GeoIP
 
