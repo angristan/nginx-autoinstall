@@ -15,7 +15,7 @@ fi
 # Variables
 NGINX_VER=1.11.9
 LIBRESSL_VER=2.4.5
-OPENSSL_VER=1.0.2h
+OPENSSL_VER=1.1.0d
 NPS_VER=1.12.34.2
 HEADERMOD_VER=0.32
 
@@ -34,7 +34,7 @@ while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]
 done
 case $OPTION in
 	1)
-		echo "This script will install Nginx ${NGINX_VER} (mainline) with some optional famous modules."
+		echo "This script will install Nginx ${NGINX_VER} (mainline) with some optional modules."
 		echo ""
 		echo "Please tell me which modules you want to install."
 		echo "If you select none, Nginx will be installed with its default modules."
@@ -54,7 +54,7 @@ case $OPTION in
 		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
-		echo "   1) System's OpenSSL (default)"
+		echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
 		echo "   2) OpenSSL $OPENSSL_VER from source"
 		echo "   3) LibreSSL $LIBRESSL_VER from source "
 		echo ""
@@ -67,11 +67,6 @@ case $OPTION in
 			;;
 			2)
 				OPENSSL=y
-				echo ""
-				echo "Do you want Cloudflare's patch for OpenSSL ?"
-				while [[ $CHACHA !=  "y" && $CHACHA != "n" ]]; do
-					read -p "       ChaCha20 + Poly1305 cipher support [y/n]: " -e CHACHA
-				done
 			;;
 			3)
 				LIBRESSL=y
@@ -202,7 +197,7 @@ case $OPTION in
 			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz &>/dev/null
 			tar xaf v${HEADERMOD_VER}.tar.gz
 			rm v${HEADERMOD_VER}.tar.gz
-		        
+				
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading ngx_headers_more   [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
@@ -304,19 +299,6 @@ case $OPTION in
 				exit 1
 			fi
 
-		# Cloudflare patch
-		if [[ $CHACHA = "y" ]]; then
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/openssl__chacha20_poly1305_draft_and_rfc_ossl102g.patch -O chacha.patch &>/dev/null 
-			patch -p1 < chacha.patch &>/dev/null 
-			if [ $? -eq 0 ]; then
-				echo -ne "       Adding ChaCha20 to OpenSSL     [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Adding ChaCha20 to OpenSSL     [${CRED}FAIL${CEND}]"
-				exit 1
-				fi
-		fi
-
 			echo -ne "       Configuring OpenSSL            [..]\r"
 			./config &>/dev/null 
 
@@ -369,8 +351,8 @@ case $OPTION in
 		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--user=nginx \
-                --group=nginx \
-                --with-cc-opt=-Wno-deprecated-declarations"
+		--group=nginx \
+		--with-cc-opt=-Wno-deprecated-declarations"
 
 
 		NGINX_MODULES="--without-http_ssi_module \
@@ -388,8 +370,8 @@ case $OPTION in
 		--with-http_mp4_module \
 		--with-http_auth_request_module \
 		--with-http_slice_module \
-                --with-http_stub_status_module \
-                --with-http_realip_module"
+		--with-http_stub_status_module \
+		--with-http_realip_module"
 
 		# Optional modules
 		# LibreSSL 
@@ -564,10 +546,10 @@ case $OPTION in
 		echo -e "${CGREEN}Update succcessful !${CEND}"
 		sleep 2
 		./nginx-autoinstall.sh
-	exit
+		exit
 	;;
 	4) # Exit
-        	exit
-        ;;
+		exit
+	;;
 
 esac
