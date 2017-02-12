@@ -27,7 +27,7 @@ chmod +x nginx-autoinstall.sh
 ./nginx-autoinstall.sh
 ```
 
-You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinstall/tree/master/conf).
+You can check [nginx.conf exemples](https://github.com/Angristan/nginx-autoinstall/tree/master/conf) for the custom modules.
 
 ## Uninstall Nginx
 
