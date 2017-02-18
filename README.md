@@ -17,6 +17,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8 (64 bi
 - [ngx_brotli](https://github.com/google/ngx_brotli) (Brotli compression algorithm)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
+- [Cloudflare's TLS Dynamic Record Resizing patch](https://github.com/cujanovic/nginx-dynamic-tls-records-patch) (Optmize lantency and throughput)
 
 ## Install Nginx
 
