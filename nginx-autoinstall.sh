@@ -14,7 +14,7 @@ fi
 
 # Variables
 NGINX_VER=1.11.10
-LIBRESSL_VER=2.4.5
+LIBRESSL_VER=2.5.1
 OPENSSL_VER=1.1.0e
 NPS_VER=1.12.34.2
 HEADERMOD_VER=0.32
@@ -51,6 +51,12 @@ case $OPTION in
 		done
 		while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
+		done
+				while [[ $SPDY !=  "y" && $SPDY != "n" ]]; do
+			read -p "       Cloudflare's HTTP/2 + SPDY patch [y/n]: " -e SPDY
+		done
+		while [[ $TCP !=  "y" && $TCP != "n" ]]; do
+			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
 		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
@@ -402,6 +408,21 @@ case $OPTION in
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/usr/local/src/openssl-${OPENSSL_VER}")
+		fi
+	
+		# Cloudflare's TLS Dynamic Record Resizing patch
+		if [[ "$TCP" = 'y' ]]; then
+			echo -ne "       TLS Dynamic Records support    [..]\r"
+			wget https://raw.githubusercontent.com/cujanovic/nginx-dynamic-tls-records-patch/master/nginx__dynamic_tls_records_1.11.5%2B.patch &>/dev/null
+			patch -p1 < nginx__dynamic_tls_records_1.11.5*.patch &>/dev/null
+		        
+			if [ $? -eq 0 ]; then
+				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
+				echo -ne "\n"
+			else
+				echo -e "       TLS Dynamic Records support    [${CRED}FAIL${CEND}]"
+				exit 1
+			fi
 		fi
 
 		# We configure Nginx
