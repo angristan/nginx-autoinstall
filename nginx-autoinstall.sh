@@ -52,9 +52,6 @@ case $OPTION in
 		while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
 		done
-				while [[ $SPDY !=  "y" && $SPDY != "n" ]]; do
-			read -p "       Cloudflare's HTTP/2 + SPDY patch [y/n]: " -e SPDY
-		done
 		while [[ $TCP !=  "y" && $TCP != "n" ]]; do
 			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
 		done
