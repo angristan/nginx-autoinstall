@@ -40,19 +40,19 @@ case $OPTION in
 		echo "If you select none, Nginx will be installed with its default modules."
 		echo ""
 		echo "Modules to install :"
-		while [[ $PAGESPEED !=  "y" && $PAGESPEED != "n" ]]; do
+		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
 			read -p "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
 		done
-		while [[ $BROTLI !=  "y" && $BROTLI != "n" ]]; do
+		while [[ $BROTLI != "y" && $BROTLI != "n" ]]; do
 			read -p "       Brotli [y/n]: " -e BROTLI
 		done
-		while [[ $HEADERMOD !=  "y" && $HEADERMOD != "n" ]]; do
+		while [[ $HEADERMOD != "y" && $HEADERMOD != "n" ]]; do
 			read -p "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
 		done
-		while [[ $GEOIP !=  "y" && $GEOIP != "n" ]]; do
+		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
 		done
-		while [[ $TCP !=  "y" && $TCP != "n" ]]; do
+		while [[ $TCP != "y" && $TCP != "n" ]]; do
 			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
 		done
 		echo ""
