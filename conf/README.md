@@ -2,7 +2,7 @@
 
 ### PageSpeed
 
-Add this in your http block :
+Add this in your http block:
 
 ```
 pagespeed on;
@@ -48,13 +48,20 @@ brotli on;
 
 ### LibreSSL / OpenSSL from source
 
-You can now use ChaCha20 in addition to AES.
+You can now use ChaCha20 in addition to AES. Add this in your server block:
 
 `ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;`
 
+### Dynamic TLS Records
+
+Add this into your http block to enable the patch:
+
+`ssl_dyn_rec_enable on;`
+
+
 ### GeoIP
 
-Add the path of the 2 GeoIP databases to your http block :
+Add the path of the 2 GeoIP databases to your http block:
 
 ```
 geoip_country  /opt/geoip-db/GeoIP-Country.dat;
