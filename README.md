@@ -11,13 +11,13 @@ Automatically compile from source and install Nginx mainline, on Debian 8 (64 bi
 - [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
 
 ### Optional modules/features
-- [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
-- [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN support)
+- [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
+- [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
 - [ngx_brotli](https://github.com/google/ngx_brotli) (Brotli compression algorithm)
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
-- [Cloudflare's TLS Dynamic Records Resizing patch](https://github.com/cujanovic/nginx-dynamic-tls-records-patch) (Optmize lantency and throughput)
+- [Cloudflare's TLS Dynamic Records Resizing patch](https://github.com/cujanovic/nginx-dynamic-tls-records-patch) (Optmize lantency and throughput for TLS exchanges)
 
 ## Install Nginx
 
