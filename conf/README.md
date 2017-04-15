@@ -52,6 +52,10 @@ You can now use ChaCha20 in addition to AES. Add this in your server block:
 
 `ssl_ciphers EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;`
 
+You can also use more secure curves :
+
+`ssl_ecdh_curve X25519:P-521:P-384:P-256;`
+
 ### Dynamic TLS Records
 
 Add this into your http block to enable the patch:
