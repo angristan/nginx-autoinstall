@@ -48,6 +48,12 @@ The update feature downloads the script from this repository, and overwrite the 
 
 ![update](https://lut.im/uQSSVxAz09/zhZRuvJjZp2paLHm.png)
 
+## Logs files
+There are two logs files created when running the script.
+
+- `/tmp/nginx-autoinstall-output.log`
+- `/tmp/nginx-autoinstall-error.log` (use this one for debugging)
+
 ## LICENSE
 
 GPL v3.0
