@@ -19,6 +19,10 @@ OPENSSL_VER=1.1.0e
 NPS_VER=1.12.34.2
 HEADERMOD_VER=0.32
 
+# Clear log files
+echo "" > /tmp/nginx-autoinstall-output.log
+echo "" > /tmp/nginx-autoinstall-error.log
+
 clear
 echo ""
 echo "Welcome to the nginx-autoinstall script."
