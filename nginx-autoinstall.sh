@@ -103,7 +103,7 @@ case $OPTION in
 		if [[ "$PAGESPEED" = 'y' ]]; then
 			cd /usr/local/src
 			# Cleaning up in case of update
-			rm -r ngx_pagespeed-${NPS_VER}-beta 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			rm -r ngx_pagespeed-*-beta 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
 			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-beta.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
@@ -220,7 +220,7 @@ case $OPTION in
 		if [[ "$HEADERMOD" = 'y' ]]; then
 			cd /usr/local/src
 			# Cleaning up in case of update
-			rm -r headers-more-nginx-module-${HEADERMOD_VER} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			rm -r headers-more-nginx-module-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
 			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			tar xaf v${HEADERMOD_VER}.tar.gz
@@ -271,7 +271,7 @@ case $OPTION in
 		if [[ "$LIBRESSL" = 'y' ]]; then
 			cd /usr/local/src
 			# Cleaning up in case of update
-			rm -r libressl-${LIBRESSL_VER} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			rm -r libressl-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
 			mkdir libressl-${LIBRESSL_VER}
 			cd libressl-${LIBRESSL_VER}
 			# LibreSSL download
@@ -327,7 +327,7 @@ case $OPTION in
 		if [[ "$OPENSSL" = 'y' ]]; then
 			cd /usr/local/src
 			# Cleaning up in case of update
-			rm -r openssl-${OPENSSL_VER} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			rm -r openssl-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			# OpenSSL download
 			echo -ne "       Downloading OpenSSL            [..]\r"
 			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
@@ -361,7 +361,7 @@ case $OPTION in
 		fi
 
 		# Cleaning up in case of update
-		rm -r /usr/local/src/nginx-${NGINX_VER} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		rm -r /usr/local/src/nginx-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 		# Download and extract of Nginx source code
 		cd /usr/local/src/
 		echo -ne "       Downloading Nginx              [..]\r"
