@@ -13,7 +13,7 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 # Variables
-NGINX_VER=1.13.2
+NGINX_VER=1.13.3
 LIBRESSL_VER=2.5.4
 OPENSSL_VER=1.1.0f
 NPS_VER=1.12.34.2
