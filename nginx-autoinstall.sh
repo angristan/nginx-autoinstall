@@ -17,7 +17,7 @@ NGINX_VER=1.13.6
 LIBRESSL_VER=2.6.2
 OPENSSL_VER=1.1.0g
 NPS_VER=1.12.34.3
-HEADERMOD_VER=0.32
+HEADERMOD_VER=0.33
 
 # Clear log files
 echo "" > /tmp/nginx-autoinstall-output.log
