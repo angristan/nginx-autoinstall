@@ -559,6 +559,14 @@ case $OPTION in
 			mkdir -p /var/cache/nginx
 		fi
 
+		# We add sites-* folders as some use them. /etc/nginx/conf.d/ is the vhost folder by defaultnginx 
+		if [[ ! -d /etc/nginx/sites-available ]]; then
+			mkdir -p /etc/nginx/sites-available
+		fi
+		if [[ ! -d /etc/nginx/sites-enabled ]]; then
+			mkdir -p /etc/nginx/sites-enabled
+		fi
+
 		# Restart Nginx
 		echo -ne "       Restarting Nginx               [..]\r"
 		systemctl restart nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
