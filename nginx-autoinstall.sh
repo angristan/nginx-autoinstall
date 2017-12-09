@@ -13,7 +13,8 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 # Variables
-NGINX_VER=1.13.7
+NGINX_MAINLINE_VER=1.13.7
+NGINX_STABLE_VER=1.12.2
 LIBRESSL_VER=2.6.3
 OPENSSL_VER=1.1.0g
 NPS_VER=1.12.34.3
@@ -38,7 +39,23 @@ while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]
 done
 case $OPTION in
 	1)
-		echo "This script will install Nginx ${NGINX_VER} (mainline) with some optional modules."
+		echo "This script will install Nginx with some optional modules."
+		echo ""
+		echo "Do you want to install Nginx stable or mainline?"
+		echo "   1) Stable $NGINX_STABLE_VER"
+		echo "   2) Mainline $NGINX_MAINLINE_VER"
+		echo ""
+		while [[ $NGINX_VER != "1" && $NGINX_VER != "2"]]; do
+			read -p "Select an option [1-2]: " NGINX_VER
+		done
+		case $NGINX_VER in
+			1)
+			NGINX_VER=$NGINX_STABLE_VER
+			;;
+			2)
+			NGINX_VER=$NGINX_MAINLINE_VER
+			;;
+		esac
 		echo ""
 		echo "Please tell me which modules you want to install."
 		echo "If you select none, Nginx will be installed with its default modules."
