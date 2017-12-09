@@ -45,7 +45,7 @@ case $OPTION in
 		echo "   1) Stable $NGINX_STABLE_VER"
 		echo "   2) Mainline $NGINX_MAINLINE_VER"
 		echo ""
-		while [[ $NGINX_VER != "1" && $NGINX_VER != "2"]]; do
+		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
 			read -p "Select an option [1-2]: " NGINX_VER
 		done
 		case $NGINX_VER in
