@@ -27,23 +27,7 @@ brotli on;
         brotli_static on;
         brotli_buffers 16 8k;
         brotli_comp_level 6;
-        brotli_types
-                text/css
-                text/javascript
-                text/xml
-                text/plain
-                text/x-component
-                application/javascript
-                application/x-javascript
-                application/json
-                application/xml
-                application/rss+xml
-                application/atom+xml
-                application/rdf+xml
-                application/vnd.ms-fontobject
-                font/truetype
-                font/opentype
-                image/svg+xml;
+        brotli_types *;
 ```
 
 ### LibreSSL / OpenSSL from source
