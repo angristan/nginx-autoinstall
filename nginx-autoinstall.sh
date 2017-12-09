@@ -39,6 +39,7 @@ while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]
 done
 case $OPTION in
 	1)
+		echo ""
 		echo "This script will install Nginx with some optional modules."
 		echo ""
 		echo "Do you want to install Nginx stable or mainline?"
