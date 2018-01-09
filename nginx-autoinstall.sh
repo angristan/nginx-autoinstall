@@ -127,7 +127,7 @@ case $OPTION in
 			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			unzip v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			rm v${NPS_VER}-stable.zip
-			cd ngx_pagespeed-${NPS_VER}-stable
+			cd incubator-pagespeed-ngx-${NPS_VER}-stable
 			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
 			[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 			wget ${psol_url} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
