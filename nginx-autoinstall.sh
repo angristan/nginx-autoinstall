@@ -101,6 +101,11 @@ case $OPTION in
 		read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 		echo ""
 
+		# Cleanup
+		# The directory should be deleted at the end of the script, but in case it fails
+		rm -r /usr/local/src/nginx/ 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		mkdir -p /usr/local/src/nginx/modules 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+
 		# Dependencies
 		echo -ne "       Installing dependencies      [..]\r"
 		apt-get update 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
@@ -119,20 +124,16 @@ case $OPTION in
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r incubator-pagespeed-ngx-*-stable 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
 			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			unzip v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			rm v${NPS_VER}-stable.zip
 			cd incubator-pagespeed-ngx-${NPS_VER}-stable
 			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
 			[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 			wget ${psol_url} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			tar -xzvf $(basename ${psol_url}) 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			rm $(basename ${psol_url})
 
 			if [ $? -eq 0 ]; then
 			echo -ne "       Downloading ngx_pagespeed      [${CGREEN}OK${CEND}]\r"
@@ -148,9 +149,7 @@ case $OPTION in
 
 		#Brotli
 		if [[ "$BROTLI" = 'y' ]]; then
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r libbrotli 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			# libbrolti is needed for the ngx_brotli module
 			# libbrotli download
 			echo -ne "       Downloading libbrotli          [..]\r"
@@ -215,8 +214,7 @@ case $OPTION in
 			# Linking libraries to avoid errors
 			ldconfig 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			# ngx_brotli module download
-			cd /usr/local/src
-			rm -r ngx_brotli 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			echo -ne "       Downloading ngx_brotli         [..]\r"
 			git clone https://github.com/google/ngx_brotli 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			cd ngx_brotli
@@ -236,13 +234,10 @@ case $OPTION in
 
 		# More Headers
 		if [[ "$HEADERMOD" = 'y' ]]; then
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r headers-more-nginx-module-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
 			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 			tar xaf v${HEADERMOD_VER}.tar.gz
-			rm v${HEADERMOD_VER}.tar.gz
 				
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading ngx_headers_more   [${CGREEN}OK${CEND}]\r"
@@ -260,9 +255,7 @@ case $OPTION in
 		if [[ "$GEOIP" = 'y' ]]; then
 			# Dependence
 			apt-get install libgeoip-dev -y 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r geoip-db 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			mkdir geoip-db
 			cd geoip-db
 			echo -ne "       Downloading GeoIP databases    [..]\r"
@@ -287,9 +280,7 @@ case $OPTION in
 
 		# LibreSSL
 		if [[ "$LIBRESSL" = 'y' ]]; then
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r libressl-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			cd /usr/local/src/nginx/modules
 			mkdir libressl-${LIBRESSL_VER}
 			cd libressl-${LIBRESSL_VER}
 			# LibreSSL download
@@ -311,7 +302,7 @@ case $OPTION in
 			./configure \
 				LDFLAGS=-lrt \
 				CFLAGS=-fstack-protector-strong \
-				--prefix=/usr/local/src/libressl-${LIBRESSL_VER}/.openssl/ \
+				--prefix=/usr/local/src/nginx/modules/libressl-${LIBRESSL_VER}/.openssl/ \
 				--enable-shared=no 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 
 			if [ $? -eq 0 ]; then
@@ -343,14 +334,11 @@ case $OPTION in
 
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
-			cd /usr/local/src
-			# Cleaning up in case of update
-			rm -r openssl-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			cd /usr/local/src/nginx/modules
 			# OpenSSL download
 			echo -ne "       Downloading OpenSSL            [..]\r"
 			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
 			tar xaf openssl-${OPENSSL_VER}.tar.gz
-			rm openssl-${OPENSSL_VER}.tar.gz
 			cd openssl-${OPENSSL_VER}	
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading OpenSSL            [${CGREEN}OK${CEND}]\r"
@@ -378,10 +366,8 @@ case $OPTION in
 			fi
 		fi
 
-		# Cleaning up in case of update
-		rm -r /usr/local/src/nginx-* 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 		# Download and extract of Nginx source code
-		cd /usr/local/src/
+		cd /usr/local/src/nginx/
 		echo -ne "       Downloading Nginx              [..]\r"
 		wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
 		cd nginx-${NGINX_VER}
@@ -405,7 +391,7 @@ case $OPTION in
 			cd /etc/nginx
 			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
 		fi
-		cd /usr/local/src/nginx-${NGINX_VER}
+		cd /usr/local/src/nginx/nginx-${NGINX_VER}
 
 		# Modules configuration
 		# Common configuration 
@@ -446,22 +432,22 @@ case $OPTION in
 		# Optional modules
 		# LibreSSL 
 		if [[ "$LIBRESSL" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo --with-openssl=/usr/local/src/libressl-${LIBRESSL_VER})
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo --with-openssl=/usr/local/src/nginx/modules/libressl-${LIBRESSL_VER})
 		fi
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/incubator-pagespeed-ngx-${NPS_VER}-stable")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/incubator-pagespeed-ngx-${NPS_VER}-stable")
 		fi
 
 		# Brotli
 		if [[ "$BROTLI" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/ngx_brotli")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/ngx_brotli")
 		fi
 
 		# More Headers
 		if [[ "$HEADERMOD" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/headers-more-nginx-module-${HEADERMOD_VER}")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module-${HEADERMOD_VER}")
 		fi
 
 		# GeoIP
@@ -471,7 +457,7 @@ case $OPTION in
 
 		# OpenSSL
 		if [[ "$OPENSSL" = 'y' ]]; then
-			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/usr/local/src/openssl-${OPENSSL_VER}")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/usr/local/src/nginx/modules/openssl-${OPENSSL_VER}")
 		fi
 	
 		# Cloudflare's TLS Dynamic Record Resizing patch
@@ -582,6 +568,12 @@ case $OPTION in
 			exit 1
 		fi
 
+		# Removing temporary Nginx and modules files
+		echo -ne "       Removing Nginx files           [..]\r"
+		rm -r /usr/local/src/nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
+		echo -ne "\n"
+
 		# We're done !
 		echo ""
 		echo -e "       ${CGREEN}Installation successful !${CEND}"
@@ -610,14 +602,7 @@ case $OPTION in
 		fi
 		# Removing Nginx files and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
-		rm -r /usr/local/src/geoip-db* \
-		/usr/local/src/nginx-* \
-		/usr/local/src/headers-more-nginx-module-* \
-		/usr/local/src/ngx_brotli \
-		/usr/local/src/libbrotli \
-		/usr/local/src/ngx_pagespeed-release-* \
-		/usr/local/src/libressl-* \
-		/usr/local/src/openssl-* \
+		rm -r /usr/local/src/nginx
 		/usr/sbin/nginx* \
 		/etc/logrotate.d/nginx \
 		/var/cache/nginx \
