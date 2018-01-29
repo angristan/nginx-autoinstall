@@ -4,7 +4,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8 and 9 
 ![screenshot](https://user-images.githubusercontent.com/11699655/33800227-29565ef6-dd3c-11e7-9967-7232ecd36ee4.png)
 
 ## Features
-- Latest mainline version, from source
+- Latest mainline or stable version, from source
 - Optional modules (see below)
 - Removed useless modules
 - [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
