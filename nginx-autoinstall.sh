@@ -17,7 +17,7 @@ NGINX_MAINLINE_VER=1.13.8
 NGINX_STABLE_VER=1.12.2
 LIBRESSL_VER=2.6.4
 OPENSSL_VER=1.1.0g
-NPS_VER=1.12.34.3
+NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
 
 # Clear log file
@@ -108,7 +108,7 @@ case $OPTION in
 		# Dependencies
 		echo -ne "       Installing dependencies      [..]\r"
 		apt-get update >> /tmp/nginx-autoinstall.log 2>&1
-		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev -y >> /tmp/nginx-autoinstall.log 2>&1
+		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev -y >> /tmp/nginx-autoinstall.log 2>&1
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Installing dependencies        [${CGREEN}OK${CEND}]\r"
