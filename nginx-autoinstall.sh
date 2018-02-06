@@ -20,9 +20,8 @@ OPENSSL_VER=1.1.0g
 NPS_VER=1.12.34.3
 HEADERMOD_VER=0.33
 
-# Clear log files
-echo "" > /tmp/nginx-autoinstall-output.log
-echo "" > /tmp/nginx-autoinstall-error.log
+# Clear log file
+rm /tmp/nginx-autoinstall.log
 
 clear
 echo ""
@@ -103,13 +102,13 @@ case $OPTION in
 
 		# Cleanup
 		# The directory should be deleted at the end of the script, but in case it fails
-		rm -r /usr/local/src/nginx/ 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-		mkdir -p /usr/local/src/nginx/modules 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		rm -r /usr/local/src/nginx/ >> /tmp/nginx-autoinstall.log 2>&1
+		mkdir -p /usr/local/src/nginx/modules >> /tmp/nginx-autoinstall.log 2>&1
 
 		# Dependencies
 		echo -ne "       Installing dependencies      [..]\r"
-		apt-get update 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev -y 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		apt-get update >> /tmp/nginx-autoinstall.log 2>&1
+		apt-get install build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev -y >> /tmp/nginx-autoinstall.log 2>&1
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Installing dependencies        [${CGREEN}OK${CEND}]\r"
@@ -117,7 +116,7 @@ case $OPTION in
 		else
 			echo -e "        Installing dependencies      [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
@@ -127,13 +126,13 @@ case $OPTION in
 			cd /usr/local/src/nginx/modules
 			# Download and extract of PageSpeed module
 			echo -ne "       Downloading ngx_pagespeed      [..]\r"
-			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			unzip v${NPS_VER}-stable.zip 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip >> /tmp/nginx-autoinstall.log 2>&1
+			unzip v${NPS_VER}-stable.zip >> /tmp/nginx-autoinstall.log 2>&1
 			cd incubator-pagespeed-ngx-${NPS_VER}-stable
 			psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
 			[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-			wget ${psol_url} 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			tar -xzvf $(basename ${psol_url}) 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget ${psol_url} >> /tmp/nginx-autoinstall.log 2>&1
+			tar -xzvf $(basename ${psol_url}) >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 			echo -ne "       Downloading ngx_pagespeed      [${CGREEN}OK${CEND}]\r"
@@ -141,7 +140,7 @@ case $OPTION in
 			else
 				echo -e "       Downloading ngx_pagespeed      [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -153,7 +152,7 @@ case $OPTION in
 			# libbrolti is needed for the ngx_brotli module
 			# libbrotli download
 			echo -ne "       Downloading libbrotli          [..]\r"
-			git clone https://github.com/bagder/libbrotli 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			git clone https://github.com/bagder/libbrotli >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading libbrotli          [${CGREEN}OK${CEND}]\r"
@@ -161,15 +160,15 @@ case $OPTION in
 			else
 				echo -e "       Downloading libbrotli          [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			cd libbrotli
 			echo -ne "       Configuring libbrotli          [..]\r"
-			./autogen.sh 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			./configure 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			./autogen.sh >> /tmp/nginx-autoinstall.log 2>&1
+			./configure >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring libbrotli          [${CGREEN}OK${CEND}]\r"
@@ -177,13 +176,13 @@ case $OPTION in
 			else
 				echo -e "       Configuring libbrotli          [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			echo -ne "       Compiling libbrotli            [..]\r"
-			make -j $(nproc) 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			make -j $(nproc) >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Compiling libbrotli            [${CGREEN}OK${CEND}]\r"
@@ -191,14 +190,14 @@ case $OPTION in
 			else
 				echo -e "       Compiling libbrotli            [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			# libbrotli install
 			echo -ne "       Installing libbrotli           [..]\r"
-			make install 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			make install >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Installing libbrotli           [${CGREEN}OK${CEND}]\r"
@@ -206,19 +205,19 @@ case $OPTION in
 			else
 				echo -e "       Installing libbrotli           [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			# Linking libraries to avoid errors
-			ldconfig 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			ldconfig >> /tmp/nginx-autoinstall.log 2>&1
 			# ngx_brotli module download
 			cd /usr/local/src/nginx/modules
 			echo -ne "       Downloading ngx_brotli         [..]\r"
-			git clone https://github.com/google/ngx_brotli 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			git clone https://github.com/google/ngx_brotli >> /tmp/nginx-autoinstall.log 2>&1
 			cd ngx_brotli
-			git submodule update --init 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			git submodule update --init >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading ngx_brotli         [${CGREEN}OK${CEND}]\r"
@@ -226,7 +225,7 @@ case $OPTION in
 			else
 				echo -e "       Downloading ngx_brotli         [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -236,7 +235,7 @@ case $OPTION in
 		if [[ "$HEADERMOD" = 'y' ]]; then
 			cd /usr/local/src/nginx/modules
 			echo -ne "       Downloading ngx_headers_more   [..]\r"
-			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz >> /tmp/nginx-autoinstall.log 2>&1
 			tar xaf v${HEADERMOD_VER}.tar.gz
 				
 			if [ $? -eq 0 ]; then
@@ -245,7 +244,7 @@ case $OPTION in
 			else
 				echo -e "       Downloading ngx_headers_more   [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -254,13 +253,13 @@ case $OPTION in
 		# GeoIP
 		if [[ "$GEOIP" = 'y' ]]; then
 			# Dependence
-			apt-get install libgeoip-dev -y 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			apt-get install libgeoip-dev -y >> /tmp/nginx-autoinstall.log 2>&1
 			cd /usr/local/src/nginx/modules
 			mkdir geoip-db
 			cd geoip-db
 			echo -ne "       Downloading GeoIP databases    [..]\r"
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz >> /tmp/nginx-autoinstall.log 2>&1
+			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz >> /tmp/nginx-autoinstall.log 2>&1
 			gunzip GeoIP.dat.gz
 			gunzip GeoLiteCity.dat.gz
 			mv GeoIP.dat GeoIP-Country.dat
@@ -272,7 +271,7 @@ case $OPTION in
 			else
 				echo -e "       Downloading GeoIP databases    [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -293,7 +292,7 @@ case $OPTION in
 			else
 				echo -e "       Downloading LibreSSL           [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -303,7 +302,7 @@ case $OPTION in
 				LDFLAGS=-lrt \
 				CFLAGS=-fstack-protector-strong \
 				--prefix=/usr/local/src/nginx/modules/libressl-${LIBRESSL_VER}/.openssl/ \
-				--enable-shared=no 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+				--enable-shared=no >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring LibreSSL           [${CGREEN}OK${CEND}]\r"
@@ -311,14 +310,14 @@ case $OPTION in
 			else
 				echo -e "       Configuring LibreSSL         [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			# LibreSSL install
 			echo -ne "       Installing LibreSSL            [..]\r"
-			make install-strip -j $(nproc) 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			make install-strip -j $(nproc) >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Installing LibreSSL            [${CGREEN}OK${CEND}]\r"
@@ -326,7 +325,7 @@ case $OPTION in
 			else
 				echo -e "       Installing LibreSSL            [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -337,7 +336,7 @@ case $OPTION in
 			cd /usr/local/src/nginx/modules
 			# OpenSSL download
 			echo -ne "       Downloading OpenSSL            [..]\r"
-			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz >> /tmp/nginx-autoinstall.log 2>&1
 			tar xaf openssl-${OPENSSL_VER}.tar.gz
 			cd openssl-${OPENSSL_VER}	
 			if [ $? -eq 0 ]; then
@@ -346,13 +345,13 @@ case $OPTION in
 			else
 				echo -e "       Downloading OpenSSL            [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
 
 			echo -ne "       Configuring OpenSSL            [..]\r"
-			./config 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log 
+			./config >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Configuring OpenSSL            [${CGREEN}OK${CEND}]\r"
@@ -360,7 +359,7 @@ case $OPTION in
 			else
 				echo -e "       Configuring OpenSSL          [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -378,7 +377,7 @@ case $OPTION in
 		else
 			echo -e "       Downloading Nginx              [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
@@ -389,7 +388,7 @@ case $OPTION in
 		if [[ ! -e /etc/nginx/nginx.conf ]]; then
 			mkdir -p /etc/nginx
 			cd /etc/nginx
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf >> /tmp/nginx-autoinstall.log 2>&1
 		fi
 		cd /usr/local/src/nginx/nginx-${NGINX_VER}
 
@@ -463,8 +462,8 @@ case $OPTION in
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TCP" = 'y' ]]; then
 			echo -ne "       TLS Dynamic Records support    [..]\r"
-			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__1.11.5_dynamic_tls_records.patch 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
-			patch -p1 < nginx__1.11.5_dynamic_tls_records.patch 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://raw.githubusercontent.com/cloudflare/sslconfig/master/patches/nginx__1.11.5_dynamic_tls_records.patch >> /tmp/nginx-autoinstall.log 2>&1
+			patch -p1 < nginx__1.11.5_dynamic_tls_records.patch >> /tmp/nginx-autoinstall.log 2>&1
 		        
 			if [ $? -eq 0 ]; then
 				echo -ne "       TLS Dynamic Records support    [${CGREEN}OK${CEND}]\r"
@@ -472,7 +471,7 @@ case $OPTION in
 			else
 				echo -e "       TLS Dynamic Records support    [${CRED}FAIL${CEND}]"
 				echo ""
-				echo "Please look /tmp/nginx-autoinstall-error.log"
+				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
 				exit 1
 			fi
@@ -480,7 +479,7 @@ case $OPTION in
 
 		# We configure Nginx
 		echo -ne "       Configuring Nginx              [..]\r"
-		./configure $NGINX_OPTIONS $NGINX_MODULES 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		./configure $NGINX_OPTIONS $NGINX_MODULES >> /tmp/nginx-autoinstall.log 2>&1
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Configuring Nginx              [${CGREEN}OK${CEND}]\r"
@@ -488,14 +487,14 @@ case $OPTION in
 		else
 			echo -e "       Configuring Nginx              [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
 
 		# Then we compile
 		echo -ne "       Compiling Nginx                [..]\r"
-		make -j $(nproc) 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		make -j $(nproc) >> /tmp/nginx-autoinstall.log 2>&1
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Compiling Nginx                [${CGREEN}OK${CEND}]\r"
@@ -503,14 +502,14 @@ case $OPTION in
 		else
 			echo -e "       Compiling Nginx                [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
 
 		# Then we install \o/
 		echo -ne "       Installing Nginx               [..]\r"
-		make install 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		make install >> /tmp/nginx-autoinstall.log 2>&1
 		
 		# remove debugging symbols
 		strip -s /usr/sbin/nginx
@@ -521,7 +520,7 @@ case $OPTION in
 		else
 			echo -e "       Installing Nginx               [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
@@ -530,14 +529,14 @@ case $OPTION in
 		# Using the official systemd script and logrotate conf from nginx.org
 		if [[ ! -e /lib/systemd/system/nginx.service ]]; then
 			cd /lib/systemd/system/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.service >> /tmp/nginx-autoinstall.log 2>&1
 			# Enable nginx start at boot
-			systemctl enable nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			systemctl enable nginx >> /tmp/nginx-autoinstall.log 2>&1
 		fi
 
 		if [[ ! -e /etc/logrotate.d/nginx ]]; then
 			cd /etc/logrotate.d/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx >> /tmp/nginx-autoinstall.log 2>&1
 		fi
 
 		# Nginx's cache directory is not created by default
@@ -555,7 +554,7 @@ case $OPTION in
 
 		# Restart Nginx
 		echo -ne "       Restarting Nginx               [..]\r"
-		systemctl restart nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		systemctl restart nginx >> /tmp/nginx-autoinstall.log 2>&1
 
 		if [ $? -eq 0 ]; then
 			echo -ne "       Restarting Nginx               [${CGREEN}OK${CEND}]\r"
@@ -563,20 +562,22 @@ case $OPTION in
 		else
 			echo -e "       Restarting Nginx               [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
 
 		# Removing temporary Nginx and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
-		rm -r /usr/local/src/nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		rm -r /usr/local/src/nginx >> /tmp/nginx-autoinstall.log 2>&1
 		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
 		echo -ne "\n"
 
 		# We're done !
 		echo ""
 		echo -e "       ${CGREEN}Installation successful !${CEND}"
+		echo ""
+		echo "       Installation log: /tmp/nginx-autoinstall.log"
 		echo ""
 	exit
 	;;
@@ -596,18 +597,18 @@ case $OPTION in
 		else
 			echo -e "       Stopping Nginx                 [${CRED}FAIL${CEND}]"
 			echo ""
-			echo "Please look /tmp/nginx-autoinstall-error.log"
+			echo "Please look at /tmp/nginx-autoinstall.log"
 			echo ""
 			exit 1
 		fi
 		# Removing Nginx files and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
-		rm -r /usr/local/src/nginx
+		rm -r /usr/local/src/nginx \
 		/usr/sbin/nginx* \
 		/etc/logrotate.d/nginx \
 		/var/cache/nginx \
 		/lib/systemd/system/nginx.service \
-		/etc/systemd/system/multi-user.target.wants/nginx.service 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		/etc/systemd/system/multi-user.target.wants/nginx.service >> /tmp/nginx-autoinstall.log 2>&1
 
 		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
 		echo -ne "\n"
@@ -615,7 +616,7 @@ case $OPTION in
 		# Remove conf files
 		if [[ "$CONF" = 'y' ]]; then
 			echo -ne "       Removing configuration files   [..]\r"
-			rm -r /etc/nginx/ 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			rm -r /etc/nginx/ >> /tmp/nginx-autoinstall.log 2>&1
 			echo -ne "       Removing configuration files   [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
@@ -623,20 +624,22 @@ case $OPTION in
 		# Remove logs
 		if [[ "$LOGS" = 'y' ]]; then
 			echo -ne "       Removing log files             [..]\r"
-			rm -r /var/log/nginx 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+			rm -r /var/log/nginx >> /tmp/nginx-autoinstall.log 2>&1
 			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
 
-		#We're done !
+		# We're done !
 		echo ""
 		echo -e "       ${CGREEN}Uninstallation successful !${CEND}"
+		echo ""
+		echo "       Installation log: /tmp/nginx-autoinstall.log"
 		echo ""
 
 	exit
 	;;
 	3) # Update the script
-		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh 2>> /tmp/nginx-autoinstall-error.log 1>> /tmp/nginx-autoinstall-output.log
+		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh >> /tmp/nginx-autoinstall.log 2>&1
 		chmod +x nginx-autoinstall.sh
 		echo ""
 		echo -e "${CGREEN}Update succcessful !${CEND}"
