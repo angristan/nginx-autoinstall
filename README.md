@@ -1,9 +1,16 @@
 # nginx-autoinstall
-Automatically compile from source and install Nginx mainline, on Debian 8 and 9 (x86 and ARM, 32 and 64 bits).
+Compile and install Nginx from source with optionnal modules.
 
 ![screenshot](https://user-images.githubusercontent.com/11699655/33800227-29565ef6-dd3c-11e7-9967-7232ecd36ee4.png)
 
+## Compatibility
+
+* x86, x64, arm*
+* Debian 8 and later
+* Ubuntu 16.04 and later
+
 ## Features
+
 - Latest mainline or stable version, from source
 - Optional modules (see below)
 - Removed useless modules
@@ -12,6 +19,7 @@ Automatically compile from source and install Nginx mainline, on Debian 8 and 9 
 - [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
 
 ### Optional modules/features
+
 - [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
 - [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
