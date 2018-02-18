@@ -277,6 +277,24 @@ case $OPTION in
 			fi
 		fi
 
+		# Cache Purge
+		if [[ "$CACHEPURGE" = 'y' ]]; then
+			cd /usr/local/src/nginx/modules
+			echo -ne "       Downloading ngx_cache_purge    [..]\r"
+			git clone https://github.com/FRiCKLE/ngx_cache_purge >> /tmp/nginx-autoinstall.log 2>&1			
+
+			if [ $? -eq 0 ]; then
+				echo -ne "       Downloading ngx_cache_purge   [${CGREEN}OK${CEND}]\r"
+				echo -ne "\n"
+			else
+				echo -e "       Downloading ngx_cache_purge   [${CRED}FAIL${CEND}]"
+				echo ""
+				echo "Please look at /tmp/nginx-autoinstall.log"
+				echo ""
+				exit 1
+			fi
+		fi
+
 		# LibreSSL
 		if [[ "$LIBRESSL" = 'y' ]]; then
 			cd /usr/local/src/nginx/modules
@@ -458,7 +476,12 @@ case $OPTION in
 		if [[ "$OPENSSL" = 'y' ]]; then
 			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--with-openssl=/usr/local/src/nginx/modules/openssl-${OPENSSL_VER}")
 		fi
-	
+
+		# Cache Purge
+		if [[ "$CACHEPURGE" = 'y' ]]; then
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/ngx_cache_purge")
+		fi
+
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TCP" = 'y' ]]; then
 			echo -ne "       TLS Dynamic Records support    [..]\r"
