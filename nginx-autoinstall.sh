@@ -287,10 +287,10 @@ case $OPTION in
 			git clone https://github.com/FRiCKLE/ngx_cache_purge >> /tmp/nginx-autoinstall.log 2>&1			
 
 			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading ngx_cache_purge   [${CGREEN}OK${CEND}]\r"
+				echo -ne "       Downloading ngx_cache_purge    [${CGREEN}OK${CEND}]\r"
 				echo -ne "\n"
 			else
-				echo -e "       Downloading ngx_cache_purge   [${CRED}FAIL${CEND}]"
+				echo -e "       Downloading ngx_cache_purge    [${CRED}FAIL${CEND}]"
 				echo ""
 				echo "Please look at /tmp/nginx-autoinstall.log"
 				echo ""
