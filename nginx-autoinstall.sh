@@ -76,8 +76,8 @@ case $OPTION in
 		while [[ $TCP != "y" && $TCP != "n" ]]; do
 			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
 		done
-		while [[ $CAHCEPURGE != "y" && $CAHCEPURGE != "n" ]]; do
-			read -p "       ngx_cache_purge [y/n]: " -e CAHCEPURGE
+		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
+			read -p "       ngx_cache_purge [y/n]: " -e CACHEPURGE
 		done
 		echo ""
 		echo "Choose your OpenSSL implementation :"
