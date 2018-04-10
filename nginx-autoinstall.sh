@@ -570,6 +570,7 @@ case $OPTION in
 		# Removing temporary Nginx and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
 		rm -r /usr/local/src/nginx >> /tmp/nginx-autoinstall.log 2>&1
+		rm /etc/nginx/*.default >> /tmp/nginx-autoinstall.log 2>&1
 		echo -ne "       Removing Nginx files           [${CGREEN}OK${CEND}]\r"
 		echo -ne "\n"
 
