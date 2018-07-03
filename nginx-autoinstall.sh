@@ -595,7 +595,11 @@ case $OPTION in
 		
 		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
 		then
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/apt-nginx
+			echo -ne "       Blocking nginx from APT           [..]\r"
+			cd /etc/apt/preferences.d/
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/apt-nginx -O nginx-block >> /tmp/nginx-autoinstall.log 2>&1
+			echo -ne "       Blocking nginx from APT           [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
 		fi
 
 		# Removing temporary Nginx and modules files
@@ -657,6 +661,14 @@ case $OPTION in
 			echo -ne "       Removing log files             [..]\r"
 			rm -r /var/log/nginx >> /tmp/nginx-autoinstall.log 2>&1
 			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		fi
+		
+		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
+		then
+			echo -ne "       Unblock nginx package from APT             [..]\r"
+			rm /etc/apt/preferences.d/nginx-block >> /tmp/nginx-autoinstall.log 2>&1
+			echo -ne "       Unblock nginx package from APT             [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
 
