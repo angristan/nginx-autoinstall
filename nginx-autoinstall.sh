@@ -592,6 +592,11 @@ case $OPTION in
 			echo ""
 			exit 1
 		fi
+		
+		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
+		then
+			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/apt-nginx
+		fi
 
 		# Removing temporary Nginx and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
