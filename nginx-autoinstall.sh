@@ -597,7 +597,7 @@ case $OPTION in
 		then
 			echo -ne "       Blocking nginx from APT           [..]\r"
 			cd /etc/apt/preferences.d/
-			wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/apt-nginx -O nginx-block >> /tmp/nginx-autoinstall.log 2>&1
+			echo -e "Package: nginx*\nPin: release *\nPin-Priority: -1" > nginx-block
 			echo -ne "       Blocking nginx from APT           [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
