@@ -73,6 +73,9 @@ case $OPTION in
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
 			read -p "       GeoIP [y/n]: " -e GEOIP
 		done
+		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
+			read -p "       Fancy index [y/n]: " -e FANCYINDEX
+		done
 		while [[ $TCP != "y" && $TCP != "n" ]]; do
 			read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TCP
 		done
@@ -501,6 +504,12 @@ case $OPTION in
 				echo ""
 				exit 1
 			fi
+		fi
+		
+		# Fancy index
+		if [[ "$FANCYINDEX" = 'y' ]]; then
+			git clone --quiet https://github.com/aperezdc/ngx-fancyindex.git /usr/local/src/nginx/modules/fancyindex >> /tmp/nginx-autoinstall.log 2>&1
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo --add-module=/usr/local/src/nginx/modules/fancyindex)
 		fi
 
 		# We configure Nginx

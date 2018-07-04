@@ -28,6 +28,7 @@ Compile and install Nginx from source with optionnal modules.
 - [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
 - [Cloudflare's TLS Dynamic Records Resizing patch](https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch) (Optmize lantency and throughput for TLS exchanges)
 - [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) (Purge content from FastCGI, proxy, SCGI and uWSGI caches)
+- [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) (Fancy indexes module)
 
 ## Install Nginx
 
