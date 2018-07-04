@@ -1,3 +1,0 @@
-Package: nginx*
-Pin: release *
-Pin-Priority: -1
