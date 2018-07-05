@@ -663,7 +663,7 @@ case $OPTION in
 			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
-		
+
 		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
 		then
 			echo -ne "       Unblock nginx package from APT [..]\r"
