@@ -17,6 +17,7 @@ Compile and install Nginx from source with optionnal modules.
 - [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
 - [Init script for systemd](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.service) (not provided by default)
 - [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
+- Block Nginx installation from APT using pinning, to prevent conflicts
 
 ### Optional modules/features
 
