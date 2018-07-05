@@ -601,6 +601,15 @@ case $OPTION in
 			echo ""
 			exit 1
 		fi
+		
+		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
+		then
+			echo -ne "       Blocking nginx from APT        [..]\r"
+			cd /etc/apt/preferences.d/
+			echo -e "Package: nginx*\nPin: release *\nPin-Priority: -1" > nginx-block
+			echo -ne "       Blocking nginx from APT        [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		fi
 
 		# Removing temporary Nginx and modules files
 		echo -ne "       Removing Nginx files           [..]\r"
@@ -661,6 +670,14 @@ case $OPTION in
 			echo -ne "       Removing log files             [..]\r"
 			rm -r /var/log/nginx >> /tmp/nginx-autoinstall.log 2>&1
 			echo -ne "       Removing log files             [${CGREEN}OK${CEND}]\r"
+			echo -ne "\n"
+		fi
+
+		if [[ $(lsb_release -si) == "Debian" ]] || [[ $(lsb_release -si) == "Ubuntu" ]]
+		then
+			echo -ne "       Unblock nginx package from APT [..]\r"
+			rm /etc/apt/preferences.d/nginx-block >> /tmp/nginx-autoinstall.log 2>&1
+			echo -ne "       Unblock nginx package from APT [${CGREEN}OK${CEND}]\r"
 			echo -ne "\n"
 		fi
 
