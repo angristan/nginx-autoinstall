@@ -24,10 +24,10 @@ Add this in your http block :
 
 ```
 brotli on;
-        brotli_static on;
-        brotli_buffers 16 8k;
-        brotli_comp_level 6;
-        brotli_types *;
+brotli_static on;
+brotli_buffers 16 8k;
+brotli_comp_level 6;
+brotli_types *;
 ```
 
 ### LibreSSL / OpenSSL from source
