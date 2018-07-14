@@ -154,75 +154,12 @@ case $OPTION in
 
 		#Brotli
 		if [[ "$BROTLI" = 'y' ]]; then
-			cd /usr/local/src/nginx/modules
-			# libbrolti is needed for the ngx_brotli module
-			# libbrotli download
-			echo -ne "       Downloading libbrotli          [..]\r"
-			git clone https://github.com/bagder/libbrotli >> /tmp/nginx-autoinstall.log 2>&1
-
-			if [ $? -eq 0 ]; then
-				echo -ne "       Downloading libbrotli          [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Downloading libbrotli          [${CRED}FAIL${CEND}]"
-				echo ""
-				echo "Please look at /tmp/nginx-autoinstall.log"
-				echo ""
-				exit 1
-			fi
-
-			cd libbrotli
-			echo -ne "       Configuring libbrotli          [..]\r"
-			./autogen.sh >> /tmp/nginx-autoinstall.log 2>&1
-			./configure >> /tmp/nginx-autoinstall.log 2>&1
-
-			if [ $? -eq 0 ]; then
-				echo -ne "       Configuring libbrotli          [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Configuring libbrotli          [${CRED}FAIL${CEND}]"
-				echo ""
-				echo "Please look at /tmp/nginx-autoinstall.log"
-				echo ""
-				exit 1
-			fi
-
-			echo -ne "       Compiling libbrotli            [..]\r"
-			make -j $(nproc) >> /tmp/nginx-autoinstall.log 2>&1
-
-			if [ $? -eq 0 ]; then
-				echo -ne "       Compiling libbrotli            [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Compiling libbrotli            [${CRED}FAIL${CEND}]"
-				echo ""
-				echo "Please look at /tmp/nginx-autoinstall.log"
-				echo ""
-				exit 1
-			fi
-
-			# libbrotli install
-			echo -ne "       Installing libbrotli           [..]\r"
-			make install >> /tmp/nginx-autoinstall.log 2>&1
-
-			if [ $? -eq 0 ]; then
-				echo -ne "       Installing libbrotli           [${CGREEN}OK${CEND}]\r"
-				echo -ne "\n"
-			else
-				echo -e "       Installing libbrotli           [${CRED}FAIL${CEND}]"
-				echo ""
-				echo "Please look at /tmp/nginx-autoinstall.log"
-				echo ""
-				exit 1
-			fi
-
-			# Linking libraries to avoid errors
-			ldconfig >> /tmp/nginx-autoinstall.log 2>&1
 			# ngx_brotli module download
 			cd /usr/local/src/nginx/modules
 			echo -ne "       Downloading ngx_brotli         [..]\r"
-			git clone https://github.com/google/ngx_brotli >> /tmp/nginx-autoinstall.log 2>&1
+			git clone https://github.com/eustas/ngx_brotli >> /tmp/nginx-autoinstall.log 2>&1
 			cd ngx_brotli
+			git checkout v0.1.2 >> /tmp/nginx-autoinstall.log 2>&1
 			git submodule update --init >> /tmp/nginx-autoinstall.log 2>&1
 
 			if [ $? -eq 0 ]; then
