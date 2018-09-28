@@ -31,7 +31,7 @@ brotli_comp_level 6;
 brotli_types *;
 ```
 
-## LibreSSL / OpenSSL from source
+## LibreSSL / OpenSSL 1.1+
 
 You can now use ChaCha20 in addition to AES. Add this in your server block:
 
@@ -44,6 +44,17 @@ You can also use more secure curves :
 ```nginx
 ssl_ecdh_curve X25519:P-521:P-384:P-256;
 ```
+
+## TLS 1.3
+
+TLS 1.3 needs special ciphers.
+
+```nginx
+ssl_protocols TLSv1.3 TLSv1.2;
+ssl_ciphers TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:TLS-AES-128-GCM-SHA256:EECDH+CHACHA20:EECDH+AESGCM:EECDH+AES;
+```
+
+TLS- can be TLS13-.
 
 ## Dynamic TLS Records
 
