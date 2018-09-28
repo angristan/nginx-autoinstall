@@ -1,4 +1,5 @@
 # nginx-autoinstall
+
 Compile and install Nginx from source with optionnal modules.
 
 ![screenshot](https://user-images.githubusercontent.com/11699655/33800227-29565ef6-dd3c-11e7-9967-7232ecd36ee4.png)
@@ -11,29 +12,30 @@ Compile and install Nginx from source with optionnal modules.
 
 ## Features
 
-- Latest mainline or stable version, from source
-- Optional modules (see below)
-- Removed useless modules
-- [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
-- [Init script for systemd](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.service) (not provided by default)
-- [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
-- Block Nginx installation from APT using pinning, to prevent conflicts
+* Latest mainline or stable version, from source
+* Optional modules (see below)
+* Removed useless modules
+* [Custom nginx.conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.conf) (default does not work)
+* [Init script for systemd](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx.service) (not provided by default)
+* [Logrotate conf](https://github.com/Angristan/nginx-autoinstall/blob/master/conf/nginx-logrotate) (not provided by default)
+* Block Nginx installation from APT using pinning, to prevent conflicts
 
 ### Optional modules/features
 
-- [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
-- [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
-- [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
-- [ngx_brotli](https://github.com/eustas/ngx_brotli) (Brotli compression algorithm)
-- [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
-- [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
-- [Cloudflare's TLS Dynamic Records Resizing patch](https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch) (Optmize lantency and throughput for TLS exchanges)
-- [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) (Purge content from FastCGI, proxy, SCGI and uWSGI caches)
-- [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) (Fancy indexes module)
+* [LibreSSL from source](http://www.libressl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
+* [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
+* [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
+* [ngx_brotli](https://github.com/eustas/ngx_brotli) (Brotli compression algorithm)
+* [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
+* [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
+* [Cloudflare's TLS Dynamic Records Resizing patch](https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch) (Optmize lantency and throughput for TLS exchanges)
+* [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) (Purge content from FastCGI, proxy, SCGI and uWSGI caches)
+* [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) (Fancy indexes module)
 
 ## Install Nginx
 
 Just download and execute the script :
+
 ```sh
 wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh
 chmod +x nginx-autoinstall.sh
