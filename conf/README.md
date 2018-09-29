@@ -56,14 +56,6 @@ ssl_ciphers TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:TLS-AES-128-GCM-
 
 TLS- can be TLS13-.
 
-## Dynamic TLS Records
-
-Add this into your http block to enable the patch:
-
-```nginx
-ssl_dyn_rec_enable on;
-```
-
 ## GeoIP
 
 Add the path of the 2 GeoIP databases to your http block:
