@@ -49,7 +49,7 @@ Just select the option when running the script :
 
 ![update](https://lut.im/Hj7wJKWwke/WZqeHT1QwwGfKXFf.png)
 
-You have te choice to delete the logs and the conf.
+You have the choice to delete the logs and the conf.
 
 ## Update Nginx
 
@@ -57,7 +57,7 @@ To update Nginx, run the script and install Nginx again. It will overwrite curre
 
 ## Update the script
 
-The update feature downloads the script from this repository, and overwrite the current `nginx-autoinstall.sh` file in the working directory. This allows you to get the latest features, bug fixes, and module versions automatically.
+The update feature downloads the script from this repository, and overwrites the current `nginx-autoinstall.sh` file in the working directory. This allows you to get the latest features, bug fixes, and module versions automatically.
 
 ![update](https://lut.im/uQSSVxAz09/zhZRuvJjZp2paLHm.png)
 
