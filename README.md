@@ -22,8 +22,8 @@ Compile and install Nginx from source with optional modules.
 
 ### Optional modules/features
 
-* [LibreSSL from source](http://www.libressl.org/) (TLS 1.3, ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
-* [OpenSSL from source](https://www.openssl.org/) (ChaCha20 cipher, HTTP/2 + ALPN, Curve25519, P-521)
+* [LibreSSL from source](http://www.libressl.org/) (CHACHA20, ALPN for HTTP/2, X25519, P-521)
+* [OpenSSL from source](https://www.openssl.org/) (TLS 1.3, CHACHA20, ALPN for HTTP/2, X25519, P-521)
 * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
 * [ngx_brotli](https://github.com/eustas/ngx_brotli) (Brotli compression algorithm)
 * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
