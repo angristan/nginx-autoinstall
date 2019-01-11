@@ -198,12 +198,16 @@ case $OPTION in
 			mkdir geoip-db
 			cd geoip-db || exit 1
 			echo -ne "       Downloading GeoIP databases    [..]\\r"
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz >> /tmp/nginx-autoinstall.log 2>&1
-			wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz >> /tmp/nginx-autoinstall.log 2>&1
-			gunzip GeoIP.dat.gz
-			gunzip GeoLiteCity.dat.gz
-			mv GeoIP.dat GeoIP-Country.dat
-			mv GeoLiteCity.dat GeoIP-City.dat
+			wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz >> /tmp/nginx-autoinstall.log 2>&1
+			wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz >> /tmp/nginx-autoinstall.log 2>&1
+			tar -xf GeoLite2-City.tar.gz
+			tar -xf GeoLite2-Country.tar.gz
+			mkdir /opt/geoip
+			cd GeoLite2-City_*/
+			mv GeoLite2-City.mmdb /opt/geoip/
+			cd ../
+			cd GeoLite2-Country_*/
+			mv GeoLite2-Country.mmdb /opt/geoip/
 
 			if [ $? -eq 0 ]; then
 				echo -ne "       Downloading GeoIP databases    [${CGREEN}OK${CEND}]\\r"

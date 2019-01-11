@@ -61,6 +61,6 @@ TLS- can be TLS13-.
 Add the path of the 2 GeoIP databases to your http block:
 
 ```nginx
-geoip_country  /opt/geoip-db/GeoIP-Country.dat;
-geoip_city     /opt/geoip-db/GeoIP-City.dat;
+geoip_country /opt/geoip/GeoLite2-Country.mmdb;
+geoip_city /opt/geoip/GeoLite2-City.mmdb;
 ```
