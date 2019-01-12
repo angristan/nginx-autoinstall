@@ -12,6 +12,8 @@ LIBRESSL_VER=2.7.5
 OPENSSL_VER=1.1.1
 NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
+LIBMAXMINDDB_VER=1.3.2
+GEOIP2_VER=3.2
 
 clear
 echo ""
@@ -129,8 +131,20 @@ case $OPTION in
 
 		# GeoIP
 		if [[ "$GEOIP" = 'y' ]]; then
-			apt-get install libgeoip-dev -y
 			cd /usr/local/src/nginx/modules || exit 1
+			# install libmaxminddb
+			wget https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VER}/libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
+			tar xaf libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
+			cd libmaxminddb-${LIBMAXMINDDB_VER}/
+			./configure
+			make
+			make install
+			ldconfig
+
+			cd ../
+			wget https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VER}.tar.gz
+			tar xaf ${GEOIP2_VER}.tar.gz
+
 			mkdir geoip-db
 			cd geoip-db || exit 1
 			wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
@@ -234,7 +248,7 @@ case $OPTION in
 		fi
 
 		if [[ "$GEOIP" = 'y' ]]; then
-			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo "--with-http_geoip_module")
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo "--add-module=/usr/local/src/nginx/modules/ngx_http_geoip2_module-${GEOIP2_VER}")
 		fi
 
 		if [[ "$OPENSSL" = 'y' ]]; then

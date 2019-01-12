@@ -56,11 +56,6 @@ ssl_ciphers TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:TLS-AES-128-GCM-
 
 TLS- can be TLS13-.
 
-## GeoIP
+## GeoIP 2
 
-Add the path of the 2 GeoIP databases to your http block:
-
-```nginx
-geoip_country /opt/geoip/GeoLite2-Country.mmdb;
-geoip_city /opt/geoip/GeoLite2-City.mmdb;
-```
+See https://github.com/leev/ngx_http_geoip2_module#example-usage

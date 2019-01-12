@@ -27,7 +27,7 @@ Compile and install Nginx from source with optional modules.
 * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
 * [ngx_brotli](https://github.com/eustas/ngx_brotli) (Brotli compression algorithm)
 * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
-* [GeoIP](http://dev.maxmind.com/geoip/geoip2/geolite2/) (GeoIP module and databases)
+* [ngx_http_geoip2_module](https://github.com/leev/ngx_http_geoip2_module) with [libmaxminddb](https://github.com/maxmind/libmaxminddb) and [GeoLite2 databases](https://dev.maxmind.com/geoip/geoip2/geolite2/)
 * [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) (Purge content from FastCGI, proxy, SCGI and uWSGI caches)
 * [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) (Fancy indexes module)
 
