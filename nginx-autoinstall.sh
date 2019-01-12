@@ -87,6 +87,13 @@ case $OPTION in
 			;;
 		esac
 		echo ""
+		# Check if custom nginx configuration exists and load it
+		if [ -f nginx-custom.options ]; then
+			#read -p "Found nginx-custom.options, we'll use those instead of default."
+			echo "Found nginx-custom.options, we'll use those instead of default."
+		    source nginx-custom.options
+		fi
+		echo ""
 		read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 		echo ""
 
@@ -192,14 +199,11 @@ case $OPTION in
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 
 		# Modules default configuration
-		# Check if custom nginx configuration exists
-		if [ -f nginx-custom.options ]; then
-		    source nginx-custom.options
-		fi
-		 
+		# Can be overwritten by custom file if loaded
+
 		if [ -z ${NGINX_OPTIONS+x} ];
             then
-            echo "No NGINX_OPTIONS found, using default"
+            echo "No custom NGINX_OPTIONS found, using default"
             # Common configuration
             NGINX_OPTIONS="
             --prefix=/etc/nginx \
@@ -219,7 +223,8 @@ case $OPTION in
 
         if [ -z ${NGINX_MODULES+x} ];
             then
-            echo "No NGINX_MODULES found, using default"
+            echo "No custom NGINX_MODULES found, using default"
+            read -p "No NGINX_OPTIONS found, using default, press to continue"
             NGINX_MODULES="--without-http_ssi_module \
 			--without-http_scgi_module \
 			--without-http_uwsgi_module \
