@@ -372,15 +372,7 @@ case $OPTION in
 		--with-cc-opt=-Wno-deprecated-declarations"
 
 
-		NGINX_MODULES="--without-http_ssi_module \
-		--without-http_scgi_module \
-		--without-http_uwsgi_module \
-		--without-http_geo_module \
-		--without-http_split_clients_module \
-		--without-http_memcached_module \
-		--without-http_empty_gif_module \
-		--without-http_browser_module \
-		--with-threads \
+		NGINX_MODULES="--with-threads \
 		--with-file-aio \
 		--with-http_ssl_module \
 		--with-http_v2_module \
