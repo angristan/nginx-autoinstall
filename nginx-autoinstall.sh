@@ -8,8 +8,8 @@ fi
 # Variables
 NGINX_MAINLINE_VER=1.15.8
 NGINX_STABLE_VER=1.14.2
-LIBRESSL_VER=2.7.5
-OPENSSL_VER=1.1.1
+LIBRESSL_VER=2.8.3
+OPENSSL_VER=1.1.1a
 NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.3.2
@@ -228,7 +228,8 @@ case $OPTION in
 		--with-http_auth_request_module \
 		--with-http_slice_module \
 		--with-http_stub_status_module \
-		--with-http_realip_module"
+		--with-http_realip_module \
+		--with-http_gzip_static_module"
 
 		# Optional modules
 		if [[ "$LIBRESSL" = 'y' ]]; then
