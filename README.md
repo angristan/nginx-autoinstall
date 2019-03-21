@@ -63,7 +63,7 @@ The update feature downloads the script from this repository, and overwrites the
 
 ## Headless use
 
-You run the script without the prompts with the option `HEADLESS` set to `y`.
+You can run the script without the prompts with the option `HEADLESS` set to `y`.
 For example, to install nginx mainline version with brotli run :
 ~~~
 HEADLESS=y \
