@@ -5,7 +5,7 @@ if [[ "$EUID" -ne 0 ]]; then
 	exit 1
 fi
 
-# Variables
+# Define versions
 NGINX_MAINLINE_VER=1.15.9
 NGINX_STABLE_VER=1.14.2
 LIBRESSL_VER=2.7.5
@@ -15,31 +15,55 @@ HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.3.2
 GEOIP2_VER=3.2
 
-clear
-echo ""
-echo "Welcome to the nginx-autoinstall script."
-echo ""
-echo "What do you want to do?"
-echo "   1) Install or update Nginx"
-echo "   2) Uninstall Nginx"
-echo "   3) Update the script"
-echo "   4) Exit"
-echo ""
-while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]]; do
-	read -p "Select an option [1-4]: " OPTION
-done
+# Define installation paramaters for headless install (fallback if unspecifed)
+if [[ "$HEADLESS" == "y" ]]; then
+	OPTION=${OPTION:-1}
+	NGINX_VER=${NGINX_VER:-1}
+	PAGESPEED=${PAGESPEED:-n}
+	BROTLI=${BROTLI:-n}
+	HEADERMOD=${HEADERMOD:-n}
+	GEOIP=${GEOIP:-n}
+	FANCYINDEX=${FANCYINDEX:-n}
+	CACHEPURGE=${CACHEPURGE:-n}
+	SSL=${SSL:-1}
+	RM_CONF=${RM_CONF:-y}
+	RM_LOGS=${RM_LOGS:-y}
+fi
+
+# Clean screen before launching menu
+if [[ "$HEADLESS" == "n" ]]; then
+	clear
+fi
+
+if [[ "$HEADLESS" != "y" ]]; then
+	echo ""
+	echo "Welcome to the nginx-autoinstall script."
+	echo ""
+	echo "What do you want to do?"
+	echo "   1) Install or update Nginx"
+	echo "   2) Uninstall Nginx"
+	echo "   3) Update the script"
+	echo "   4) Exit"
+	echo ""
+	while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]]; do
+		read -p "Select an option [1-4]: " OPTION
+	done
+fi
+
 case $OPTION in
 	1)
-		echo ""
-		echo "This script will install Nginx with some optional modules."
-		echo ""
-		echo "Do you want to install Nginx stable or mainline?"
-		echo "   1) Stable $NGINX_STABLE_VER"
-		echo "   2) Mainline $NGINX_MAINLINE_VER"
-		echo ""
-		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
-			read -p "Select an option [1-2]: " NGINX_VER
-		done
+		if [[ "$HEADLESS" != "y" ]]; then
+			echo ""
+			echo "This script will install Nginx with some optional modules."
+			echo ""
+			echo "Do you want to install Nginx stable or mainline?"
+			echo "   1) Stable $NGINX_STABLE_VER"
+			echo "   2) Mainline $NGINX_MAINLINE_VER"
+			echo ""
+			while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
+				read -p "Select an option [1-2]: " NGINX_VER
+			done
+		fi
 		case $NGINX_VER in
 			1)
 			NGINX_VER=$NGINX_STABLE_VER
@@ -47,50 +71,63 @@ case $OPTION in
 			2)
 			NGINX_VER=$NGINX_MAINLINE_VER
 			;;
+			*)
+			echo "NGINX_VER unspecified, fallback to stable $NGINX_STABLE_VER"
+			NGINX_VER=$NGINX_STABLE_VER
+			;;
 		esac
-		echo ""
-		echo "Please tell me which modules you want to install."
-		echo "If you select none, Nginx will be installed with its default modules."
-		echo ""
-		echo "Modules to install :"
-		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
-			read -p "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
-		done
-		while [[ $BROTLI != "y" && $BROTLI != "n" ]]; do
-			read -p "       Brotli [y/n]: " -e BROTLI
-		done
-		while [[ $HEADERMOD != "y" && $HEADERMOD != "n" ]]; do
-			read -p "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
-		done
-		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
-			read -p "       GeoIP [y/n]: " -e GEOIP
-		done
-		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
-			read -p "       Fancy index [y/n]: " -e FANCYINDEX
-		done
-		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
-			read -p "       ngx_cache_purge [y/n]: " -e CACHEPURGE
-		done
-		echo ""
-		echo "Choose your OpenSSL implementation :"
-		echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
-		echo "   2) OpenSSL $OPENSSL_VER from source"
-		echo "   3) LibreSSL $LIBRESSL_VER from source "
-		echo ""
-		while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
-			read -p "Select an option [1-3]: " SSL
-		done
+		if [[ "$HEADLESS" != "y" ]]; then
+			echo ""
+			echo "Please tell me which modules you want to install."
+			echo "If you select none, Nginx will be installed with its default modules."
+			echo ""
+			echo "Modules to install :"
+			while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
+				read -p "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
+			done
+			while [[ $BROTLI != "y" && $BROTLI != "n" ]]; do
+				read -p "       Brotli [y/n]: " -e BROTLI
+			done
+			while [[ $HEADERMOD != "y" && $HEADERMOD != "n" ]]; do
+				read -p "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
+			done
+			while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
+				read -p "       GeoIP [y/n]: " -e GEOIP
+			done
+			while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
+				read -p "       Fancy index [y/n]: " -e FANCYINDEX
+			done
+			while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
+				read -p "       ngx_cache_purge [y/n]: " -e CACHEPURGE
+			done
+			echo ""
+			echo "Choose your OpenSSL implementation :"
+			echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
+			echo "   2) OpenSSL $OPENSSL_VER from source"
+			echo "   3) LibreSSL $LIBRESSL_VER from source "
+			echo ""
+			while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
+				read -p "Select an option [1-3]: " SSL
+			done
+		fi
 		case $SSL in
+			1)
+			;;
 			2)
 				OPENSSL=y
 			;;
 			3)
 				LIBRESSL=y
 			;;
+			*)
+				echo "SSL unspecified, fallback to system's OpenSSL ($(openssl version | cut -c9-14))"
+			;;
 		esac
-		echo ""
-		read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
-		echo ""
+		if [[ "$HEADLESS" != "y" ]]; then
+			echo ""
+			read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
+			echo ""
+		fi
 
 		# Cleanup
 		# The directory should be deleted at the end of the script, but in case it fails
@@ -316,12 +353,14 @@ case $OPTION in
 	exit
 	;;
 	2) # Uninstall Nginx
-		while [[ $RM_CONF !=  "y" && $RM_CONF != "n" ]]; do
-			read -p "       Remove configuration files ? [y/n]: " -e RM_CONF
-		done
-		while [[ $RM_LOGS !=  "y" && $RM_LOGS != "n" ]]; do
-			read -p "       Remove logs files ? [y/n]: " -e RM_LOGS
-		done
+		if [[ "$HEADLESS" != "y" ]]; then
+			while [[ $RM_CONF !=  "y" && $RM_CONF != "n" ]]; do
+				read -p "       Remove configuration files ? [y/n]: " -e RM_CONF
+			done
+			while [[ $RM_LOGS !=  "y" && $RM_LOGS != "n" ]]; do
+				read -p "       Remove logs files ? [y/n]: " -e RM_LOGS
+			done
+		fi
 		# Stop Nginx
 		systemctl stop nginx
 
@@ -352,7 +391,7 @@ case $OPTION in
 		# We're done !
 		echo "Uninstallation done."
 
-	exit
+		exit
 	;;
 	3) # Update the script
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
@@ -363,7 +402,7 @@ case $OPTION in
 		./nginx-autoinstall.sh
 		exit
 	;;
-	4) # Exit
+	*) # Exit
 		exit
 	;;
 
