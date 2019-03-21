@@ -52,7 +52,7 @@ case $OPTION in
 			NGINX_VER=$NGINX_MAINLINE_VER
 			;;
 			*)
-			echo "NGINX_VER unspecified, fallback to Stable $NGINX_STABLE_VER"
+			echo "NGINX_VER unspecified, fallback to stable $NGINX_STABLE_VER"
 			NGINX_VER=$NGINX_STABLE_VER
 			;;
 		esac
