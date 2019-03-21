@@ -5,7 +5,7 @@ if [[ "$EUID" -ne 0 ]]; then
 	exit 1
 fi
 
-# Variables
+# Define versions
 NGINX_MAINLINE_VER=1.15.9
 NGINX_STABLE_VER=1.14.2
 LIBRESSL_VER=2.7.5
@@ -15,7 +15,26 @@ HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.3.2
 GEOIP2_VER=3.2
 
-clear
+# Define installation paramaters for headless install (fallback if unspecifed)
+if [[ "$HEADLESS" == "y" ]]; then
+	OPTION=${OPTION:-1}
+	NGINX_VER=${NGINX_VER:-1}
+	PAGESPEED=${PAGESPEED:-n}
+	BROTLI=${BROTLI:-n}
+	HEADERMOD=${HEADERMOD:-n}
+	GEOIP=${GEOIP:-n}
+	FANCYINDEX=${FANCYINDEX:-n}
+	CACHEPURGE=${CACHEPURGE:-n}
+	SSL=${SSL:-1}
+	RM_CONF=${RM_CONF:-y}
+	RM_LOGS=${RM_LOGS:-y}
+fi
+
+# Clean screen before launching menu
+if [[ "$HEADLESS" == "n" ]]; then
+	clear
+fi
+
 if [[ "$HEADLESS" != "y" ]]; then
 	echo ""
 	echo "Welcome to the nginx-autoinstall script."
@@ -30,6 +49,7 @@ if [[ "$HEADLESS" != "y" ]]; then
 		read -p "Select an option [1-4]: " OPTION
 	done
 fi
+
 case $OPTION in
 	1)
 		if [[ "$HEADLESS" != "y" ]]; then
@@ -371,7 +391,7 @@ case $OPTION in
 		# We're done !
 		echo "Uninstallation done."
 
-	exit
+		exit
 	;;
 	3) # Update the script
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/nginx-autoinstall.sh -O nginx-autoinstall.sh
@@ -383,6 +403,7 @@ case $OPTION in
 		exit
 	;;
 	*) # Exit
+		echo "exit"
 		exit
 	;;
 
