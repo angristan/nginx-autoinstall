@@ -403,7 +403,6 @@ case $OPTION in
 		exit
 	;;
 	*) # Exit
-		echo "exit"
 		exit
 	;;
 
