@@ -64,23 +64,31 @@ The update feature downloads the script from this repository, and overwrites the
 ## Headless use
 
 You can run the script without the prompts with the option `HEADLESS` set to `y`.
-For example, to install nginx mainline version with brotli run :
-~~~
+
+```sh
+HEADLESS=y ./nginx-autoinstall.sh
+```
+
+To install Nginx mainline with Brotli:
+
+```sh
 HEADLESS=y \
-OPTION=1 \
 NGINX_VER=2 \
 BROTLI=y \
 ./nginx-autoinstall.sh
-~~~
+```
 
-to uninstall nginx and remove the logs and configuration files run :
-~~~
+To uninstall Nginx and remove the logs and configuration files:
+
+```sh
 HEADLESS=y \
 OPTION=2 \
 RM_CONF=y \
 RM_LOGS=y \
 ./nginx-autoinstall.sh
-~~~ 
+```
+
+All the default variables are set at the beginning of the script.
 
 ## Log file
 
