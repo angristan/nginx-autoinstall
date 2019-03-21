@@ -61,6 +61,27 @@ The update feature downloads the script from this repository, and overwrites the
 
 ![update](https://lut.im/uQSSVxAz09/zhZRuvJjZp2paLHm.png)
 
+## Headless use
+
+You run the script without the prompts with the option `HEADLESS` set to `y`.
+For example, to install nginx mainline version with brotli run :
+~~~
+HEADLESS=y \
+OPTION=1 \
+NGINX_VER=2 \
+BROTLI=y \
+./nginx-autoinstall.sh
+~~~
+
+to uninstall nginx and remove the logs and configuration files run :
+~~~
+HEADLESS=y \
+OPTION=2 \
+RM_CONF=y \
+RM_LOGS=y \
+./nginx-autoinstall.sh
+~~~ 
+
 ## Log file
 
 A log file is created when running the script. It is located at `/tmp/nginx-autoinstall.log`.
