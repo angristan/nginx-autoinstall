@@ -307,7 +307,7 @@ case $OPTION in
 		
 		if [[ "$WEBDAV" = 'y' ]]; then
 			git clone --quiet https://github.com/arut/nginx-dav-ext-module.git /usr/local/src/nginx/modules/nginx-dav-ext-module
-			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-dav-ext-module)
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-http_dav_module --add-module=/usr/local/src/nginx/modules/nginx-dav-ext-module)
 		fi
 
 		./configure $NGINX_OPTIONS $NGINX_MODULES
