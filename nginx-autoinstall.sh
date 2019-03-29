@@ -140,7 +140,7 @@ case $OPTION in
 
 		# Dependencies
 		apt-get update
-		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release
+		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
