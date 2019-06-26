@@ -343,6 +343,9 @@ case $OPTION in
 		if [[ ! -d /etc/nginx/sites-enabled ]]; then
 			mkdir -p /etc/nginx/sites-enabled
 		fi
+		if [[ ! -d /etc/nginx/conf.d ]]; then
+			mkdir -p /etc/nginx/conf.d
+		fi
 
 		# Restart Nginx
 		systemctl restart nginx
