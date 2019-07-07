@@ -49,13 +49,13 @@ fi
 if [[ $(lsb_release -si) == "Debian" || $(lsb_release -si) == "Ubuntu" ]]; then
   export DEBIAN_FRONTEND=noninteractive
 	UPDATE="apt-get -o Dpkg::Progress-Fancy="1" update -qq"
-  INSTALL="apt-get -o Dpkg::Progress-Fancy="1" install -qq"
+	INSTALL="apt-get -o Dpkg::Progress-Fancy="1" install -qq"
 	# Build-dep packages
-  BUILD_DEP_PKGS="build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev"
+	BUILD_DEP_PKGS="build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev"
 	PKGCHK="dpkg -s"
 else
-  echo -e "Error: Sorry, your OS is not supported."
-  exit 1;
+	echo -e "Error: Sorry, your OS is not supported."
+	exit 1;
 fi
 	
 # Clean screen before launching menu
