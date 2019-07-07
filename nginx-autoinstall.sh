@@ -26,6 +26,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	FANCYINDEX=${FANCYINDEX:-n}
 	CACHEPURGE=${CACHEPURGE:-n}
 	WEBDAV=${WEBDAV:-n}
+	VTS=${VTS:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
@@ -103,6 +104,9 @@ case $OPTION in
 			done
 			while [[ $WEBDAV != "y" && $WEBDAV != "n" ]]; do
 				read -p "       nginx WebDAV [y/n]: " -e WEBDAV
+			done
+			while [[ $VTS != "y" && $VTS != "n" ]]; do
+				read -p "       nginx VTS [y/n]: " -e VTS
 			done
 			echo ""
 			echo "Choose your OpenSSL implementation :"
@@ -309,6 +313,11 @@ case $OPTION in
 		if [[ "$WEBDAV" = 'y' ]]; then
 			git clone --quiet https://github.com/arut/nginx-dav-ext-module.git /usr/local/src/nginx/modules/nginx-dav-ext-module
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-http_dav_module --add-module=/usr/local/src/nginx/modules/nginx-dav-ext-module)
+		fi
+		
+		if [[ "$VTS" = 'y' ]]; then
+			git clone --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts)
 		fi
 
 		./configure $NGINX_OPTIONS $NGINX_MODULES
