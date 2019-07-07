@@ -1,8 +1,22 @@
 #!/bin/bash
 
-if [[ "$EUID" -ne 0 ]]; then
-	echo -e "Sorry, you need to run this as root"
-	exit 1
+# Detect absolute and full path as well as filename of this script
+cd "$(dirname $0)"
+CURRDIR=$(pwd)
+SCRIPT_FILENAME=$(basename $0)
+cd - > /dev/null
+sfp=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || greadlink -f "${BASH_SOURCE[0]}" 2>/dev/null)
+if [ -z "$sfp" ]; then sfp=${BASH_SOURCE[0]}; fi
+SCRIPT_DIR=$(dirname "${sfp}")
+
+# Make sure that the script runs with root permissions
+if [[ "$EUID" != 0 ]]; then
+  echo -e "Sorry, you need to run this as root. Please enter your root password...";
+  cd "$CURRDIR"
+  su -s "$(which bash)" -c "./$SCRIPT_FILENAME"
+  cd - > /dev/null
+
+  exit 0;
 fi
 
 # Define versions
@@ -32,6 +46,18 @@ if [[ "$HEADLESS" == "y" ]]; then
 	RM_LOGS=${RM_LOGS:-y}
 fi
 
+if [[ $(lsb_release -si) == "Debian" || $(lsb_release -si) == "Ubuntu" ]]; then
+  export DEBIAN_FRONTEND=noninteractive
+	UPDATE="apt-get -o Dpkg::Progress-Fancy="1" update -qq"
+  INSTALL="apt-get -o Dpkg::Progress-Fancy="1" install -qq"
+	# Build-dep packages
+  BUILD_DEP_PKGS="build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev"
+	PKGCHK="dpkg -s"
+else
+  echo -e "Error: Sorry, your OS is not supported."
+  exit 1;
+fi
+	
 # Clean screen before launching menu
 if [[ "$HEADLESS" == "n" ]]; then
 	clear
@@ -143,8 +169,12 @@ case $OPTION in
 		mkdir -p /usr/local/src/nginx/modules
 
 		# Dependencies
-		apt-get update
-		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev
+		if ! ${PKGCHK} $BUILD_DEP_PKGS >/dev/null 2>&1; then
+			${UPDATE}
+			for i in $BUILD_DEP_PKGS; do
+				${INSTALL} $i 2> /dev/null
+			done
+		fi
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
