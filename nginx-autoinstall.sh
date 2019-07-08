@@ -1,22 +1,8 @@
 #!/bin/bash
 
-# Detect absolute and full path as well as filename of this script
-cd "$(dirname $0)"
-CURRDIR=$(pwd)
-SCRIPT_FILENAME=$(basename $0)
-cd - > /dev/null
-sfp=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || greadlink -f "${BASH_SOURCE[0]}" 2>/dev/null)
-if [ -z "$sfp" ]; then sfp=${BASH_SOURCE[0]}; fi
-SCRIPT_DIR=$(dirname "${sfp}")
-
-# Make sure that the script runs with root permissions
-if [[ "$EUID" != 0 ]]; then
-  echo -e "Sorry, you need to run this as root. Please enter your root password...";
-  cd "$CURRDIR"
-  su -s "$(which bash)" -c "./$SCRIPT_FILENAME"
-  cd - > /dev/null
-
-  exit 0;
+if [[ "$EUID" -ne 0 ]]; then
+	echo -e "Sorry, you need to run this as root"
+	exit 1
 fi
 
 # Define versions
