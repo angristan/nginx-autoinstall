@@ -6,9 +6,9 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=1.17.0
-NGINX_STABLE_VER=1.16.0
-LIBRESSL_VER=2.9.0
+NGINX_MAINLINE_VER=1.17.3
+NGINX_STABLE_VER=1.16.1
+LIBRESSL_VER=2.9.2
 OPENSSL_VER=1.1.1c
 NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
@@ -309,12 +309,12 @@ case $OPTION in
 			git clone --quiet https://github.com/aperezdc/ngx-fancyindex.git /usr/local/src/nginx/modules/fancyindex
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/fancyindex)
 		fi
-		
+
 		if [[ "$WEBDAV" = 'y' ]]; then
 			git clone --quiet https://github.com/arut/nginx-dav-ext-module.git /usr/local/src/nginx/modules/nginx-dav-ext-module
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-http_dav_module --add-module=/usr/local/src/nginx/modules/nginx-dav-ext-module)
 		fi
-		
+
 		if [[ "$VTS" = 'y' ]]; then
 			git clone --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts)
