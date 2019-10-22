@@ -349,7 +349,7 @@ case $OPTION in
 		fi
 		
 		if [[ "$MODSEC" = 'y' ]]; then
-			git clone --quiet git clone --depth 1 https://github.com/SpiderLabs/ModSecurity-nginx.git /usr/local/src/nginx/modules/ModSecurity-nginx
+			git clone --quiet https://github.com/SpiderLabs/ModSecurity-nginx.git /usr/local/src/nginx/modules/ModSecurity-nginx
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/ModSecurity-nginx)
 		fi
 
