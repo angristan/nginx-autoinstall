@@ -27,6 +27,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	CACHEPURGE=${CACHEPURGE:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
+	HTTP3=${HTTP3:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
@@ -108,29 +109,36 @@ case $OPTION in
 			while [[ $VTS != "y" && $VTS != "n" ]]; do
 				read -p "       nginx VTS [y/n]: " -e VTS
 			done
-			echo ""
-			echo "Choose your OpenSSL implementation :"
-			echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
-			echo "   2) OpenSSL $OPENSSL_VER from source"
-			echo "   3) LibreSSL $LIBRESSL_VER from source "
-			echo ""
-			while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
-				read -p "Select an option [1-3]: " SSL
+			while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
+				read -p "       HTTP/3 (by Cloudflare, uses BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
 			done
+			if [[ "$HTTP3" != 'y' ]]; then
+				echo ""
+				echo "Choose your OpenSSL implementation:"
+				echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
+				echo "   2) OpenSSL $OPENSSL_VER from source"
+				echo "   3) LibreSSL $LIBRESSL_VER from source "
+				echo ""
+				while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
+					read -p "Select an option [1-3]: " SSL
+				done
+			fi
 		fi
-		case $SSL in
-			1)
-			;;
-			2)
-				OPENSSL=y
-			;;
-			3)
-				LIBRESSL=y
-			;;
-			*)
-				echo "SSL unspecified, fallback to system's OpenSSL ($(openssl version | cut -c9-14))"
-			;;
-		esac
+		if [[ "$HTTP3" != 'y' ]]; then
+			case $SSL in
+				1)
+				;;
+				2)
+					OPENSSL=y
+				;;
+				3)
+					LIBRESSL=y
+				;;
+				*)
+					echo "SSL unspecified, fallback to system's OpenSSL ($(openssl version | cut -c9-14))"
+				;;
+			esac
+		fi
 		if [[ "$HEADLESS" != "y" ]]; then
 			echo ""
 			read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
@@ -144,7 +152,7 @@ case $OPTION in
 
 		# Dependencies
 		apt-get update
-		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev
+		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
@@ -318,6 +326,20 @@ case $OPTION in
 		if [[ "$VTS" = 'y' ]]; then
 			git clone --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts)
+		fi
+
+		# HTTP3
+		if [[ "$HTTP3" = 'y' ]]; then
+			cd /usr/local/src/nginx/modules || exit 1
+			git clone --recursive https://github.com/cloudflare/quiche
+			apt-get install -y golang
+			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+			source $HOME/.cargo/env
+			cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
+			patch -p01 < /usr/local/src/nginx/modules/quiche/extras/nginx/nginx-1.16.patch
+
+			NGINX_OPTIONS=$(echo "$NGINX_OPTIONS"; echo --with-openssl=/usr/local/src/nginx/modules/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche)
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-http_v3_module)
 		fi
 
 		./configure $NGINX_OPTIONS $NGINX_MODULES
