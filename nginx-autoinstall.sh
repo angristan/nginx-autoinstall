@@ -112,6 +112,9 @@ case $OPTION in
 			while [[ $MODSEC != "y" && $MODSEC != "n" ]]; do
 				read -p "       nginx ModSecurity [y/n]: " -e MODSEC
 			done
+			if [[ "$MODSEC" = 'y' ]]; then
+				read -p "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
+			fi
 			echo ""
 			echo "Choose your OpenSSL implementation :"
 			echo "   1) System's OpenSSL ($(openssl version | cut -c9-14))"
@@ -257,7 +260,6 @@ case $OPTION in
 			wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
 			mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
 
-			read -p "  Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
 			# Enable ModSecurity in Nginx
 			if [[ "$MODSEC_ENABLE" = 'y' ]]; then
 				sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
