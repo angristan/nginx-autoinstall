@@ -373,7 +373,7 @@ case $OPTION in
 			# Dependencies for BoringSSL and Quiche
 			apt-get install -y golang
 			# Rust is not packaged so that's the only way...
-			curl -sSf https://sh.rustup.rs | sh -y
+			curl -sSf https://sh.rustup.rs | sh -s -- -y
 			source $HOME/.cargo/env
 
 			cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
