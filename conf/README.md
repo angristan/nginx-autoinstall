@@ -59,3 +59,26 @@ TLS- can be TLS13-.
 ## GeoIP 2
 
 See https://github.com/leev/ngx_http_geoip2_module#example-usage
+
+## HTTP/3
+
+See https://github.com/cloudflare/quiche/tree/master/extras/nginx#readme
+
+```nginx
+server {
+    # Enable QUIC and HTTP/3.
+    listen 443 quic reuseport;
+
+    # Enable HTTP/2 (optional).
+    listen 443 ssl http2;
+
+    ssl_certificate      cert.crt;
+    ssl_certificate_key  cert.key;
+
+    # Enable all TLS versions (TLSv1.3 is required for QUIC).
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+
+    # Add Alt-Svc header to negotiate HTTP/3.
+    add_header alt-svc 'h3-23=":443"; ma=86400';
+}
+```
