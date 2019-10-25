@@ -28,6 +28,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
 	HTTP3=${HTTP3:-n}
+	MODSEC=${MODSEC:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
@@ -110,7 +111,14 @@ case $OPTION in
 				read -p "       nginx VTS [y/n]: " -e VTS
 			done
 			while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-				read -p "       HTTP/3 (by Cloudflare, uses BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
+				read -p "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
+			done
+			while [[ $MODSEC != "y" && $MODSEC != "n" ]]; do
+				read -p "       nginx ModSecurity [y/n]: " -e MODSEC
+			done
+			if [[ "$MODSEC" = 'y' ]]; then
+				read -p "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
+			fi
 			done
 			if [[ "$HTTP3" != 'y' ]]; then
 				echo ""
@@ -153,6 +161,10 @@ case $OPTION in
 		# Dependencies
 		apt-get update
 		apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
+
+		if [[ "$MODSEC" = 'y' ]]; then
+				apt-get install -y apt-utils libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libyajl-dev pkgconf
+		fi
 
 		# PageSpeed
 		if [[ "$PAGESPEED" = 'y' ]]; then
@@ -244,6 +256,27 @@ case $OPTION in
 			./config
 		fi
 
+		# ModSecurity
+		if [[ "$MODSEC" = 'y' ]]; then
+			cd /usr/local/src/nginx/modules || exit 1
+			git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity
+			cd ModSecurity
+			git submodule init
+			git submodule update
+			./build.sh
+			./configure
+			make
+			make install
+			mkdir /etc/nginx/modsec
+			wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
+			mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
+
+			# Enable ModSecurity in Nginx
+			if [[ "$MODSEC_ENABLE" = 'y' ]]; then
+				sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
+			fi
+		fi
+
 		# Download and extract of Nginx source code
 		cd /usr/local/src/nginx/ || exit 1
 		wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
@@ -328,14 +361,23 @@ case $OPTION in
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts)
 		fi
 
+		if [[ "$MODSEC" = 'y' ]]; then
+			git clone --quiet https://github.com/SpiderLabs/ModSecurity-nginx.git /usr/local/src/nginx/modules/ModSecurity-nginx
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/ModSecurity-nginx)
+		fi
+
 		# HTTP3
 		if [[ "$HTTP3" = 'y' ]]; then
 			cd /usr/local/src/nginx/modules || exit 1
 			git clone --recursive https://github.com/cloudflare/quiche
+			# Dependencies for BoringSSL and Quiche
 			apt-get install -y golang
-			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+			# Rust is not packaged so that's the only way...
+			curl -sSf https://sh.rustup.rs | sh -y
 			source $HOME/.cargo/env
+
 			cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
+			# Apply actual patch
 			patch -p01 < /usr/local/src/nginx/modules/quiche/extras/nginx/nginx-1.16.patch
 
 			NGINX_OPTIONS=$(echo "$NGINX_OPTIONS"; echo --with-openssl=/usr/local/src/nginx/modules/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche)
