@@ -126,7 +126,6 @@ case $OPTION in
 			if [[ "$MODSEC" = 'y' ]]; then
 				read -p "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
 			fi
-			done
 			if [[ "$HTTP3" != 'y' ]]; then
 				echo ""
 				echo "Choose your OpenSSL implementation:"
