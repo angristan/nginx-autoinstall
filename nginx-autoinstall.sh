@@ -27,6 +27,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	CACHEPURGE=${CACHEPURGE:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
+	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
 	SSL=${SSL:-1}
@@ -109,6 +110,9 @@ case $OPTION in
 			done
 			while [[ $VTS != "y" && $VTS != "n" ]]; do
 				read -p "       nginx VTS [y/n]: " -e VTS
+			done
+			while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
+				read -p "       nginx testcookie [y/n]: " -e TESTCOOKIE
 			done
 			while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
 				read -p "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
@@ -359,6 +363,11 @@ case $OPTION in
 		if [[ "$VTS" = 'y' ]]; then
 			git clone --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts)
+		fi
+
+		if [[ "$TESTCOOKIE" = 'y' ]]; then
+			git clone --quiet https://github.com/kyprizel/testcookie-nginx-module.git /usr/local/src/nginx/modules/testcookie-nginx-module
+			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --add-module=/usr/local/src/nginx/modules/testcookie-nginx-module)
 		fi
 
 		if [[ "$MODSEC" = 'y' ]]; then
