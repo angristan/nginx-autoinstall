@@ -37,6 +37,7 @@ Compile and install Nginx from source with optional modules.
   * [ModSecurity-nginx](https://github.com/SpiderLabs/ModSecurity-nginx) (ModSecurity v3 Nginx Connector)
 * HTTP/3 using [Cloudflare's patch](https://blog.cloudflare.com/experiment-with-http-3-using-nginx-and-quiche/) with [Quiche](https://github.com/cloudflare/quiche) and [BoringSSL](https://github.com/google/boringssl).
 * [testcookie-nginx-module](https://github.com/kyprizel/testcookie-nginx-module) (testcookie-nginx-module is a simple robot mitigation module using cookie based challenge/response.)
+  * See example configuration [testcookie-nginx-module#example-configuration](https://github.com/kyprizel/testcookie-nginx-module#example-configuration) 
 
 ## Install Nginx
 
