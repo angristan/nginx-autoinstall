@@ -36,6 +36,9 @@ Compile and install Nginx from source with optional modules.
 * [ModSecurity from source](https://github.com/SpiderLabs/ModSecurity) (ModSecurity is an open source, cross platform web application firewall (WAF) engine for Apache, IIS and Nginx)
   * [ModSecurity-nginx](https://github.com/SpiderLabs/ModSecurity-nginx) (ModSecurity v3 Nginx Connector)
 * HTTP/3 using [Cloudflare's patch](https://blog.cloudflare.com/experiment-with-http-3-using-nginx-and-quiche/) with [Quiche](https://github.com/cloudflare/quiche) and [BoringSSL](https://github.com/google/boringssl).
+* [lua-nginx-module](https://github.com/openresty/lua-nginx-module) (Embed the power of Lua into Nginx HTTP Servers)
+  * [luajit2](https://github.com/openresty/luajit2) (OpenResty's maintained branch of LuaJIT)
+  * [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit) (Nginx Development Kit (NDK))
 
 ## Install Nginx
 

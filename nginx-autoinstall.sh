@@ -14,6 +14,9 @@ NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.3.2
 GEOIP2_VER=3.2
+LUA_JIT_VER=2.1-20181029
+LUA_NGINX_VER=0.10.14rc2
+NGINX_DEV_KIT=0.3.0
 
 # Define installation paramaters for headless install (fallback if unspecifed)
 if [[ "$HEADLESS" == "y" ]]; then
@@ -25,6 +28,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	GEOIP=${GEOIP:-n}
 	FANCYINDEX=${FANCYINDEX:-n}
 	CACHEPURGE=${CACHEPURGE:-n}
+	LUA=${LUA:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
 	HTTP3=${HTTP3:-n}
@@ -103,6 +107,9 @@ case $OPTION in
 			done
 			while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
 				read -p "       ngx_cache_purge [y/n]: " -e CACHEPURGE
+			done
+			while [[ $LUA != "y" && $LUA != "n" ]]; do
+				read -p "       ngx_http_lua_module [y/n]: " -e LUA
 			done
 			while [[ $WEBDAV != "y" && $WEBDAV != "n" ]]; do
 				read -p "       nginx WebDAV [y/n]: " -e WEBDAV
@@ -229,6 +236,28 @@ case $OPTION in
 			git clone https://github.com/FRiCKLE/ngx_cache_purge
 		fi
 
+		# Lua
+		if [[ "$LUA" = 'y' ]]; then	
+			# LuaJIT download		
+			cd /usr/local/src/nginx/modules						
+			wget https://github.com/openresty/luajit2/archive/v${LUA_JIT_VER}.tar.gz
+			tar xaf v${LUA_JIT_VER}.tar.gz
+			cd luajit2-${LUA_JIT_VER}
+			make
+			make install
+
+			# ngx_devel_kit download
+			cd /usr/local/src/nginx/modules									
+			wget https://github.com/simplresty/ngx_devel_kit/archive/v${NGINX_DEV_KIT}.tar.gz
+			tar xaf v${NGINX_DEV_KIT}.tar.gz
+
+			# lua-nginx-module download
+			cd /usr/local/src/nginx/modules			
+			wget https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_VER}.tar.gz
+			tar xaf v${LUA_NGINX_VER}.tar.gz
+
+		fi
+
 		# LibreSSL
 		if [[ "$LIBRESSL" = 'y' ]]; then
 			cd /usr/local/src/nginx/modules || exit 1
@@ -316,6 +345,11 @@ case $OPTION in
 		--with-http_realip_module \
 		--with-http_sub_module"
 
+		# Optional options
+		if [[ "$LUA" = 'y' ]]; then	
+			NGINX_OPTIONS=$(echo $NGINX_OPTIONS; echo --with-ld-opt="-Wl,-rpath,/usr/local/lib/")
+		fi
+
 		# Optional modules
 		if [[ "$LIBRESSL" = 'y' ]]; then
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-openssl=/usr/local/src/nginx/modules/libressl-${LIBRESSL_VER})
@@ -343,6 +377,12 @@ case $OPTION in
 
 		if [[ "$CACHEPURGE" = 'y' ]]; then
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo "--add-module=/usr/local/src/nginx/modules/ngx_cache_purge")
+		fi
+
+		# Lua
+		if [[ "$LUA" = 'y' ]]; then
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}")
+			NGINX_MODULES=$(echo $NGINX_MODULES; echo "--add-module=/usr/local/src/nginx/modules/lua-nginx-module-${LUA_NGINX_VER}")
 		fi
 
 		if [[ "$FANCYINDEX" = 'y' ]]; then
@@ -381,6 +421,11 @@ case $OPTION in
 
 			NGINX_OPTIONS=$(echo "$NGINX_OPTIONS"; echo --with-openssl=/usr/local/src/nginx/modules/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche)
 			NGINX_MODULES=$(echo "$NGINX_MODULES"; echo --with-http_v3_module)
+		fi
+
+		if [[ "$LUA" = 'y' ]]; then	
+			export LUAJIT_LIB=/usr/local/lib/
+ 			export LUAJIT_INC=/usr/local/include/luajit-2.1/
 		fi
 
 		./configure $NGINX_OPTIONS $NGINX_MODULES
@@ -452,6 +497,8 @@ case $OPTION in
 		# Removing Nginx files and modules files
 		rm -r /usr/local/src/nginx \
 		/usr/sbin/nginx* \
+		/usr/local/bin/luajit* \
+		/usr/local/include/luajit* \
 		/etc/logrotate.d/nginx \
 		/var/cache/nginx \
 		/lib/systemd/system/nginx.service \
