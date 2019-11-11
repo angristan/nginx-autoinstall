@@ -127,26 +127,26 @@ testcookie_refresh_template '<html><body>setting cookie...<script type=\"text/ja
 ```
 
 ```nginx
-	# Whitelisting testcookie with "map"
-	map $remote_addr $trusted {
-		default          0;
-		"127.0.0.1"      1; # localhost
-	}
+# Whitelisting testcookie with "map"
+map $remote_addr $trusted {
+	default          0;
+	"127.0.0.1"      1; # localhost
+}
 ```
 
 And in server block:
 ```nginx
-  location / {
+location / {
 .....
-      testcookie on;
-      testcookie_pass $trusted;
+    testcookie on;
+    testcookie_pass $trusted;
 .....
 }
 ```
 
 Notice the
 ```nginx
-#setting redirect via html code
+# setting redirect via html code
 testcookie_redirect_via_refresh off;
 ```
 Which turns off the html part.
