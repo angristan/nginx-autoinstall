@@ -70,6 +70,12 @@ The update feature downloads the script from this repository, and overwrites the
 
 ![update](https://lut.im/uQSSVxAz09/zhZRuvJjZp2paLHm.png)
 
+## Install Bad Bot Blocker
+
+This option will install [Nginx Bad Bot and User-Agent Blocker.](https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker) (Nginx Bad Bot and User-Agent Blocker, Spam Referrer Blocker, Anti DDOS, Bad IP Blocker and Wordpress Theme Detector Blocker)
+
+See additional steps to add a cron job for automatic updating, customization and testing in the link above.
+
 ## Headless use
 
 You can run the script without the prompts with the option `HEADLESS` set to `y`.

@@ -51,10 +51,11 @@ if [[ "$HEADLESS" != "y" ]]; then
 	echo "   1) Install or update Nginx"
 	echo "   2) Uninstall Nginx"
 	echo "   3) Update the script"
-	echo "   4) Exit"
+	echo "   4) Install Bad Bot Blocker"
+	echo "   5) Exit"
 	echo ""
-	while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" ]]; do
-		read -p "Select an option [1-4]: " OPTION
+	while [[ $OPTION !=  "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" && $OPTION != "5" ]]; do
+		read -p "Select an option [1-5]: " OPTION
 	done
 fi
 
@@ -532,6 +533,92 @@ case $OPTION in
 		echo "Update done."
 		sleep 2
 		./nginx-autoinstall.sh
+		exit
+	;;
+	4) # Install Bad Bot Blocker
+		echo ""
+		echo "This will install Nginx Bad Bot and User-Agent Blocker."
+		echo ""
+		echo "First step is to download the install script."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker
+		chmod +x /usr/local/sbin/install-ngxblocker
+
+		echo ""
+		echo "Install script has been downloaded."
+		echo ""
+		echo "Second step is to run the install-ngxblocker script in DRY-MODE,"
+		echo "which will show you what changes it will make and what files it will download for you.."
+		echo "This is only a DRY-RUN so no changes are being made yet."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		cd /usr/local/sbin || exit 1
+		./install-ngxblocker
+
+		echo ""
+		echo "Third step is to run the install script with the -x parameter,"
+		echo "to download all the necessary files from the repository.."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		cd /usr/local/sbin/ || exit 1
+		./install-ngxblocker -x
+		chmod +x /usr/local/sbin/setup-ngxblocker
+		chmod +x /usr/local/sbin/update-ngxblocker
+
+		echo ""
+		echo "All the required files have now been downloaded to the correct folders,"
+		echo " on Nginx for you directly from the repository."
+		echo ""
+		echo "Fourth step is to run the setup-ngxblocker script in DRY-MODE,"
+		echo "which will show you what changes it will make and what files it will download for you."
+		echo "This is only a DRY-RUN so no changes are being made yet."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		cd /usr/local/sbin/ || exit 1
+		./setup-ngxblocker -e conf
+
+		echo ""
+		echo "Fifth step is to run the setup script with the -x parameter,"
+		echo "to make all the necessary changes to your nginx.conf (if required),"
+		echo "and also to add the required includes into all your vhost files."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		cd /usr/local/sbin/ || exit 1
+		./setup-ngxblocker -x -e conf
+
+		echo ""
+		echo "Sixth step is to test your nginx configuration"
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		/usr/sbin/nginx -t
+
+		echo ""
+		echo "Seventh step is to restart Nginx,"
+		echo "and the Bot Blocker will immediately be active and protecting all your web sites."
+		echo ""
+		read -n1 -r -p " press any key to continue..."
+		echo ""
+
+		/usr/sbin/nginx -t && systemctl restart nginx
+
+		echo "That's it, the blocker is now active and protecting your sites from thousands of malicious bots and domains."
+		echo ""
+		echo "For more info, visit: https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker"
+		echo ""
+		sleep 2
 		exit
 	;;
 	*) # Exit
