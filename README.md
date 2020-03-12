@@ -37,10 +37,11 @@ Compile and install Nginx from source with optional modules.
   * [ModSecurity-nginx](https://github.com/SpiderLabs/ModSecurity-nginx) (ModSecurity v3 Nginx Connector)
 * HTTP/3 using [Cloudflare's patch](https://blog.cloudflare.com/experiment-with-http-3-using-nginx-and-quiche/) with [Quiche](https://github.com/cloudflare/quiche) and [BoringSSL](https://github.com/google/boringssl).
 * [testcookie-nginx-module](https://github.com/kyprizel/testcookie-nginx-module) (testcookie-nginx-module is a simple robot mitigation module using cookie based challenge/response.)
-  * See example configuration [testcookie-nginx-module#example-configuration](https://github.com/kyprizel/testcookie-nginx-module#example-configuration) 
+  * See example configuration [testcookie-nginx-module#example-configuration](https://github.com/kyprizel/testcookie-nginx-module#example-configuration)
 * [lua-nginx-module](https://github.com/openresty/lua-nginx-module) (Embed the power of Lua into Nginx HTTP Servers)
   * [luajit2](https://github.com/openresty/luajit2) (OpenResty's maintained branch of LuaJIT)
   * [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit) (Nginx Development Kit (NDK))
+* [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) maintained by [nginx-modules](https://github.com/nginx-modules/ngx_http_tls_dyn_size).
 
 ## Install Nginx
 
