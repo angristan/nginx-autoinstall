@@ -219,7 +219,7 @@ case $OPTION in
 			tar xaf libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
 			cd libmaxminddb-${LIBMAXMINDDB_VER}/
 			./configure
-			make
+			make -j "$(nproc)"
 			make install
 			ldconfig
 
@@ -254,7 +254,7 @@ case $OPTION in
 			wget https://github.com/openresty/luajit2/archive/v${LUA_JIT_VER}.tar.gz
 			tar xaf v${LUA_JIT_VER}.tar.gz
 			cd luajit2-${LUA_JIT_VER}
-			make
+			make -j "$(nproc)"
 			make install
 
 			# ngx_devel_kit download
@@ -304,7 +304,7 @@ case $OPTION in
 			git submodule update
 			./build.sh
 			./configure
-			make
+			make -j "$(nproc)"
 			make install
 			mkdir /etc/nginx/modsec
 			wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
