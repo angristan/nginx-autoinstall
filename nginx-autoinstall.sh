@@ -343,7 +343,8 @@ case $OPTION in
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--user=nginx \
 		--group=nginx \
-		--with-cc-opt=-Wno-deprecated-declarations"
+		--with-cc-opt=-Wno-deprecated-declarations \
+		--with-cc-opt=-Wno-ignored-qualifiers"
 
 		NGINX_MODULES="--with-threads \
 		--with-file-aio \
