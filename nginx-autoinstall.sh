@@ -32,6 +32,7 @@ if [[ "$HEADLESS" == "y" ]]; then
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
 	TESTCOOKIE=${TESTCOOKIE:-n}
+	TLSDYN=${TLSDYN:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
 	SSL=${SSL:-1}
@@ -122,6 +123,9 @@ case $OPTION in
 			while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 				read -p "       nginx testcookie [y/n]: " -e TESTCOOKIE
 			done
+			while [[ $TLSDYN !=  "y" && $TLSDYN != "n" ]]; do
+				read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
+			done
 			while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
 				read -p "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
 			done
@@ -130,12 +134,6 @@ case $OPTION in
 			done
 			if [[ "$MODSEC" = 'y' ]]; then
 				read -p "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
-			fi
-			if [[ $NGINX_VER == $NGINX_MAINLINE_VER ]]; then
-				# The patch only works on mainline
-				while [[ $TLSDYN !=  "y" && $TLSDYN != "n" ]]; do
-					read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
-				done
 			fi
 			if [[ "$HTTP3" != 'y' ]]; then
 				echo ""
@@ -424,7 +422,12 @@ case $OPTION in
 
 		# Cloudflare's TLS Dynamic Record Resizing patch
 		if [[ "$TLSDYN" = 'y' ]]; then
-			wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.17.7%2B.patch -O tcp-tls.patch
+			if [[ $NGINX_VER == $NGINX_MAINLINE_VER ]]; then
+				wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.17.7%2B.patch -O tcp-tls.patch
+			else
+				wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.15.5%2B.patch -O tcp-tls.patch
+			fi
+
 			patch -p1 < tcp-tls.patch
 		fi
 
