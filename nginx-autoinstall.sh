@@ -200,7 +200,6 @@ case $OPTION in
 			cd /usr/local/src/nginx/modules || exit 1
 			git clone https://github.com/google/ngx_brotli
 			cd ngx_brotli || exit 1
-			git checkout v0.1.2
 			git submodule update --init
 		fi
 
