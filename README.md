@@ -25,7 +25,7 @@ Compile and install Nginx from source with optional modules.
 * [LibreSSL from source](http://www.libressl.org/) (CHACHA20, ALPN for HTTP/2, X25519, P-521)
 * [OpenSSL from source](https://www.openssl.org/) (TLS 1.3, CHACHA20, ALPN for HTTP/2, X25519, P-521)
 * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) (Google performance module)
-* [ngx_brotli](https://github.com/eustas/ngx_brotli) (Brotli compression algorithm)
+* [ngx_brotli](https://github.com/google/ngx_brotli) (Brotli compression algorithm)
 * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) (Custom HTTP headers)
 * [ngx_http_geoip2_module](https://github.com/leev/ngx_http_geoip2_module) with [libmaxminddb](https://github.com/maxmind/libmaxminddb) and [GeoLite2 databases](https://dev.maxmind.com/geoip/geoip2/geolite2/)
 * [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) (Purge content from FastCGI, proxy, SCGI and uWSGI caches)
