@@ -6,17 +6,17 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=1.17.9
+NGINX_MAINLINE_VER=1.17.10
 NGINX_STABLE_VER=1.16.1
 LIBRESSL_VER=3.0.2
-OPENSSL_VER=1.1.1d
+OPENSSL_VER=1.1.1f
 NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.3.2
 GEOIP2_VER=3.3
 LUA_JIT_VER=2.1-20181029
-LUA_NGINX_VER=0.10.14rc2
-NGINX_DEV_KIT=0.3.0
+LUA_NGINX_VER=0.10.16rc5
+NGINX_DEV_KIT=0.3.1
 
 # Define installation paramaters for headless install (fallback if unspecifed)
 if [[ "$HEADLESS" == "y" ]]; then
