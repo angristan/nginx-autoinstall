@@ -56,7 +56,7 @@ if [[ $HEADLESS != "y" ]]; then
 	echo "   5) Exit"
 	echo ""
 	while [[ $OPTION != "1" && $OPTION != "2" && $OPTION != "3" && $OPTION != "4" && $OPTION != "5" ]]; do
-		read -p "Select an option [1-5]: " OPTION
+		read -rp "Select an option [1-5]: " OPTION
 	done
 fi
 
@@ -71,7 +71,7 @@ case $OPTION in
 		echo "   2) Mainline $NGINX_MAINLINE_VER"
 		echo ""
 		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
-			read -p "Select an option [1-2]: " NGINX_VER
+			read -rp "Select an option [1-2]: " NGINX_VER
 		done
 	fi
 	case $NGINX_VER in
@@ -93,48 +93,48 @@ case $OPTION in
 		echo ""
 		echo "Modules to install :"
 		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
-			read -p "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
+			read -rp "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
 		done
 		while [[ $BROTLI != "y" && $BROTLI != "n" ]]; do
-			read -p "       Brotli [y/n]: " -e BROTLI
+			read -rp "       Brotli [y/n]: " -e BROTLI
 		done
 		while [[ $HEADERMOD != "y" && $HEADERMOD != "n" ]]; do
-			read -p "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
+			read -rp "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
 		done
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
-			read -p "       GeoIP [y/n]: " -e GEOIP
+			read -rp "       GeoIP [y/n]: " -e GEOIP
 		done
 		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
-			read -p "       Fancy index [y/n]: " -e FANCYINDEX
+			read -rp "       Fancy index [y/n]: " -e FANCYINDEX
 		done
 		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
-			read -p "       ngx_cache_purge [y/n]: " -e CACHEPURGE
+			read -rp "       ngx_cache_purge [y/n]: " -e CACHEPURGE
 		done
 		while [[ $LUA != "y" && $LUA != "n" ]]; do
-			read -p "       ngx_http_lua_module [y/n]: " -e LUA
+			read -rp "       ngx_http_lua_module [y/n]: " -e LUA
 		done
 		while [[ $WEBDAV != "y" && $WEBDAV != "n" ]]; do
-			read -p "       nginx WebDAV [y/n]: " -e WEBDAV
+			read -rp "       nginx WebDAV [y/n]: " -e WEBDAV
 		done
 		while [[ $VTS != "y" && $VTS != "n" ]]; do
-			read -p "       nginx VTS [y/n]: " -e VTS
+			read -rp "       nginx VTS [y/n]: " -e VTS
 		done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
-			read -p "       nginx testcookie [y/n]: " -e TESTCOOKIE
+			read -rp "       nginx testcookie [y/n]: " -e TESTCOOKIE
 		done
 		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -p "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
+			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
 		done
 		while [[ $MODSEC != "y" && $MODSEC != "n" ]]; do
-			read -p "       nginx ModSecurity [y/n]: " -e MODSEC
+			read -rp "       nginx ModSecurity [y/n]: " -e MODSEC
 		done
 		if [[ $MODSEC == 'y' ]]; then
-			read -p "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
+			read -rp "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
 		fi
-		if [[ $NGINX_VER == $NGINX_MAINLINE_VER ]]; then
+		if [[ $NGINX_VER == "$NGINX_MAINLINE_VER" ]]; then
 			# The patch only works on mainline
 			while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
-				read -p "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
+				read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
 			done
 		fi
 		if [[ $HTTP3 != 'y' ]]; then
@@ -145,7 +145,7 @@ case $OPTION in
 			echo "   3) LibreSSL $LIBRESSL_VER from source "
 			echo ""
 			while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
-				read -p "Select an option [1-3]: " SSL
+				read -rp "Select an option [1-3]: " SSL
 			done
 		fi
 	fi
@@ -217,7 +217,7 @@ case $OPTION in
 		# install libmaxminddb
 		wget https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VER}/libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
 		tar xaf libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
-		cd libmaxminddb-${LIBMAXMINDDB_VER}/
+		cd libmaxminddb-${LIBMAXMINDDB_VER}/ || exit 1
 		./configure
 		make -j "$(nproc)"
 		make install
@@ -234,10 +234,10 @@ case $OPTION in
 		tar -xf GeoLite2-City.tar.gz
 		tar -xf GeoLite2-Country.tar.gz
 		mkdir /opt/geoip
-		cd GeoLite2-City_*/
+		cd GeoLite2-City_*/ || exit 1
 		mv GeoLite2-City.mmdb /opt/geoip/
 		cd ../
-		cd GeoLite2-Country_*/
+		cd GeoLite2-Country_*/ || exit 1
 		mv GeoLite2-Country.mmdb /opt/geoip/
 	fi
 
@@ -250,20 +250,20 @@ case $OPTION in
 	# Lua
 	if [[ $LUA == 'y' ]]; then
 		# LuaJIT download
-		cd /usr/local/src/nginx/modules
+		cd /usr/local/src/nginx/modules || exit 1
 		wget https://github.com/openresty/luajit2/archive/v${LUA_JIT_VER}.tar.gz
 		tar xaf v${LUA_JIT_VER}.tar.gz
-		cd luajit2-${LUA_JIT_VER}
+		cd luajit2-${LUA_JIT_VER} || exit 1
 		make -j "$(nproc)"
 		make install
 
 		# ngx_devel_kit download
-		cd /usr/local/src/nginx/modules
+		cd /usr/local/src/nginx/modules || exit 1
 		wget https://github.com/simplresty/ngx_devel_kit/archive/v${NGINX_DEV_KIT}.tar.gz
 		tar xaf v${NGINX_DEV_KIT}.tar.gz
 
 		# lua-nginx-module download
-		cd /usr/local/src/nginx/modules
+		cd /usr/local/src/nginx/modules || exit 1
 		wget https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_VER}.tar.gz
 		tar xaf v${LUA_NGINX_VER}.tar.gz
 
@@ -290,7 +290,7 @@ case $OPTION in
 		cd /usr/local/src/nginx/modules || exit 1
 		wget https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz
 		tar xaf openssl-${OPENSSL_VER}.tar.gz
-		cd openssl-${OPENSSL_VER}
+		cd openssl-${OPENSSL_VER} || exit 1
 
 		./config
 	fi
@@ -299,7 +299,7 @@ case $OPTION in
 	if [[ $MODSEC == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity
-		cd ModSecurity
+		cd ModSecurity || exit 1
 		git submodule init
 		git submodule update
 		./build.sh
@@ -319,7 +319,7 @@ case $OPTION in
 	# Download and extract of Nginx source code
 	cd /usr/local/src/nginx/ || exit 1
 	wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
-	cd nginx-${NGINX_VER}
+	cd nginx-${NGINX_VER} || exit 1
 
 	# As the default nginx.conf does not work, we download a clean and working conf from my GitHub.
 	# We do it only if it does not already exist, so that it is not overriten if Nginx is being updated
@@ -360,7 +360,7 @@ case $OPTION in
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
 		NGINX_OPTIONS=$(
-			echo $NGINX_OPTIONS
+			echo" $NGINX_OPTIONS"
 			echo --with-ld-opt="-Wl,-rpath,/usr/local/lib/"
 		)
 	fi
@@ -418,11 +418,11 @@ case $OPTION in
 	# Lua
 	if [[ $LUA == 'y' ]]; then
 		NGINX_MODULES=$(
-			echo $NGINX_MODULES
+			echo "$NGINX_MODULES"
 			echo "--add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}"
 		)
 		NGINX_MODULES=$(
-			echo $NGINX_MODULES
+			echo "$NGINX_MODULES"
 			echo "--add-module=/usr/local/src/nginx/modules/lua-nginx-module-${LUA_NGINX_VER}"
 		)
 	fi
@@ -481,7 +481,7 @@ case $OPTION in
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
 		curl -sSf https://sh.rustup.rs | sh -s -- -y
-		source $HOME/.cargo/env
+		source "$HOME/.cargo/env"
 
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 		# Apply actual patch
@@ -502,7 +502,7 @@ case $OPTION in
 		export LUAJIT_INC=/usr/local/include/luajit-2.1/
 	fi
 
-	./configure $NGINX_OPTIONS $NGINX_MODULES
+	./configure "$NGINX_OPTIONS" "$NGINX_MODULES"
 	make -j "$(nproc)"
 	make install
 
@@ -558,10 +558,10 @@ case $OPTION in
 2) # Uninstall Nginx
 	if [[ $HEADLESS != "y" ]]; then
 		while [[ $RM_CONF != "y" && $RM_CONF != "n" ]]; do
-			read -p "       Remove configuration files ? [y/n]: " -e RM_CONF
+			read -rp "       Remove configuration files ? [y/n]: " -e RM_CONF
 		done
 		while [[ $RM_LOGS != "y" && $RM_LOGS != "n" ]]; do
-			read -p "       Remove logs files ? [y/n]: " -e RM_LOGS
+			read -rp "       Remove logs files ? [y/n]: " -e RM_LOGS
 		done
 	fi
 	# Stop Nginx
