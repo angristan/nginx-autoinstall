@@ -131,12 +131,9 @@ case $OPTION in
 		if [[ $MODSEC == 'y' ]]; then
 			read -rp "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
 		fi
-		if [[ $NGINX_VER == "$NGINX_MAINLINE_VER" ]]; then
-			# The patch only works on mainline
-			while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
-				read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
-			done
-		fi
+		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
+			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
+		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
