@@ -103,6 +103,10 @@ case $OPTION in
 		done
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
 			read -rp "       GeoIP [y/n]: " -e GEOIP
+
+			while [[ $GEOIP = "y" && ! -n "$GEOIP_LICENSE_KEY" ]]; do
+				read -rp "       Maxmind.com License Key: " -e GEOIP_LICENSE_KEY
+			done
 		done
 		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
 			read -rp "       Fancy index [y/n]: " -e FANCYINDEX
@@ -164,9 +168,14 @@ case $OPTION in
 			;;
 		esac
 	fi
+	if [[ $GEOIP == 'y' && ! -n "$GEOIP_LICENSE_KEY" ]]; then
+		echo ""
+		echo -e "\\033[33mAttention:\\nGEOIP_LICENSE_KEY not provided, not downloading any database for the GeoIP module!\\033[0m"
+		echo ""
+	fi
 	if [[ $HEADLESS != "y" ]]; then
 		echo ""
-		read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
+		read -n1 -r -p "Nginx is ready to be installed, press any key to continue or CTRL + C to cancel..."
 		echo ""
 	fi
 
@@ -229,16 +238,22 @@ case $OPTION in
 
 		mkdir geoip-db
 		cd geoip-db || exit 1
-		wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
-		wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
-		tar -xf GeoLite2-City.tar.gz
-		tar -xf GeoLite2-Country.tar.gz
-		mkdir /opt/geoip
-		cd GeoLite2-City_*/ || exit 1
-		mv GeoLite2-City.mmdb /opt/geoip/
-		cd ../ || exit 1
-		cd GeoLite2-Country_*/ || exit 1
-		mv GeoLite2-Country.mmdb /opt/geoip/
+
+		if [[ -n "$GEOIP_LICENSE_KEY" ]]; then
+			wget "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOIP_LICENSE_KEY&suffix=tar.gz" -O GeoLite2-City.tar.gz.tmp -t 3 -q && mv GeoLite2-City.tar.gz.tmp GeoLite2-City.tar.gz
+			wget "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=$GEOIP_LICENSE_KEY&suffix=tar.gz" -O GeoLite2-Country.tar.gz.tmp -t 3 -q && mv GeoLite2-Country.tar.gz.tmp GeoLite2-Country.tar.gz
+
+			if [[ -f "GeoLite2-City.tar.gz" && -f "GeoLite2-Country.tar.gz" ]]; then
+				tar -xf GeoLite2-City.tar.gz
+				tar -xf GeoLite2-Country.tar.gz
+				mkdir -p /opt/geoip
+				cd GeoLite2-City_*/ || exit 1
+				mv GeoLite2-City.mmdb /opt/geoip/
+				cd ../ || exit 1
+				cd GeoLite2-Country_*/ || exit 1
+				mv GeoLite2-Country.mmdb /opt/geoip/
+			fi
+		fi
 	fi
 
 	# Cache Purge
