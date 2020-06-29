@@ -478,6 +478,7 @@ case $OPTION in
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
 		curl -sSf https://sh.rustup.rs | sh -s -- -y
+		# shellcheck disable=SC1090
 		source "$HOME/.cargo/env"
 
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
