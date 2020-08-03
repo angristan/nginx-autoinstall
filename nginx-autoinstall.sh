@@ -499,7 +499,6 @@ case $OPTION in
 		export LUAJIT_INC=/usr/local/include/luajit-2.1/
 	fi
 
-	# shellcheck disable=SC2086
 	./configure $NGINX_OPTIONS $NGINX_MODULES
 	make -j "$(nproc)"
 	make install
