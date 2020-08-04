@@ -163,6 +163,13 @@ case $OPTION in
 	fi
 	if [[ $HEADLESS != "y" ]]; then
 		echo ""
+		# Check if custom nginx configuration exists and load it
+		if [ -f nginx-custom.options ]; then
+			#read -p "Found nginx-custom.options, we'll use those instead of default."
+			echo "Found nginx-custom.options, we'll use those instead of default."
+		    source nginx-custom.options
+		fi
+		echo ""
 		read -n1 -r -p "Nginx is ready to be installed, press any key to continue..."
 		echo ""
 	fi
@@ -326,22 +333,30 @@ case $OPTION in
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf
 	fi
 	cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
+    if [ -z ${NGINX_OPTIONS+x} ];
+        then
+        echo "No custom NGINX_OPTIONS found, using default"
+        NGINX_OPTIONS="
+            --prefix=/etc/nginx \
+            --sbin-path=/usr/sbin/nginx \
+            --conf-path=/etc/nginx/nginx.conf \
+            --error-log-path=/var/log/nginx/error.log \
+            --http-log-path=/var/log/nginx/access.log \
+            --pid-path=/var/run/nginx.pid \
+            --lock-path=/var/run/nginx.lock \
+            --http-client-body-temp-path=/var/cache/nginx/client_temp \
+            --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+            --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+            --user=nginx \
+            --group=nginx \
+            --with-cc-opt=-Wno-deprecated-declarations \
+            --with-cc-opt=-Wno-ignored-qualifiers"
+    fi
 
-	NGINX_OPTIONS="
-		--prefix=/etc/nginx \
-		--sbin-path=/usr/sbin/nginx \
-		--conf-path=/etc/nginx/nginx.conf \
-		--error-log-path=/var/log/nginx/error.log \
-		--http-log-path=/var/log/nginx/access.log \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/run/nginx.lock \
-		--http-client-body-temp-path=/var/cache/nginx/client_temp \
-		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-		--user=nginx \
-		--group=nginx \
-		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers"
+    if [ -z ${NGINX_MODULES+x} ];
+    then
+       echo "No custom NGINX_MODULES found, using default"
+       read -p "No NGINX_OPTIONS found, using default, press to continue"
 
 	NGINX_MODULES="--with-threads \
 		--with-file-aio \
@@ -353,6 +368,8 @@ case $OPTION in
 		--with-http_stub_status_module \
 		--with-http_realip_module \
 		--with-http_sub_module"
+
+    fi
 
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
