@@ -1,26 +1,20 @@
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on: push
 
 name: Lint
 jobs:
   shellcheck:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: shellcheck
-      uses: ludeeus/action-shellcheck@0.0.1
-      env:
-        SHELLCHECK_OPTS: -e SC1090
+      - uses: actions/checkout@master
+      - name: shellcheck
+        uses: ludeeus/action-shellcheck@0.0.1
+        env:
+          SHELLCHECK_OPTS: -e SC1090,SC2086
   shfmt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: shfmt
-      uses: bltavares/actions/shfmt@master
-      env:
-        SHFMT_ARGS: -d
+      - uses: actions/checkout@master
+      - name: shfmt
+        uses: bltavares/actions/shfmt@master
+        env:
+          SHFMT_ARGS: -d

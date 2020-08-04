@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=1.19.0
+NGINX_MAINLINE_VER=1.19.1
 NGINX_STABLE_VER=1.18.0
 LIBRESSL_VER=3.1.2
 OPENSSL_VER=1.1.1g
@@ -202,7 +202,7 @@ case $OPTION in
 	#Brotli
 	if [[ $BROTLI == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone https://github.com/eustas/ngx_brotli
+		git clone --depth 1 https://github.com/eustas/ngx_brotli
 		cd ngx_brotli || exit 1
 		git checkout v0.1.2
 		git submodule update --init
@@ -248,7 +248,7 @@ case $OPTION in
 	# Cache Purge
 	if [[ $CACHEPURGE == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone https://github.com/FRiCKLE/ngx_cache_purge
+		git clone --depth 1 https://github.com/FRiCKLE/ngx_cache_purge
 	fi
 
 	# Lua
@@ -442,7 +442,7 @@ case $OPTION in
 	fi
 
 	if [[ $FANCYINDEX == 'y' ]]; then
-		git clone --quiet https://github.com/aperezdc/ngx-fancyindex.git /usr/local/src/nginx/modules/fancyindex
+		git clone --depth 1 --quiet https://github.com/aperezdc/ngx-fancyindex.git /usr/local/src/nginx/modules/fancyindex
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/fancyindex
@@ -450,7 +450,7 @@ case $OPTION in
 	fi
 
 	if [[ $WEBDAV == 'y' ]]; then
-		git clone --quiet https://github.com/arut/nginx-dav-ext-module.git /usr/local/src/nginx/modules/nginx-dav-ext-module
+		git clone --depth 1 --quiet https://github.com/arut/nginx-dav-ext-module.git /usr/local/src/nginx/modules/nginx-dav-ext-module
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --with-http_dav_module --add-module=/usr/local/src/nginx/modules/nginx-dav-ext-module
@@ -458,7 +458,7 @@ case $OPTION in
 	fi
 
 	if [[ $VTS == 'y' ]]; then
-		git clone --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
+		git clone --depth 1 --quiet https://github.com/vozlt/nginx-module-vts.git /usr/local/src/nginx/modules/nginx-module-vts
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts
@@ -466,7 +466,7 @@ case $OPTION in
 	fi
 
 	if [[ $TESTCOOKIE == 'y' ]]; then
-		git clone --quiet https://github.com/kyprizel/testcookie-nginx-module.git /usr/local/src/nginx/modules/testcookie-nginx-module
+		git clone --depth 1 --quiet https://github.com/kyprizel/testcookie-nginx-module.git /usr/local/src/nginx/modules/testcookie-nginx-module
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/testcookie-nginx-module
@@ -474,7 +474,7 @@ case $OPTION in
 	fi
 
 	if [[ $MODSEC == 'y' ]]; then
-		git clone --quiet https://github.com/SpiderLabs/ModSecurity-nginx.git /usr/local/src/nginx/modules/ModSecurity-nginx
+		git clone --depth 1 --quiet https://github.com/SpiderLabs/ModSecurity-nginx.git /usr/local/src/nginx/modules/ModSecurity-nginx
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/ModSecurity-nginx
@@ -490,7 +490,7 @@ case $OPTION in
 	# HTTP3
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone --recursive https://github.com/cloudflare/quiche
+		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
 		# Dependencies for BoringSSL and Quiche
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
@@ -516,7 +516,6 @@ case $OPTION in
 		export LUAJIT_INC=/usr/local/include/luajit-2.1/
 	fi
 
-	# shellcheck disable=SC2086
 	./configure $NGINX_OPTIONS $NGINX_MODULES
 	make -j "$(nproc)"
 	make install
