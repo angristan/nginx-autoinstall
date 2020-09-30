@@ -18,7 +18,7 @@ LUA_JIT_VER=2.1-20181029
 LUA_NGINX_VER=0.10.16rc5
 NGINX_DEV_KIT=0.3.1
 
-# Define installation paramaters for headless install (fallback if unspecifed)
+# Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
 	OPTION=${OPTION:-1}
 	NGINX_VER=${NGINX_VER:-1}
