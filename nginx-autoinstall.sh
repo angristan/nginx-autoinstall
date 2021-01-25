@@ -10,7 +10,7 @@ NGINX_MAINLINE_VER=1.19.6
 NGINX_STABLE_VER=1.18.0
 LIBRESSL_VER=3.3.1
 OPENSSL_VER=1.1.1i
-NPS_VER=1.13.35.2
+NPS_VER=1.14.33.1
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.4.3
 GEOIP2_VER=3.3
@@ -183,9 +183,9 @@ case $OPTION in
 	# PageSpeed
 	if [[ $PAGESPEED == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip
-		unzip v${NPS_VER}-stable.zip
-		cd incubator-pagespeed-ngx-${NPS_VER}-stable || exit 1
+		wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-RC1.zip
+		unzip v${NPS_VER}-RC1.zip
+		cd incubator-pagespeed-ngx-${NPS_VER}-RC1 || exit 1
 		psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
 		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 		wget "${psol_url}"
