@@ -373,7 +373,7 @@ case $OPTION in
 	if [[ $PAGESPEED == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
-			echo "--add-module=/usr/local/src/nginx/modules/incubator-pagespeed-ngx-${NPS_VER}-stable"
+			echo "--add-module=/usr/local/src/nginx/modules/incubator-pagespeed-ngx-${NPS_VER}-RC1"
 		)
 	fi
 
