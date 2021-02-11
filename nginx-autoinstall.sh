@@ -112,7 +112,7 @@ case $OPTION in
 			read -rp "       ngx_cache_purge [y/n]: " -e CACHEPURGE
 		done
 		while [[ $SUBFILTER != "y" && $SUBFILTER != "n" ]]; do
-			read -rp "       Nginx Substitutions Filter [y/n]: " -e SUBFILTER
+			read -rp "       nginx_substitutions_filter [y/n]: " -e SUBFILTER
 		done
 		while [[ $LUA != "y" && $LUA != "n" ]]; do
 			read -rp "       ngx_http_lua_module [y/n]: " -e LUA
