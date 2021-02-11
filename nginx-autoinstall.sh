@@ -31,6 +31,7 @@ if [[ $HEADLESS == "y" ]]; then
 	LUA=${LUA:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
+	RTMP=${RTMP:-n}
 	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
@@ -118,6 +119,9 @@ case $OPTION in
 		done
 		while [[ $VTS != "y" && $VTS != "n" ]]; do
 			read -rp "       nginx VTS [y/n]: " -e VTS
+		done
+		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
+			read -rp "       nginx RTMP [y/n]: " -e RTMP
 		done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 			read -rp "       nginx testcookie [y/n]: " -e TESTCOOKIE
@@ -445,6 +449,14 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts
+		)
+	fi
+	
+	if [[ $RTMP == 'y' ]]; then
+		git clone --quiet https://github.com/arut/nginx-rtmp-module.git /usr/local/src/nginx/modules/nginx-rtmp-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/nginx-rtmp-module
 		)
 	fi
 
