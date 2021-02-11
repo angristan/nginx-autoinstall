@@ -28,6 +28,7 @@ if [[ $HEADLESS == "y" ]]; then
 	GEOIP=${GEOIP:-n}
 	FANCYINDEX=${FANCYINDEX:-n}
 	CACHEPURGE=${CACHEPURGE:-n}
+	SUBFILTER=${SUBFILTER:-n}
 	LUA=${LUA:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
@@ -109,6 +110,9 @@ case $OPTION in
 		done
 		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
 			read -rp "       ngx_cache_purge [y/n]: " -e CACHEPURGE
+		done
+		while [[ $SUBFILTER != "y" && $SUBFILTER != "n" ]]; do
+			read -rp "       Nginx Substitutions Filter [y/n]: " -e SUBFILTER
 		done
 		while [[ $LUA != "y" && $LUA != "n" ]]; do
 			read -rp "       ngx_http_lua_module [y/n]: " -e LUA
@@ -242,6 +246,12 @@ case $OPTION in
 	if [[ $CACHEPURGE == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 https://github.com/FRiCKLE/ngx_cache_purge
+	fi
+	
+	# Nginx Substitutions Filter
+	if [[ $SUBFILTER == 'y' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module
 	fi
 
 	# Lua
@@ -409,6 +419,13 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo "--add-module=/usr/local/src/nginx/modules/ngx_cache_purge"
+		)
+	fi
+	
+	if [[ $SUBFILTER == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo "--add-module=/usr/local/src/nginx/modules/ngx_http_substitutions_filter_module"
 		)
 	fi
 
