@@ -134,6 +134,9 @@ case $OPTION in
 		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
 			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
 		done
+		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
+			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e HPACK
+		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
@@ -341,8 +344,7 @@ case $OPTION in
 		--user=nginx \
 		--group=nginx \
 		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers \
-		--with-http_v2_hpack_enc"
+		--with-cc-opt=-Wno-ignored-qualifiers"
 
 	NGINX_MODULES="--with-threads \
 		--with-file-aio \
@@ -469,6 +471,18 @@ case $OPTION in
 	if [[ $TLSDYN == 'y' ]]; then
 		wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.17.7%2B.patch -O tcp-tls.patch
 		patch -p1 <tcp-tls.patch
+	fi
+
+	# Cloudflare's Cloudflare's full HPACK encoding patch
+	if [[ $HPACK == 'y' ]]; then
+		# Working Patch from https://github.com/hakasenyang/openssl-patch/issues/2#issuecomment-413449809
+		wget https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch -O nginx_http2_hpack.patch
+		patch -p1 <nginx_http2_hpack.patch
+
+		NGINX_OPTIONS=$(
+			echo "$NGINX_OPTIONS"
+			echo --with-http_v2_hpack_enc
+		)
 	fi
 
 	# HTTP3
