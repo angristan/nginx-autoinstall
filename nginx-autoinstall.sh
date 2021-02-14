@@ -574,6 +574,9 @@ case $OPTION in
 		/lib/systemd/system/nginx.service \
 		/etc/systemd/system/multi-user.target.wants/nginx.service
 
+		# Reload systemctl
+		systemctl daemon-reload
+
 	# Remove conf files
 	if [[ $RM_CONF == 'y' ]]; then
 		rm -r /etc/nginx/
