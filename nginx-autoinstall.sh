@@ -147,7 +147,7 @@ case $OPTION in
 			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
 		done
 		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
-			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e HPACK
+			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e -i n HPACK
 		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
