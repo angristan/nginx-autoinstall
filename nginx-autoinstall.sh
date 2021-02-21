@@ -251,7 +251,7 @@ case $OPTION in
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 https://github.com/FRiCKLE/ngx_cache_purge
 	fi
-	
+
 	# Nginx Substitutions Filter
 	if [[ $SUBFILTER == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
@@ -425,7 +425,7 @@ case $OPTION in
 			echo "--add-module=/usr/local/src/nginx/modules/ngx_cache_purge"
 		)
 	fi
-	
+
 	if [[ $SUBFILTER == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
@@ -468,7 +468,7 @@ case $OPTION in
 			echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts
 		)
 	fi
-	
+
 	if [[ $RTMP == 'y' ]]; then
 		git clone --quiet https://github.com/arut/nginx-rtmp-module.git /usr/local/src/nginx/modules/nginx-rtmp-module
 		NGINX_MODULES=$(
