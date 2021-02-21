@@ -98,6 +98,15 @@ case $OPTION in
 		echo "If you select none, Nginx will be installed with its default modules."
 		echo ""
 		echo "Modules to install :"
+		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
+			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
+		done
+		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
+			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
+		done
+		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
+			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e -i n HPACK
+		done
 		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
 			read -rp "       PageSpeed $NPS_VER [y/n]: " -e -i n PAGESPEED
 		done
@@ -108,7 +117,7 @@ case $OPTION in
 			read -rp "       Headers More $HEADERMOD_VER [y/n]: " -e -i n HEADERMOD
 		done
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
-			read -rp "       GeoIP [y/n]: " -e -i n GEOIP
+			read -rp "       GeoIP (BROKEN) [y/n]: " -e -i n GEOIP
 		done
 		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
 			read -rp "       Fancy index [y/n]: " -e -i n FANCYINDEX
@@ -134,21 +143,12 @@ case $OPTION in
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 			read -rp "       nginx testcookie [y/n]: " -e -i n TESTCOOKIE
 		done
-		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
-		done
 		while [[ $MODSEC != "y" && $MODSEC != "n" ]]; do
 			read -rp "       nginx ModSecurity [y/n]: " -e -i n MODSEC
 		done
 		if [[ $MODSEC == 'y' ]]; then
 			read -rp "       Enable nginx ModSecurity? [y/n]: " -e -i n MODSEC_ENABLE
 		fi
-		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
-			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
-		done
-		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
-			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e -i n HPACK
-		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
