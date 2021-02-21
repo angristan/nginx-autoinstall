@@ -82,7 +82,7 @@ jobs:
           host: ${{ steps.server_ip.outputs.value }}
           username: root
           key: ${{ secrets.SSH_KEY }}
-          script: set -x && git clone https://github.com/angristan/nginx-autoinstall.git && cd nginx-autoinstall && git checkout ${{ github.event.pull_request.head.sha }}
+          script: set -x && git clone https://github.com/angristan/nginx-autoinstall.git && cd nginx-autoinstall && git checkout ci
 
       - name: Run nginx-autoinstall.sh in headless mode
         uses: appleboy/ssh-action@v0.1.4

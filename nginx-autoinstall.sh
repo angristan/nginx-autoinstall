@@ -76,7 +76,6 @@ case $OPTION in
 			read -rp "Select an option [1-2]: " -e -i 1 NGINX_VER
 		done
 	fi
-	echo $NGINX_VER
 	case $NGINX_VER in
 	1 | STABLE)
 		NGINX_VER=$NGINX_STABLE_VER
