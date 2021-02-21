@@ -15,7 +15,7 @@ jobs:
       - name: shellcheck
         uses: ludeeus/action-shellcheck@0.0.1
         env:
-          SHELLCHECK_OPTS: -e SC1090,SC2086
+          SHELLCHECK_OPTS: -e SC1090,SC2086,SC2034
   shfmt:
     runs-on: ubuntu-latest
     steps:
