@@ -17,7 +17,7 @@ pagespeed GlobalAdminPath /pagespeed_global_admin;
 pagespeed FileCachePath /var/ngx_pagespeed_cache;
 ```
 
-More info here : https://angristan.fr/compiler-installer-nginx-module-pagespeed-debian/
+More info here : <https://angristan.fr/compiler-installer-nginx-module-pagespeed-debian/>
 
 ## Brotli
 
@@ -58,11 +58,11 @@ TLS- can be TLS13-.
 
 ## GeoIP 2
 
-See https://github.com/leev/ngx_http_geoip2_module#example-usage
+See <https://github.com/leev/ngx_http_geoip2_module#example-usage>
 
 ## HTTP/3
 
-See https://github.com/cloudflare/quiche/tree/master/extras/nginx#readme
+See <https://github.com/cloudflare/quiche/tree/master/extras/nginx#readme>
 
 ```nginx
 server {
@@ -129,12 +129,13 @@ testcookie_refresh_template '<html><body>setting cookie...<script type=\"text/ja
 ```nginx
 # Whitelisting testcookie with "map"
 map $remote_addr $trusted {
-	default          0;
-	"127.0.0.1"      1; # localhost
+    default          0;
+    "127.0.0.1"      1; # localhost
 }
 ```
 
 And in server block:
+
 ```nginx
 location / {
 .....
@@ -145,10 +146,12 @@ location / {
 ```
 
 Notice the
+
 ```nginx
 # setting redirect via html code
 testcookie_redirect_via_refresh off;
 ```
+
 Which turns off the html part.
 
-See https://github.com/kyprizel/testcookie-nginx-module#testcookie_redirect_via_refresh
+See <https://github.com/kyprizel/testcookie-nginx-module#testcookie_redirect_via_refresh>

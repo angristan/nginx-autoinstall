@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090,SC2086,SC2034
 
 if [[ $EUID -ne 0 ]]; then
 	echo -e "Sorry, you need to run this as root"

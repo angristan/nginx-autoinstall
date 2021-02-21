@@ -8,19 +8,14 @@ on:
 
 name: Lint
 jobs:
-  shellcheck:
+  super-linter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: shellcheck
-        uses: ludeeus/action-shellcheck@0.0.1
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Lint Code Base
+        uses: github/super-linter@v3
         env:
-          SHELLCHECK_OPTS: -e SC1090,SC2086,SC2034
-  shfmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: shfmt
-        uses: bltavares/actions/shfmt@master
-        env:
-          SHFMT_ARGS: -d
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JSCPD: false
+          VALIDATE_DOCKERFILE: false
