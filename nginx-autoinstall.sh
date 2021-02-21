@@ -73,7 +73,7 @@ case $OPTION in
 		echo "   2) Mainline $NGINX_MAINLINE_VER"
 		echo ""
 		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
-			read -rp "Select an option [1-2]: " NGINX_VER
+			read -rp "Select an option [1-2]: " -e -i 1 NGINX_VER
 		done
 	fi
 	case $NGINX_VER in
@@ -95,52 +95,52 @@ case $OPTION in
 		echo ""
 		echo "Modules to install :"
 		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
-			read -rp "       PageSpeed $NPS_VER [y/n]: " -e PAGESPEED
+			read -rp "       PageSpeed $NPS_VER [y/n]: " -e -i n PAGESPEED
 		done
 		while [[ $BROTLI != "y" && $BROTLI != "n" ]]; do
-			read -rp "       Brotli [y/n]: " -e BROTLI
+			read -rp "       Brotli [y/n]: " -e -i n BROTLI
 		done
 		while [[ $HEADERMOD != "y" && $HEADERMOD != "n" ]]; do
-			read -rp "       Headers More $HEADERMOD_VER [y/n]: " -e HEADERMOD
+			read -rp "       Headers More $HEADERMOD_VER [y/n]: " -e -i n HEADERMOD
 		done
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
-			read -rp "       GeoIP [y/n]: " -e GEOIP
+			read -rp "       GeoIP [y/n]: " -e -i n GEOIP
 		done
 		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
-			read -rp "       Fancy index [y/n]: " -e FANCYINDEX
+			read -rp "       Fancy index [y/n]: " -e -i n FANCYINDEX
 		done
 		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
-			read -rp "       ngx_cache_purge [y/n]: " -e CACHEPURGE
+			read -rp "       ngx_cache_purge [y/n]: " -e -i n CACHEPURGE
 		done
 		while [[ $SUBFILTER != "y" && $SUBFILTER != "n" ]]; do
-			read -rp "       nginx_substitutions_filter [y/n]: " -e SUBFILTER
+			read -rp "       nginx_substitutions_filter [y/n]: " -e -i n SUBFILTER
 		done
 		while [[ $LUA != "y" && $LUA != "n" ]]; do
-			read -rp "       ngx_http_lua_module [y/n]: " -e LUA
+			read -rp "       ngx_http_lua_module [y/n]: " -e -i n LUA
 		done
 		while [[ $WEBDAV != "y" && $WEBDAV != "n" ]]; do
-			read -rp "       nginx WebDAV [y/n]: " -e WEBDAV
+			read -rp "       nginx WebDAV [y/n]: " -e -i n WEBDAV
 		done
 		while [[ $VTS != "y" && $VTS != "n" ]]; do
-			read -rp "       nginx VTS [y/n]: " -e VTS
+			read -rp "       nginx VTS [y/n]: " -e -i n VTS
 		done
 		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
-			read -rp "       nginx RTMP [y/n]: " -e RTMP
+			read -rp "       nginx RTMP [y/n]: " -e -i n RTMP
 		done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
-			read -rp "       nginx testcookie [y/n]: " -e TESTCOOKIE
+			read -rp "       nginx testcookie [y/n]: " -e -i n TESTCOOKIE
 		done
 		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e HTTP3
+			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
 		done
 		while [[ $MODSEC != "y" && $MODSEC != "n" ]]; do
-			read -rp "       nginx ModSecurity [y/n]: " -e MODSEC
+			read -rp "       nginx ModSecurity [y/n]: " -e -i n MODSEC
 		done
 		if [[ $MODSEC == 'y' ]]; then
-			read -rp "       Enable nginx ModSecurity? [y/n]: " -e MODSEC_ENABLE
+			read -rp "       Enable nginx ModSecurity? [y/n]: " -e -i n MODSEC_ENABLE
 		fi
 		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
-			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e TLSDYN
+			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
 		done
 		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
 			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e HPACK
@@ -153,7 +153,7 @@ case $OPTION in
 			echo "   3) LibreSSL $LIBRESSL_VER from source "
 			echo ""
 			while [[ $SSL != "1" && $SSL != "2" && $SSL != "3" ]]; do
-				read -rp "Select an option [1-3]: " SSL
+				read -rp "Select an option [1-3]: " -e -i 1 SSL
 			done
 		fi
 	fi
@@ -599,10 +599,10 @@ case $OPTION in
 2) # Uninstall Nginx
 	if [[ $HEADLESS != "y" ]]; then
 		while [[ $RM_CONF != "y" && $RM_CONF != "n" ]]; do
-			read -rp "       Remove configuration files ? [y/n]: " -e RM_CONF
+			read -rp "       Remove configuration files ? [y/n]: " -e -i n RM_CONF
 		done
 		while [[ $RM_LOGS != "y" && $RM_LOGS != "n" ]]; do
-			read -rp "       Remove logs files ? [y/n]: " -e RM_LOGS
+			read -rp "       Remove logs files ? [y/n]: " -e -i n RM_LOGS
 		done
 	fi
 	# Stop Nginx
