@@ -538,7 +538,7 @@ case $OPTION in
 
 		else
 			# Same patch as above but fixed conflicts with the HTTP/3 patch
-			wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx_hpack_push_with_http3.patch -O nginx_http2_hpack.patch
+			wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/http3-ci/patches/nginx_hpack_push_with_http3.patch -O nginx_http2_hpack.patch
 		fi
 		patch -p1 <nginx_http2_hpack.patch
 
