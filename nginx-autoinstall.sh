@@ -506,18 +506,6 @@ case $OPTION in
 		patch -p1 <tcp-tls.patch
 	fi
 
-	# Cloudflare's Cloudflare's full HPACK encoding patch
-	if [[ $HPACK == 'y' ]]; then
-		# Working Patch from https://github.com/hakasenyang/openssl-patch/issues/2#issuecomment-413449809
-		wget https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch -O nginx_http2_hpack.patch
-		patch -p1 <nginx_http2_hpack.patch
-
-		NGINX_OPTIONS=$(
-			echo "$NGINX_OPTIONS"
-			echo --with-http_v2_hpack_enc
-		)
-	fi
-
 	# HTTP3
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
@@ -539,6 +527,24 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --with-http_v3_module
+		)
+	fi
+
+	# Cloudflare's Cloudflare's full HPACK encoding patch
+	if [[ $HPACK == 'y' ]]; then
+		if [[ $HTTP3 == 'n' ]]; then
+			# Working Patch from https://github.com/hakasenyang/openssl-patch/issues/2#issuecomment-413449809
+			wget https://raw.githubusercontent.com/hakasenyang/openssl-patch/master/nginx_hpack_push_1.15.3.patch -O nginx_http2_hpack.patch
+
+		else
+			# Same patch as above but fixed conflicts with the HTTP/3 patch
+			wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx_hpack_push_with_http3.patch -O nginx_http2_hpack.patch
+		fi
+		patch -p1 <nginx_http2_hpack.patch
+
+		NGINX_OPTIONS=$(
+			echo "$NGINX_OPTIONS"
+			echo --with-http_v2_hpack_enc
 		)
 	fi
 
