@@ -17,6 +17,9 @@ jobs:
           - ubuntu-16-04-x64
           - ubuntu-18-04-x64
           - ubuntu-20-04-x64
+        nginx-version:
+          - 1 # stable
+          - 2 # mainline
     steps:
       - uses: actions/checkout@v2
 
@@ -87,7 +90,7 @@ jobs:
           host: ${{ steps.server_ip.outputs.value }}
           username: root
           key: ${{ secrets.SSH_KEY }}
-          script: 'set -x && HEADLESS=y bash -x ~/nginx-autoinstall/nginx-autoinstall.sh && ps aux | grep nginx | grep -v grep > /dev/null 2>&1 && echo "Success: Nginx is running" && exit 0 || echo "Failure: Nginx is not running" && exit 1'
+          script: 'set -x && HEADLESS=y NGINX_VER=${{ matrix.nginx-version }} bash -x ~/nginx-autoinstall/nginx-autoinstall.sh && ps aux | grep nginx | grep -v grep > /dev/null 2>&1 && echo "Success: Nginx is running" && exit 0 || echo "Failure: Nginx is not running" && exit 1'
 
       - name: Delete server
         run: doctl compute droplet delete -f nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}
