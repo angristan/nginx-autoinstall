@@ -1,14 +1,13 @@
 on:
   push:
     branches:
-      # - master
-      - ci
+      - master
 
 name: Test
 jobs:
   install:
     runs-on: ubuntu-latest
-    # if: github.repository == 'angristan/nginx-autoinstall' && github.actor == 'angristan'
+    if: github.repository == 'angristan/nginx-autoinstall' && github.actor == 'angristan'
     strategy:
       matrix:
         os-image:
@@ -82,7 +81,7 @@ jobs:
           host: ${{ steps.server_ip.outputs.value }}
           username: root
           key: ${{ secrets.SSH_KEY }}
-          script: set -x && git clone https://github.com/angristan/nginx-autoinstall.git && cd nginx-autoinstall && git checkout ci
+          script: set -x && git clone https://github.com/angristan/nginx-autoinstall.git && cd nginx-autoinstall
 
       - name: Run nginx-autoinstall.sh in headless mode
         uses: appleboy/ssh-action@v0.1.4
