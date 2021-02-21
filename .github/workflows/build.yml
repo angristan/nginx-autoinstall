@@ -25,8 +25,19 @@ jobs:
         install_type:
           - LIGHT
           - FULL
+        ssl:
+          - SYSTEM
+          - OPENSSL
+          - LIBRESSL
+        exclude:
+          # FULL assumes HTTP/3 which will use BoringSSL
+          # So we exclude these
+          - install_type: FULL
+            ssl: OPENSSL
+          - install_type: FULL
+            ssl: LIBRESSL
     steps:
       - uses: actions/checkout@v2
 
       - name: Build NGINX in Docker
-        run: docker build . --file .github/workflows/docker/Dockerfile --build-arg NGINX_VER=${{ matrix.nginx_ver }} --build-arg BASE_IMAGE=${{ matrix.os }} --build-arg INSTALL_TYPE=${{ matrix.install_type }}
+        run: docker build . --file .github/workflows/docker/Dockerfile --build-arg NGINX_VER=${{ matrix.nginx_ver }} --build-arg BASE_IMAGE=${{ matrix.os }} --build-arg INSTALL_TYPE=${{ matrix.install_type }} --build-arg SSL=${{ matrix.ssl }}
