@@ -28,9 +28,11 @@ if [[ $HEADLESS == "y" ]]; then
 	GEOIP=${GEOIP:-n}
 	FANCYINDEX=${FANCYINDEX:-n}
 	CACHEPURGE=${CACHEPURGE:-n}
+	SUBFILTER=${SUBFILTER:-n}
 	LUA=${LUA:-n}
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
+	RTMP=${RTMP:-n}
 	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
@@ -110,6 +112,9 @@ case $OPTION in
 		while [[ $CACHEPURGE != "y" && $CACHEPURGE != "n" ]]; do
 			read -rp "       ngx_cache_purge [y/n]: " -e CACHEPURGE
 		done
+		while [[ $SUBFILTER != "y" && $SUBFILTER != "n" ]]; do
+			read -rp "       nginx_substitutions_filter [y/n]: " -e SUBFILTER
+		done
 		while [[ $LUA != "y" && $LUA != "n" ]]; do
 			read -rp "       ngx_http_lua_module [y/n]: " -e LUA
 		done
@@ -118,6 +123,9 @@ case $OPTION in
 		done
 		while [[ $VTS != "y" && $VTS != "n" ]]; do
 			read -rp "       nginx VTS [y/n]: " -e VTS
+		done
+		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
+			read -rp "       nginx RTMP [y/n]: " -e RTMP
 		done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 			read -rp "       nginx testcookie [y/n]: " -e TESTCOOKIE
@@ -245,6 +253,12 @@ case $OPTION in
 	if [[ $CACHEPURGE == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 https://github.com/FRiCKLE/ngx_cache_purge
+	fi
+
+	# Nginx Substitutions Filter
+	if [[ $SUBFILTER == 'y' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module
 	fi
 
 	# Lua
@@ -415,6 +429,13 @@ case $OPTION in
 		)
 	fi
 
+	if [[ $SUBFILTER == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo "--add-module=/usr/local/src/nginx/modules/ngx_http_substitutions_filter_module"
+		)
+	fi
+
 	# Lua
 	if [[ $LUA == 'y' ]]; then
 		NGINX_MODULES=$(
@@ -448,6 +469,14 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/nginx-module-vts
+		)
+	fi
+
+	if [[ $RTMP == 'y' ]]; then
+		git clone --quiet https://github.com/arut/nginx-rtmp-module.git /usr/local/src/nginx/modules/nginx-rtmp-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/nginx-rtmp-module
 		)
 	fi
 

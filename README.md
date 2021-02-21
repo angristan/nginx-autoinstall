@@ -43,6 +43,8 @@ Compile and install Nginx from source with optional modules.
   - [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit) (Nginx Development Kit (NDK))
 - [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) maintained by [nginx-modules](https://github.com/nginx-modules/ngx_http_tls_dyn_size).
 - [HTTP/2 HPACK encoding by Cloudflare](https://blog.cloudflare.com/hpack-the-silent-killer-feature-of-http-2/) ([original patch](https://github.com/cloudflare/sslconfig/blob/master/patches/nginx_1.13.1_http2_hpack.patch), [fixed patch](https://github.com/hakasenyang/openssl-patch/blob/master/nginx_hpack_push_1.15.3.patch))
+- [nginx_substitutions_filter](https://github.com/yaoweibin/ngx_http_substitutions_filter_module): regular expression and fixed string substitutions for nginx
+- [RTMP module](https://github.com/arut/nginx-rtmp-module) (NGINX-based Media Streaming Server)
 
 ## Install Nginx
 
