@@ -15,7 +15,7 @@ if [[ $INSTALL_TYPE == "FULL" ]]; then
     export VTS=y
     export RTMP=y
     export TESTCOOKIE=y
-    export HTTP3=n # broken
+    export HTTP3=y
     export MODSEC=y
     export HPACK=y
     export RTMP=y
