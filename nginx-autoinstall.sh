@@ -72,15 +72,15 @@ case $OPTION in
 		echo "   1) Stable $NGINX_STABLE_VER"
 		echo "   2) Mainline $NGINX_MAINLINE_VER"
 		echo ""
-		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" ]]; do
+		while [[ $NGINX_VER != "1" && $NGINX_VER != "2" && $NGINX_VER != "STABLE" && $NGINX_VER != "MAINLINE" ]]; do
 			read -rp "Select an option [1-2]: " -e -i 1 NGINX_VER
 		done
 	fi
 	case $NGINX_VER in
-	1)
+	1 | STABLE)
 		NGINX_VER=$NGINX_STABLE_VER
 		;;
-	2)
+	2 | MAINLINE)
 		NGINX_VER=$NGINX_MAINLINE_VER
 		;;
 	*)
