@@ -163,12 +163,12 @@ case $OPTION in
 	fi
 	if [[ $HTTP3 != 'y' ]]; then
 		case $SSL in
-		1) ;;
+		1 | SYSTEM) ;;
 
-		2)
+		2 | OPENSSL)
 			OPENSSL=y
 			;;
-		3)
+		3 | LIBRESSL)
 			LIBRESSL=y
 			;;
 		*)
