@@ -17,8 +17,8 @@ jobs:
           - ubuntu-18-04-x64
           - ubuntu-20-04-x64
         nginx-version:
-          - STABLE # stable
-          - MAINLINE # mainline
+          - STABLE
+          - MAINLINE
     steps:
       - uses: actions/checkout@v2
 
