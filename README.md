@@ -42,6 +42,7 @@ Compile and install Nginx from source with optional modules.
   - [luajit2](https://github.com/openresty/luajit2) (OpenResty's maintained branch of LuaJIT)
   - [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit) (Nginx Development Kit (NDK))
 - [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) maintained by [nginx-modules](https://github.com/nginx-modules/ngx_http_tls_dyn_size).
+- [RTMP module](https://github.com/arut/nginx-rtmp-module) (NGINX-based Media Streaming Server)
 
 ## Install Nginx
 
