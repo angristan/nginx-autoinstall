@@ -18,8 +18,8 @@ jobs:
           - ubuntu-18-04-x64
           - ubuntu-20-04-x64
         nginx-version:
-          - 1 # stable
-          - 2 # mainline
+          - STABLE # stable
+          - MAINLINE # mainline
     steps:
       - uses: actions/checkout@v2
 
@@ -29,10 +29,10 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Create server
-        run: doctl compute droplet create nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }} --size s-1vcpu-1gb --image ${{ matrix.os-image }} --region lon1 --enable-ipv6 --ssh-keys 75:cd:f2:4a:70:dc:aa:f5:c2:72:cd:ab:f1:19:cf:b0 --wait
+        run: doctl compute droplet create nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}-${{ matrix.nginx-version }} --size s-1vcpu-1gb --image ${{ matrix.os-image }} --region lon1 --enable-ipv6 --ssh-keys 75:cd:f2:4a:70:dc:aa:f5:c2:72:cd:ab:f1:19:cf:b0 --wait
 
       - name: Get server ID
-        run: echo ::set-output name=value::$(doctl compute droplet list -o json | jq -r '.[] | select(.name == "'nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}'").id')
+        run: echo ::set-output name=value::$(doctl compute droplet list -o json | jq -r '.[] | select(.name == "'nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}-${{ matrix.nginx-version }}'").id')
         id: server_id
 
       - name: Move server to dedicated project
@@ -42,7 +42,7 @@ jobs:
         run: sleep 90
 
       - name: Get server IP
-        run: echo ::set-output name=value::$(doctl compute droplet list -o json | jq -r '.[] | select(.name == "'nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}'").networks.v4 | .[] | select(.type == "'public'").ip_address')
+        run: echo ::set-output name=value::$(doctl compute droplet list -o json | jq -r '.[] | select(.name == "'nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}-${{ matrix.nginx-version }}'").networks.v4 | .[] | select(.type == "'public'").ip_address')
         id: server_ip
 
       - name: Get server OS
@@ -93,5 +93,5 @@ jobs:
           script: 'set -x && HEADLESS=y NGINX_VER=${{ matrix.nginx-version }} bash -x ~/nginx-autoinstall/nginx-autoinstall.sh && ps aux | grep nginx | grep -v grep > /dev/null 2>&1 && echo "Success: Nginx is running" && exit 0 || echo "Failure: Nginx is not running" && exit 1'
 
       - name: Delete server
-        run: doctl compute droplet delete -f nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}
+        run: doctl compute droplet delete -f nginx-action-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER-${{ matrix.os-image }}-${{ matrix.nginx-version }}
         if: always()
