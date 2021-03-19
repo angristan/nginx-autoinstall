@@ -11,7 +11,7 @@ NGINX_MAINLINE_VER=1.19.6
 NGINX_STABLE_VER=1.18.0
 LIBRESSL_VER=3.3.1
 OPENSSL_VER=1.1.1i
-NPS_VER=1.13.35.2
+NPS_VER=1.14.33.1-RC1
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.4.3
 GEOIP2_VER=3.3
@@ -189,7 +189,7 @@ case $OPTION in
 
 	# Dependencies
 	apt-get update
-	apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
+	apt-get install -qy apt-utils build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
 
 	if [[ $MODSEC == 'y' ]]; then
 		apt-get install -y apt-utils libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libyajl-dev pkgconf
@@ -198,11 +198,10 @@ case $OPTION in
 	# PageSpeed
 	if [[ $PAGESPEED == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip
-		unzip v${NPS_VER}-stable.zip
-		cd incubator-pagespeed-ngx-${NPS_VER}-stable || exit 1
-		psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
-		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+		wget https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VER}.zip
+		unzip v${NPS_VER}.zip
+		cd incubator-pagespeed-ngx-${NPS_VER} || exit 1
+		psol_url=https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-${NPS_VER}-apache-incubating-x64.tar.gz
 		wget "${psol_url}"
 		tar -xzvf "$(basename "${psol_url}")"
 	fi
@@ -396,6 +395,7 @@ case $OPTION in
 			echo "$NGINX_MODULES"
 			echo "--add-module=/usr/local/src/nginx/modules/incubator-pagespeed-ngx-${NPS_VER}-stable"
 		)
+		
 	fi
 
 	if [[ $BROTLI == 'y' ]]; then
