@@ -99,7 +99,7 @@ case $OPTION in
 		echo ""
 		echo "Modules to install :"
 		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
+			read -rp "       HTTP/3 (⚠️ Patch by Cloudflare for versions <= 1.19.7, will install BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
 		done
 		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
 			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
