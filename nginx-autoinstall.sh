@@ -510,6 +510,7 @@ case $OPTION in
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
+		git clone https://github.com/patrikjuvonen/docker-nginx-http3.git
 		# Dependencies for BoringSSL and Quiche
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
@@ -519,6 +520,7 @@ case $OPTION in
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 		# Apply actual patch
 		patch -p01 </usr/local/src/nginx/modules/quiche/extras/nginx/nginx-1.16.patch
+		patch -p01 </usr/local/src/nginx/modules/docker-nginx-http3/nginx-1.19.7.patch
 
 		NGINX_OPTIONS=$(
 			echo "$NGINX_OPTIONS"
