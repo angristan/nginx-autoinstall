@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC1090,SC2086,SC2034
+# shellcheck disable=SC1090,SC2086,SC2034,SC1091
 
 if [[ $EUID -ne 0 ]]; then
 	echo -e "Sorry, you need to run this as root"
@@ -7,8 +7,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=1.19.6
-NGINX_STABLE_VER=1.18.0
+NGINX_MAINLINE_VER=1.21.0
+NGINX_STABLE_VER=1.20.1
 LIBRESSL_VER=3.3.1
 OPENSSL_VER=1.1.1k
 NPS_VER=1.13.35.2
@@ -101,7 +101,7 @@ case $OPTION in
 		echo ""
 		echo "Modules to install :"
 		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -rp "       HTTP/3 (by Cloudflare, WILL INSTALL BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
+			read -rp "       HTTP/3 (⚠️ Patch by Cloudflare for versions <= 1.19.7, will install BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
 		done
 		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
 			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
