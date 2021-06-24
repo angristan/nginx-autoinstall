@@ -20,7 +20,6 @@ LUA_NGINX_VER=0.10.19
 NGINX_DEV_KIT=0.3.1
 NGINX_ECHO_MOD=0.62
 
-
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
 	OPTION=${OPTION:-1}
@@ -45,7 +44,7 @@ if [[ $HEADLESS == "y" ]]; then
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
-        ECHO_MOD=${ECHO_MOD:-y}
+	ECHO_MOD=${ECHO_MOD:-y}
 fi
 
 # Clean screen before launching menu
@@ -152,9 +151,9 @@ case $OPTION in
 		if [[ $MODSEC == 'y' ]]; then
 			read -rp "       Enable nginx ModSecurity? [y/n]: " -e -i n MODSEC_ENABLE
 		fi
-                while [[ $ECHO_MOD != 'y' && $ECHO_MOD != 'n' ]]; do
-                        read -rp "	nginx ECHO module? [y/n]: " -e -i n ECHO_MOD
-                done
+		while [[ $ECHO_MOD != 'y' && $ECHO_MOD != 'n' ]]; do
+			read -rp "	nginx ECHO module? [y/n]: " -e -i n ECHO_MOD
+		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
@@ -229,13 +228,13 @@ case $OPTION in
 		tar xaf v${HEADERMOD_VER}.tar.gz
 	fi
 
-        # Echo Module
-        if [[ $ECHO_MOD == 'y' ]] ; then
+	# Echo Module
+	if [[ $ECHO_MOD == 'y' ]]; then
 
-               cd /usr/local/src/nginx/modules || exit 1
-               wget https://github.com/openresty/echo-nginx-module/archive/refs/tags/v${NGINX_ECHO_MOD}.tar.gz
-               tar xaf v${NGINX_ECHO_MOD}.tar.gz
-        fi
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/echo-nginx-module/archive/refs/tags/v${NGINX_ECHO_MOD}.tar.gz
+		tar xaf v${NGINX_ECHO_MOD}.tar.gz
+	fi
 
 	# GeoIP
 	if [[ $GEOIP == 'y' ]]; then
@@ -425,13 +424,13 @@ case $OPTION in
 			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module-${HEADERMOD_VER}"
 		)
 	fi
-        if [[ $ECHO_MOD == 'y' ]] ; then
-               NGINX_MODULES=$(
-                        echo "$NGINX_MODULES"
-                        echo "--add-module=/usr/local/src/nginx/modules/echo-nginx-module-${NGINX_ECHO_MOD}"
-               )
+	if [[ $ECHO_MOD == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo "--add-module=/usr/local/src/nginx/modules/echo-nginx-module-${NGINX_ECHO_MOD}"
+		)
 
-        fi
+	fi
 	if [[ $GEOIP == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
