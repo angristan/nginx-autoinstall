@@ -34,6 +34,7 @@ if [[ $HEADLESS == "y" ]]; then
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
 	RTMP=${RTMP:-n}
+	NCHAN=${NCHAN:-n}
 	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
@@ -140,6 +141,9 @@ case $OPTION in
 		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
 			read -rp "       nginx RTMP [y/n]: " -e -i n RTMP
 		done
+		while [[ $NCHAN != "y" && $NCHAN != "n" ]]; do
+			read -rp "       nginx NCHAN [y/n]: " -e -i n NCHAN
+                done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 			read -rp "       nginx testcookie [y/n]: " -e -i n TESTCOOKIE
 		done
@@ -481,6 +485,14 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/nginx-rtmp-module
+		)
+	fi
+	
+	if [[ $NCHAN == 'y' ]]; then
+		git clone --quiet https://github.com/slact/nchan.git /usr/local/src/nginx/modules/nginx-nchan-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/nginx-nchan-module
 		)
 	fi
 
