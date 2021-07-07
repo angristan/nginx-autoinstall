@@ -99,7 +99,7 @@ case $OPTION in
 		echo ""
 		echo "Modules to install :"
 		while [[ $HTTP3 != "y" && $HTTP3 != "n" ]]; do
-			read -rp "       HTTP/3 (⚠️ Patch by Cloudflare for versions <= 1.19.7, will install BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
+			read -rp "       HTTP/3 (⚠️ Patch by Cloudflare , will install BoringSSL, Quiche, Rust and Go) [y/n]: " -e -i n HTTP3
 		done
 		while [[ $TLSDYN != "y" && $TLSDYN != "n" ]]; do
 			read -rp "       Cloudflare's TLS Dynamic Record Resizing patch [y/n]: " -e -i n TLSDYN
@@ -510,7 +510,6 @@ case $OPTION in
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
-		git clone https://github.com/patrikjuvonen/docker-nginx-http3.git
 		# Dependencies for BoringSSL and Quiche
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
@@ -520,7 +519,10 @@ case $OPTION in
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 		# Apply actual patch
 		patch -p01 </usr/local/src/nginx/modules/quiche/extras/nginx/nginx-1.16.patch
-		patch -p01 </usr/local/src/nginx/modules/docker-nginx-http3/nginx-1.19.7.patch
+
+		# Apply patch for nginx > 1.19.7
+		wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-1.19.7.patch -O nginx-http3.patch
+		patch -p01 <nginx-http3.patch
 
 		NGINX_OPTIONS=$(
 			echo "$NGINX_OPTIONS"
