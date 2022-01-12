@@ -17,9 +17,9 @@ jobs:
           - ubuntu:16.04
           - ubuntu:18.04
           - ubuntu:20.04
-          - debian:8
           - debian:9
           - debian:10
+          - debian:11
         nginx_ver:
           - STABLE
           - MAINLINE
