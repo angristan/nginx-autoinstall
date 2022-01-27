@@ -509,7 +509,27 @@ case $OPTION in
 	# HTTP3
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
+
+		#region Solve issue 218
+		# A recent commit to Quiche broke the HTTP/3 patches.  Thus, we need to
+		# revert to an older commit so that we can build it correctly.  This is
+		# a very bad idea, as we won't get any security fixes that might be put
+		# into Quiche.  However, it will let NGINX compile. Please periodically
+		# test and see if the `git reset` is still longer needed.
+		git clone --recursive https://github.com/cloudflare/quiche
+		cd quiche
+		git reset --hard 2649457a566e320bbb4edc74d5a26fd8f6a22547
+		cd deps
+
+		# Pulling Quiche back to an older commit deletes the included version
+		# of BoringSSL.  Clone the specific commit that Cloudflare uses.
+		git clone https://github.com/google/boringssl
+		cd boringssl
+		git reset --hard f1c75347daa2ea81a941e953f2263e0a4d970c8d
+
+		cd ../../..
+		#endregion
+
 		# Dependencies for BoringSSL and Quiche
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
