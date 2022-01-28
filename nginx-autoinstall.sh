@@ -526,7 +526,7 @@ case $OPTION in
 
 		NGINX_OPTIONS=$(
 			echo "$NGINX_OPTIONS"
-			echo --with-openssl=/usr/local/src/nginx/modules/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche
+			echo --with-openssl=/usr/local/src/nginx/modules/quiche/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche
 		)
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
