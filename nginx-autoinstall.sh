@@ -517,17 +517,17 @@ case $OPTION in
 		# into Quiche.  However, it will let NGINX compile. Please periodically
 		# test and see if the `git reset` is still longer needed.
 		git clone --recursive https://github.com/cloudflare/quiche
-		cd quiche
+		cd quiche || exit 1
 		git reset --hard 2649457a566e320bbb4edc74d5a26fd8f6a22547
-		cd deps
+		cd deps || exit 1
 
 		# Pulling Quiche back to an older commit deletes the included version
 		# of BoringSSL.  Clone the specific commit that Cloudflare uses.
 		git clone https://github.com/google/boringssl
-		cd boringssl
+		cd boringssl || exit 1
 		git reset --hard f1c75347daa2ea81a941e953f2263e0a4d970c8d
 
-		cd ../../..
+		cd ../../.. || exit 1
 		#endregion
 
 		# Dependencies for BoringSSL and Quiche
