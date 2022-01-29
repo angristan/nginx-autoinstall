@@ -15,7 +15,7 @@ if [[ $INSTALL_TYPE == "FULL" ]]; then
     export VTS=y
     export RTMP=y
     export TESTCOOKIE=y
-    export HTTP3=n # quiche patch is broken for > 1.19.6: https://github.com/cloudflare/quiche/issues/859
+    export HTTP3=y
     export MODSEC=y
     export HPACK=y
     export RTMP=y
