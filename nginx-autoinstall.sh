@@ -529,7 +529,7 @@ case $OPTION in
 
 		cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 		# Apply actual patch
-		patch -p01 </usr/local/src/nginx/modules/quiche/extras/nginx/nginx-1.16.patch
+		patch -p01 </usr/local/src/nginx/modules/quiche/nginx/nginx-1.16.patch
 
 		# Apply patch for nginx > 1.19.7 (source: https://github.com/cloudflare/quiche/issues/936#issuecomment-857618081)
 		wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-1.19.7.patch -O nginx-http3.patch
@@ -537,7 +537,7 @@ case $OPTION in
 
 		NGINX_OPTIONS=$(
 			echo "$NGINX_OPTIONS"
-			echo --with-openssl=/usr/local/src/nginx/modules/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche
+			echo --with-openssl=/usr/local/src/nginx/modules/quiche/quiche/deps/boringssl --with-quiche=/usr/local/src/nginx/modules/quiche
 		)
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
