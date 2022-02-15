@@ -25,6 +25,8 @@ The script might work on ARM-based architectures, but it's only being regularly 
 - [Cloudflare's patch for HTTP/3](https://blog.cloudflare.com/experiment-with-http-3-using-nginx-and-quiche/) with [Quiche](https://github.com/cloudflare/quiche) and [BoringSSL](https://github.com/google/boringssl).
 - [Cloudflare's TLS Dynamic Record Resizing patch](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) maintained by [nginx-modules](https://github.com/nginx-modules/ngx_http_tls_dyn_size).
 - [Cloudflare's HTTP/2 HPACK encoding patch](https://blog.cloudflare.com/hpack-the-silent-killer-feature-of-http-2/) ([original patch](https://github.com/cloudflare/sslconfig/blob/master/patches/nginx_1.13.1_http2_hpack.patch), [fixed patch](https://github.com/hakasenyang/openssl-patch/blob/master/nginx_hpack_push_1.15.3.patch))
+- [Cloudflare ZLIB Fork](https://github.com/cloudflare/zlib): Cloudflare fork of [zlib](http://zlib.net/) with massive performance improvements
+- [PCRE v2](https://github.com/PhilipHazel/pcre2): PCRE2 from repository (Only works on NGINX Mainline)
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed): Google performance module
 - [ngx_brotli](https://github.com/google/ngx_brotli): Brotli compression algorithm
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module): Custom HTTP headers

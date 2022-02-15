@@ -8,8 +8,8 @@ fi
 
 # Define versions
 NGINX_MAINLINE_VER=1.21.6
-NGINX_STABLE_VER=1.20.1
-LIBRESSL_VER=3.3.1
+NGINX_STABLE_VER=1.20.2
+LIBRESSL_VER=3.4.2
 OPENSSL_VER=1.1.1l
 NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
@@ -18,6 +18,7 @@ GEOIP2_VER=3.3
 LUA_JIT_VER=2.1-20201229
 LUA_NGINX_VER=0.10.19
 NGINX_DEV_KIT=0.3.1
+GOLANG_VER=1.17.7
 
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
@@ -38,6 +39,7 @@ if [[ $HEADLESS == "y" ]]; then
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
 	HPACK=${HPACK:-n}
+	CF_ZLIB=${CF_ZLIB:-n}
 	RTMP=${RTMP:-n}
 	SUBFILTER=${SUBFILTER:-n}
 	SSL=${SSL:-1}
@@ -107,6 +109,15 @@ case $OPTION in
 		while [[ $HPACK != "y" && $HPACK != "n" ]]; do
 			read -rp "       Cloudflare's full HPACK encoding patch [y/n]: " -e -i n HPACK
 		done
+		while [[ $CF_ZLIB != "y" && $CF_ZLIB != "n" ]]; do
+			read -rp "       Cloudflare ZLIB Fork [y/n]: " -e -i n CF_ZLIB
+		done
+		
+		## Delayed
+		#while [[ $PCRE_V2 != "y" && $PCRE_V2 != "n" ]]; do
+		#	read -rp "       With PCRE v2 (Only works on NGINX Mainline) [y/n]: " -e -i n PCRE_V2
+		#done
+
 		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
 			read -rp "       PageSpeed $NPS_VER [y/n]: " -e -i n PAGESPEED
 		done
@@ -189,10 +200,26 @@ case $OPTION in
 
 	# Dependencies
 	apt-get update
-	apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
+	apt-get install -y build-essential ca-certificates wget curl autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
 
 	if [[ $MODSEC == 'y' ]]; then
 		apt-get install -y apt-utils libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libyajl-dev pkgconf
+	fi
+
+	# Cloudflare ZLIB
+	if [[ $CF_ZLIB == 'y' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		git clone https://github.com/cloudflare/zlib.git cf-zlib
+		cd cf-zlib || exit 1
+
+		./configure
+	fi
+
+	# PCRE v2 from repository? else old PCRE
+	if [[ $PCRE_V2 == 'y' ]]; then
+		apt-get install -y libpcre2-dev
+	else
+		apt-get install -y libpcre3 libpcre3-dev
 	fi
 
 	# PageSpeed
@@ -207,13 +234,14 @@ case $OPTION in
 		tar -xzvf "$(basename "${psol_url}")"
 	fi
 
-	#Brotli
+	# Brotli
 	if [[ $BROTLI == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone https://github.com/google/ngx_brotli
+		git clone https://github.com/google/ngx_brotli.git
 		cd ngx_brotli || exit 1
-		git checkout v1.0.0rc
 		git submodule update --init
+		# Update brotli submodule of ngx_brotli since it isn't updated yet...
+		git submodule update --recursive --remote
 	fi
 
 	# More Headers
@@ -361,8 +389,10 @@ case $OPTION in
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--user=nginx \
 		--group=nginx \
+		--without-pcre2 \
 		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers"
+		--with-cc-opt=-Wno-ignored-qualifiers \
+		--with-cc-opt=-Wno-stringop-overread"
 
 	NGINX_MODULES="--with-threads \
 		--with-file-aio \
@@ -378,7 +408,7 @@ case $OPTION in
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
 		NGINX_OPTIONS=$(
-			echo" $NGINX_OPTIONS"
+			echo "$NGINX_OPTIONS"
 			echo --with-ld-opt="-Wl,-rpath,/usr/local/lib/"
 		)
 	fi
@@ -423,6 +453,21 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo "--with-openssl=/usr/local/src/nginx/modules/openssl-${OPENSSL_VER}"
+		)
+	fi
+	
+	#if [[ $PCRE_V2 == 'y' ]]; then
+	#	NGINX_MODULES=$(
+	#		echo "$NGINX_MODULES"
+	#		echo "--with-pcre"
+	#		echo "--with-pcre-jit"
+	#	)
+	#fi
+	
+	if [[ $CF_ZLIB == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo "--with-zlib=/usr/local/src/nginx/modules/cf-zlib"
 		)
 	fi
 
@@ -511,7 +556,10 @@ case $OPTION in
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
 		# Dependencies for BoringSSL and Quiche
-		apt-get install -y golang
+		wget https://dl.google.com/go/go${GOLANG_VER}.linux-amd64.tar.gz
+		rm -rf /usr/local/go && tar -C /usr/local -xzf go${GOLANG_VER}.linux-amd64.tar.gz
+		export PATH=$PATH:/usr/local/go/bin
+		source $HOME/.profile
 		# Rust is not packaged so that's the only way...
 		curl -sSf https://sh.rustup.rs | sh -s -- -y
 		source "$HOME/.cargo/env"
