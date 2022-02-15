@@ -18,7 +18,6 @@ GEOIP2_VER=3.3
 LUA_JIT_VER=2.1-20201229
 LUA_NGINX_VER=0.10.19
 NGINX_DEV_KIT=0.3.1
-PCRE_VER=10.39
 GOLANG_VER=1.17.7
 
 # Define installation parameters for headless install (fallback if unspecifed)
@@ -144,7 +143,7 @@ case $OPTION in
 			read -rp "       nginx WebDAV [y/n]: " -e -i n WEBDAV
 		done
 		while [[ $VTS != "y" && $VTS != "n" ]]; do
-			read -rp "       nginx VTS (BROKEN) [y/n]: " -e -i n VTS
+			read -rp "       nginx VTS [y/n]: " -e -i n VTS
 		done
 		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
 			read -rp "       nginx RTMP [y/n]: " -e -i n RTMP
@@ -388,7 +387,8 @@ case $OPTION in
 		--user=nginx \
 		--group=nginx \
 		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers"
+		--with-cc-opt=-Wno-ignored-qualifiers \
+		--with-cc-opt=-Wno-stringop-overread"
 
 	NGINX_MODULES="--with-threads \
 		--with-file-aio \
