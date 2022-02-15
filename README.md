@@ -34,7 +34,7 @@ The script might work on ARM-based architectures, but it's only being regularly 
 - [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge): Purge content from FastCGI, proxy, SCGI and uWSGI caches
 - [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) : fancy file listings
 - [nginx-dav-ext-module](https://github.com/arut/nginx-dav-ext-module): WebDAV PROPFIND, OPTIONS, LOCK, UNLOCK support)
-- [nginx-module-vts](https://github.com/vozlt/nginx-module-vts): ⚠️ currently broken, Nginx virtual host traffic status module ([install instructions](https://github.com/vozlt/nginx-module-vts#installation))
+- [nginx-module-vts](https://github.com/vozlt/nginx-module-vts): Nginx virtual host traffic status module ([install instructions](https://github.com/vozlt/nginx-module-vts#installation))
 - [ModSecurity-nginx](https://github.com/SpiderLabs/ModSecurity-nginx): connector for the [ModSecurity](https://github.com/SpiderLabs/ModSecurity) open-source web application firewall (WAF)
 - [testcookie-nginx-module](https://github.com/kyprizel/testcookie-nginx-module): simple robot mitigation module using cookie based challenge/response ([example config](https://github.com/kyprizel/testcookie-nginx-module#example-configuration))
 - [lua-nginx-module](https://github.com/openresty/lua-nginx-module): extend NGINX with Lua. Using [luajit2](https://github.com/openresty/luajit2) (OpenResty's maintained branch of LuaJIT) and [ngx_devel_kit](https://github.com/simplresty/ngx_devel_kit) (Nginx Development Kit (NDK))
