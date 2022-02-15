@@ -112,9 +112,12 @@ case $OPTION in
 		while [[ $CF_ZLIB != "y" && $CF_ZLIB != "n" ]]; do
 			read -rp "       Cloudflare ZLIB Fork [y/n]: " -e -i n CF_ZLIB
 		done
-		while [[ $PCRE_V2 != "y" && $PCRE_V2 != "n" ]]; do
-			read -rp "       With PCRE v2 (Only works on NGINX Mainline) [y/n]: " -e -i n PCRE_V2
-		done
+		
+		## Delayed
+		#while [[ $PCRE_V2 != "y" && $PCRE_V2 != "n" ]]; do
+		#	read -rp "       With PCRE v2 (Only works on NGINX Mainline) [y/n]: " -e -i n PCRE_V2
+		#done
+
 		while [[ $PAGESPEED != "y" && $PAGESPEED != "n" ]]; do
 			read -rp "       PageSpeed $NPS_VER [y/n]: " -e -i n PAGESPEED
 		done
@@ -386,6 +389,7 @@ case $OPTION in
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--user=nginx \
 		--group=nginx \
+		--without-pcre2 \
 		--with-cc-opt=-Wno-deprecated-declarations \
 		--with-cc-opt=-Wno-ignored-qualifiers \
 		--with-cc-opt=-Wno-stringop-overread"
@@ -452,13 +456,13 @@ case $OPTION in
 		)
 	fi
 	
-	if [[ $PCRE_V2 == 'y' ]]; then
-		NGINX_MODULES=$(
-			echo "$NGINX_MODULES"
-			echo "--with-pcre"
-			echo "--with-pcre-jit"
-		)
-	fi
+	#if [[ $PCRE_V2 == 'y' ]]; then
+	#	NGINX_MODULES=$(
+	#		echo "$NGINX_MODULES"
+	#		echo "--with-pcre"
+	#		echo "--with-pcre-jit"
+	#	)
+	#fi
 	
 	if [[ $CF_ZLIB == 'y' ]]; then
 		NGINX_MODULES=$(
