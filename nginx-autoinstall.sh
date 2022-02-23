@@ -38,7 +38,6 @@ if [[ $HEADLESS == "y" ]]; then
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
 	HPACK=${HPACK:-n}
-	RTMP=${RTMP:-n}
 	SUBFILTER=${SUBFILTER:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
