@@ -38,7 +38,7 @@ jobs:
           - install_type: FULL
             ssl: LIBRESSL
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build NGINX in Docker
         run: docker build . --file .github/workflows/docker/Dockerfile --build-arg NGINX_VER=${{ matrix.nginx_ver }} --build-arg BASE_IMAGE=${{ matrix.os }} --build-arg INSTALL_TYPE=${{ matrix.install_type }} --build-arg SSL=${{ matrix.ssl }}
