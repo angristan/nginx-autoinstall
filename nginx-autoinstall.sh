@@ -373,7 +373,7 @@ case $OPTION in
 	if [[ $NGXECHO == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
 		wget https://github.com/openresty/echo-nginx-module/archive/refs/tags/v${NGXECHO_VER}.tar.gz
-		tar xaf echo-nginx-module-${NGXECHO_VER}.tar.gz
+		tar xaf v${NGXECHO_VER}.tar.gz
 	fi
 
 	# Download and extract of Nginx source code
