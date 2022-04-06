@@ -18,6 +18,7 @@ GEOIP2_VER=3.3
 LUA_JIT_VER=2.1-20201229
 LUA_NGINX_VER=0.10.19
 NGINX_DEV_KIT=0.3.1
+HTTPREDIS_VER=0.3.9
 
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
@@ -37,6 +38,10 @@ if [[ $HEADLESS == "y" ]]; then
 	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
+	REDIS2=${REDIS2:-n}
+	HTTPREDIS=${HTTPREDIS:-n}
+	SRCACHE=${SRCACHE:-n}
+	SETMISC=${SETMISC:-n}
 	HPACK=${HPACK:-n}
 	SUBFILTER=${SUBFILTER:-n}
 	SSL=${SSL:-1}
@@ -148,6 +153,18 @@ case $OPTION in
 		if [[ $MODSEC == 'y' ]]; then
 			read -rp "       Enable nginx ModSecurity? [y/n]: " -e -i n MODSEC_ENABLE
 		fi
+		while [[ $REDIS2 != "y" && $REDIS2 != "n" ]]; do
+			read -rp "       redis2-nginx-module [y/n]: " -e -i n REDIS2
+		done
+		while [[ $HTTPREDIS != "y" && $HTTPREDIS != "n" ]]; do
+			read -rp "       HttpRedisModule [y/n]: " -e -i n HTTPREDIS
+		done
+		while [[ $SRCACHE != "y" && $SRCACHE != "n" ]]; do
+			read -rp "       srcache-nginx-module [y/n]: " -e -i n SRCACHE
+		done
+		while [[ $SETMISC != "y" && $SETMISC != "n" ]]; do
+			read -rp "       set-misc-nginx-module [y/n]: " -e -i n SETMISC
+		done
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
@@ -333,6 +350,20 @@ case $OPTION in
 		fi
 	fi
 
+	# Download ngx_http_redis
+	if [[ $HTTPREDIS == 'y' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://people.freebsd.org/~osa/ngx_http_redis-${HTTPREDIS_VER}.tar.gz
+		tar xaf ngx_http_redis-${HTTPREDIS_VER}.tar.gz
+	fi
+
+	# Download ngx_devel_kit if LUA = no
+	if [[ $SETMISC == 'y' && $LUA == 'n' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/simplresty/ngx_devel_kit/archive/v${NGINX_DEV_KIT}.tar.gz
+		tar xaf v${NGINX_DEV_KIT}.tar.gz
+	fi
+
 	# Download and extract of Nginx source code
 	cd /usr/local/src/nginx/ || exit 1
 	wget -qO- http://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar zxf -
@@ -496,6 +527,40 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/ModSecurity-nginx
+		)
+	fi
+
+	if [[ $REDIS2 == 'y' ]]; then
+		git clone --depth 1 --quiet https://github.com/openresty/redis2-nginx-module.git /usr/local/src/nginx/modules/redis2-nginx-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/redis2-nginx-module
+		)
+	fi
+
+	if [[ $HTTPREDIS == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/ngx_http_redis-${HTTPREDIS_VER}
+		)
+	fi
+
+	if [[ $SRCACHE == 'y' ]]; then
+		git clone --depth 1 --quiet https://github.com/openresty/srcache-nginx-module.git /usr/local/src/nginx/modules/srcache-nginx-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/srcache-nginx-module
+		)
+	fi
+
+	if [[ $SETMISC == 'y' ]]; then
+		git clone --depth 1 --quiet https://github.com/openresty/set-misc-nginx-module.git /usr/local/src/nginx/modules/set-misc-nginx-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			if [[ $LUA == 'n' ]]; then
+				echo --add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}
+			fi
+			echo --add-module=/usr/local/src/nginx/modules/set-misc-nginx-module
 		)
 	fi
 
