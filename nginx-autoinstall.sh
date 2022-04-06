@@ -19,6 +19,7 @@ LUA_JIT_VER=2.1-20201229
 LUA_NGINX_VER=0.10.19
 NGINX_DEV_KIT=0.3.1
 HTTPREDIS_VER=0.3.9
+NGXECHO_VER=0.62
 
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
@@ -42,6 +43,7 @@ if [[ $HEADLESS == "y" ]]; then
 	HTTPREDIS=${HTTPREDIS:-n}
 	SRCACHE=${SRCACHE:-n}
 	SETMISC=${SETMISC:-n}
+	NGXECHO=${NGXECHO:-n}
 	HPACK=${HPACK:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
@@ -164,6 +166,10 @@ case $OPTION in
 		while [[ $SETMISC != "y" && $SETMISC != "n" ]]; do
 			read -rp "       set-misc-nginx-module [y/n]: " -e -i n SETMISC
 		done
+		while [[ $NGXECHO != "y" && $NGXECHO != "n" ]]; do
+			read -rp "        echo-nginx-module [y/n]: " -e -i n NGXECHO
+		done
+
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
 			echo "Choose your OpenSSL implementation:"
@@ -361,6 +367,13 @@ case $OPTION in
 		cd /usr/local/src/nginx/modules || exit 1
 		wget https://github.com/simplresty/ngx_devel_kit/archive/v${NGINX_DEV_KIT}.tar.gz
 		tar xaf v${NGINX_DEV_KIT}.tar.gz
+	fi
+
+	# Download echo-nginx-module
+	if [[ $NGXECHO == 'y' ]]; then
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/echo-nginx-module/archive/refs/tags/v${NGXECHO_VER}.tar.gz
+		tar xaf echo-nginx-module-${NGXECHO_VER}.tar.gz
 	fi
 
 	# Download and extract of Nginx source code
@@ -563,6 +576,13 @@ case $OPTION in
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/set-misc-nginx-module
+		)
+	fi
+
+	if [[ $NGXECHO == 'y' ]]; then
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/echo-nginx-module-${NGXECHO_VER}
 		)
 	fi
 
