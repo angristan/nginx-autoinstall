@@ -43,7 +43,6 @@ if [[ $HEADLESS == "y" ]]; then
 	SRCACHE=${SRCACHE:-n}
 	SETMISC=${SETMISC:-n}
 	HPACK=${HPACK:-n}
-	SUBFILTER=${SUBFILTER:-n}
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
