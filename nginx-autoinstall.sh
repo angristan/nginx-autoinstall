@@ -554,11 +554,14 @@ case $OPTION in
 
 	if [[ $SETMISC == 'y' ]]; then
 		git clone --depth 1 --quiet https://github.com/openresty/set-misc-nginx-module.git /usr/local/src/nginx/modules/set-misc-nginx-module
+	if [[ $LUA == 'n' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
-			if [[ $LUA == 'n' ]]; then
 				echo --add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}
-			fi
+		)
+	fi
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/set-misc-nginx-module
 		)
 	fi
