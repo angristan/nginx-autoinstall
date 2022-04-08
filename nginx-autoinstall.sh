@@ -15,8 +15,10 @@ NPS_VER=1.13.35.2
 HEADERMOD_VER=0.33
 LIBMAXMINDDB_VER=1.4.3
 GEOIP2_VER=3.3
-LUA_JIT_VER=2.1-20201229
-LUA_NGINX_VER=0.10.19
+LUA_JIT_VER=2.1-20220310
+LUA_NGINX_VER=0.10.21rc2
+LUA_RESTYCORE_VER=0.1.23rc1
+LUA_RESTYLRUCACHE_VER=0.11
 NGINX_DEV_KIT=0.3.1
 HTTPREDIS_VER=0.3.9
 NGXECHO_VER=0.62
@@ -306,6 +308,19 @@ case $OPTION in
 		wget https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_VER}.tar.gz
 		tar xaf v${LUA_NGINX_VER}.tar.gz
 
+		# lua-resty-core download
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/lua-resty-core/archive/v${LUA_RESTYCORE_VER}.tar.gz
+		tar xaf v${LUA_RESTYCORE_VER}.tar.gz
+		cd lua-resty-core-${LUA_RESTYCORE_VER} || exit 1
+		make install PREFIX=/etc/nginx
+
+		# lua-resty-lrucache download
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/lua-resty-lrucache/archive/v${LUA_RESTYLRUCACHE_VER}.tar.gz
+		tar xaf v${LUA_RESTYLRUCACHE_VER}.tar.gz
+		cd lua-resty-lrucache-${LUA_RESTYLRUCACHE_VER} || exit 1
+		make install PREFIX=/etc/nginx
 	fi
 
 	# LibreSSL
@@ -679,7 +694,10 @@ case $OPTION in
 	if [[ ! -d /etc/nginx/conf.d ]]; then
 		mkdir -p /etc/nginx/conf.d
 	fi
-
+	if [[ -d /etc/nginx/conf.d && $LUA == 'y' ]]; then
+		# add necessary `lua_package_path` directive to `nginx.conf`, in the http context
+		echo -e 'lua_package_path "/etc/nginx/lib/lua/?.lua;;";' >/etc/nginx/conf.d/lua_package_path.conf
+	fi
 	# Restart Nginx
 	systemctl restart nginx
 
