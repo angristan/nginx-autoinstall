@@ -420,7 +420,7 @@ case $OPTION in
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
 		NGINX_OPTIONS=$(
-			echo" $NGINX_OPTIONS"
+			echo " $NGINX_OPTIONS"
 			echo --with-ld-opt="-Wl,-rpath,/usr/local/lib/"
 		)
 	fi
