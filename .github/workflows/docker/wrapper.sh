@@ -10,7 +10,7 @@ if [[ $INSTALL_TYPE == "FULL" ]]; then
     export FANCYINDEX=y
     export CACHEPURGE=y
     export SUBFILTER=y
-    export LUA=n # broken
+    export LUA=y
     export WEBDAV=y
     export VTS=y
     export RTMP=y
