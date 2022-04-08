@@ -41,6 +41,16 @@ The script might work on ARM-based architectures, but it's only being regularly 
 - [RTMP module](https://github.com/arut/nginx-rtmp-module) (NGINX-based Media Streaming Server)
 - [nginx-ultimate-bad-bot-blocker](https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker): Bad Bot and User-Agent Blocker, Spam Referrer Blocker, Anti DDOS, Bad IP Blocker and Wordpress Theme Detector Blocker
 
+#### Cache Modules
+
+- [redis2-nginx-module](https://github.com/openresty/redis2-nginx-module) : Nginx upstream module for the Redis 2.0 protocol
+- [ngx_http_redis](https://www.nginx.com/resources/wiki/modules/redis/) : The nginx HTTP redis module for caching with redis
+- [srcache-nginx-module](https://github.com/openresty/srcache-nginx-module) : Transparent subrequest-based caching layout for arbitrary nginx locations
+- [set-misc-nginx-module](https://github.com/openresty/set-misc-nginx-module) : Various set_xxx directives added to nginx's rewrite module (md5/sha1, sql/json quoting, and many more)
+- [echo-nginx-module](https://github.com/openresty/echo-nginx-module) : Brings "echo", "sleep", "time", "exec" and more shell-style goodies to Nginx config file.
+  - Required to set up [Redis with conditional purging](https://easyengine.io/wordpress-nginx/tutorials/single-site/redis_cache-with-conditional-purging/)
+  - Install Redis with ```apt install redis-{tools,server}```
+
 ## Usage
 
 Just download and execute the script :
