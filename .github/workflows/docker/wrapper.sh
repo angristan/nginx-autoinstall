@@ -6,7 +6,7 @@ if [[ $INSTALL_TYPE == "FULL" ]]; then
     export PAGESPEED=y
     export BROTLI=y
     export HEADERMOD=y
-    export GEOIP=n # broken
+    export GEOIP=n # requires license key
     export FANCYINDEX=y
     export CACHEPURGE=y
     export SUBFILTER=y
