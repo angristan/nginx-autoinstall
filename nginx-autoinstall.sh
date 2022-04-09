@@ -319,7 +319,7 @@ case $OPTION in
 			# Download GeoIP.conf for use with geoipupdate
 			if [[ ! -f /usr/local/etc/GeoIP.conf ]]; then
 				cd /usr/local/etc || exit 1
-				wget https://raw.githubusercontent.com/tmiland/nginx-autoinstall/master/conf/GeoIP.conf
+				wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/conf/GeoIP.conf
 				sed -i "s/YOUR_ACCOUNT_ID_HERE/${GEOIP2_ACCOUNT_ID}/g" GeoIP.conf
 				sed -i "s/YOUR_LICENSE_KEY_HERE/${GEOIP2_LICENSE_KEY}/g" GeoIP.conf
 			else
