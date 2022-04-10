@@ -29,7 +29,7 @@ The script might work on ARM-based architectures, but it's only being regularly 
 - [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed): Google performance module
 - [ngx_brotli](https://github.com/google/ngx_brotli): Brotli compression algorithm
 - [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module): Custom HTTP headers
-- [ngx_http_geoip2_module](https://github.com/leev/ngx_http_geoip2_module) with [libmaxminddb](https://github.com/maxmind/libmaxminddb) and [GeoLite2 databases](https://dev.maxmind.com/geoip/geoip2/geolite2/) ⚠️ currently broken, see [#128](https://github.com/angristan/nginx-autoinstall/issues/128)
+- [ngx_http_geoip2_module](https://github.com/leev/ngx_http_geoip2_module) with [libmaxminddb](https://github.com/maxmind/libmaxminddb) and [GeoLite2 databases](https://dev.maxmind.com/geoip/geoip2/geolite2/) ⚠️ Requires license key
 - [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge): Purge content from FastCGI, proxy, SCGI and uWSGI caches
 - [ngx-fancyindex](https://github.com/aperezdc/ngx-fancyindex) : fancy file listings
 - [nginx-dav-ext-module](https://github.com/arut/nginx-dav-ext-module): WebDAV PROPFIND, OPTIONS, LOCK, UNLOCK support)
@@ -86,6 +86,16 @@ To install Nginx mainline with Brotli:
 HEADLESS=y \
 NGINX_VER=MAINLINE \
 BROTLI=y \
+./nginx-autoinstall.sh
+```
+
+To install with Geoip:
+
+```sh
+HEADLESS=y \
+GEOIP=y \
+GEOIP2_ACCOUNT_ID=YOUR_ACCOUNT_ID_HERE \
+GEOIP2_LICENSE_KEY=YOUR_LICENSE_KEY_HERE \
 ./nginx-autoinstall.sh
 ```
 

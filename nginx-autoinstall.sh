@@ -1,34 +1,38 @@
 #!/bin/bash
-# shellcheck disable=SC1090,SC2086,SC2034,SC1091
+# shellcheck disable=SC1090,SC2086,SC2034,SC1091,SC2027,SC2206,SC2002
 
 if [[ $EUID -ne 0 ]]; then
 	echo -e "Sorry, you need to run this as root"
 	exit 1
 fi
 
-# Define versions
-NGINX_MAINLINE_VER=1.21.6
-NGINX_STABLE_VER=1.20.1
-LIBRESSL_VER=3.3.1
-OPENSSL_VER=1.1.1l
-NPS_VER=1.13.35.2
-HEADERMOD_VER=0.33
-LIBMAXMINDDB_VER=1.4.3
-GEOIP2_VER=3.3
-LUA_JIT_VER=2.1-20201229
-LUA_NGINX_VER=0.10.19
-NGINX_DEV_KIT=0.3.1
-HTTPREDIS_VER=0.3.9
-NGXECHO_VER=0.62
-
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
+	# Define versions
+	NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
+	NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.20.1}
+	LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
+	OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
+	NPS_VER=${NPS_VER:-1.13.35.2}
+	HEADERMOD_VER=${HEADERMOD_VER:-0.33}
+	LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
+	GEOIP2_VER=${GEOIP2_VER:-3.3}
+	LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
+	LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.21rc2}
+	LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.23rc1}
+	LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.11}
+	NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.1}
+	HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.9}
+	NGXECHO_VER=${NGXECHO_VER:-0.62}
+	# Define options
 	OPTION=${OPTION:-1}
 	NGINX_VER=${NGINX_VER:-1}
 	PAGESPEED=${PAGESPEED:-n}
 	BROTLI=${BROTLI:-n}
 	HEADERMOD=${HEADERMOD:-n}
 	GEOIP=${GEOIP:-n}
+	GEOIP2_ACCOUNT_ID=${GEOIP2_ACCOUNT_ID:-}
+	GEOIP2_LICENSE_KEY=${GEOIP2_LICENSE_KEY:-}
 	FANCYINDEX=${FANCYINDEX:-n}
 	CACHEPURGE=${CACHEPURGE:-n}
 	SUBFILTER=${SUBFILTER:-n}
@@ -49,6 +53,32 @@ if [[ $HEADLESS == "y" ]]; then
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
+	NGINX_OPTIONS=${NGINX_OPTIONS:-"
+		--prefix=/etc/nginx \
+		--sbin-path=/usr/sbin/nginx \
+		--conf-path=/etc/nginx/nginx.conf \
+		--error-log-path=/var/log/nginx/error.log \
+		--http-log-path=/var/log/nginx/access.log \
+		--pid-path=/var/run/nginx.pid \
+		--lock-path=/var/run/nginx.lock \
+		--http-client-body-temp-path=/var/cache/nginx/client_temp \
+		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+		--user=nginx \
+		--group=nginx \
+		--with-cc-opt=-Wno-deprecated-declarations \
+		--with-cc-opt=-Wno-ignored-qualifiers"}
+	# Define modules
+	NGINX_MODULES=${NGINX_MODULES:-"--with-threads \
+		--with-file-aio \
+		--with-http_ssl_module \
+		--with-http_v2_module \
+		--with-http_mp4_module \
+		--with-http_auth_request_module \
+		--with-http_slice_module \
+		--with-http_stub_status_module \
+		--with-http_realip_module \
+		--with-http_sub_module"}
 fi
 
 # Clean screen before launching menu
@@ -123,7 +153,7 @@ case $OPTION in
 			read -rp "       Headers More $HEADERMOD_VER [y/n]: " -e -i n HEADERMOD
 		done
 		while [[ $GEOIP != "y" && $GEOIP != "n" ]]; do
-			read -rp "       GeoIP (BROKEN) [y/n]: " -e -i n GEOIP
+			read -rp "       GeoIP [y/n]: " -e -i n GEOIP
 		done
 		while [[ $FANCYINDEX != "y" && $FANCYINDEX != "n" ]]; do
 			read -rp "       Fancy index [y/n]: " -e -i n FANCYINDEX
@@ -171,8 +201,14 @@ case $OPTION in
 			read -rp "       set-misc-nginx-module [y/n]: " -e -i n SETMISC
 		done
 		while [[ $NGXECHO != "y" && $NGXECHO != "n" ]]; do
-			read -rp "        echo-nginx-module [y/n]: " -e -i n NGXECHO
+			read -rp "       echo-nginx-module [y/n]: " -e -i n NGXECHO
 		done
+
+		if [[ $GEOIP = 'y' ]]; then
+			# - Ask for a Maxmind user id and license key if headless=n
+				read -rp "       Enter your Maxmind account id: " -e GEOIP2_ACCOUNT_ID
+				read -rp "       Enter your Maxmind license key: " -e GEOIP2_LICENSE_KEY
+		fi
 
 		if [[ $HTTP3 != 'y' ]]; then
 			echo ""
@@ -220,6 +256,16 @@ case $OPTION in
 		apt-get install -y apt-utils libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libyajl-dev pkgconf
 	fi
 
+	if [[ $GEOIP == 'y' ]]; then
+		if grep -q "main contrib" /etc/apt/sources.list; then
+			echo "main contrib already in sources.list... Skipping"
+		else
+			sed -i "s/main/main contrib/g" /etc/apt/sources.list
+		fi
+		apt-get update
+		apt-get install -y geoipupdate
+	fi
+
 	# PageSpeed
 	if [[ $PAGESPEED == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
@@ -250,33 +296,72 @@ case $OPTION in
 
 	# GeoIP
 	if [[ $GEOIP == 'y' ]]; then
-		cd /usr/local/src/nginx/modules || exit 1
-		# install libmaxminddb
-		wget https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VER}/libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
-		tar xaf libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
-		cd libmaxminddb-${LIBMAXMINDDB_VER}/ || exit 1
-		./configure
-		make -j "$(nproc)"
-		make install
-		ldconfig
+			cd /usr/local/src/nginx/modules || exit 1
+			# install libmaxminddb
+			wget https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VER}/libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
+			tar xaf libmaxminddb-${LIBMAXMINDDB_VER}.tar.gz
+			cd libmaxminddb-${LIBMAXMINDDB_VER}/ || exit 1
+			./configure
+			make -j "$(nproc)"
+			make install
+			ldconfig
 
-		cd ../ || exit 1
-		wget https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VER}.tar.gz
-		tar xaf ${GEOIP2_VER}.tar.gz
+			cd ../ || exit 1
+			wget https://github.com/leev/ngx_http_geoip2_module/archive/${GEOIP2_VER}.tar.gz
+			tar xaf ${GEOIP2_VER}.tar.gz
 
-		mkdir geoip-db
-		cd geoip-db || exit 1
-		wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
-		wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
-		tar -xf GeoLite2-City.tar.gz
-		tar -xf GeoLite2-Country.tar.gz
-		mkdir /opt/geoip
-		cd GeoLite2-City_*/ || exit 1
-		mv GeoLite2-City.mmdb /opt/geoip/
-		cd ../ || exit 1
-		cd GeoLite2-Country_*/ || exit 1
-		mv GeoLite2-Country.mmdb /opt/geoip/
-	fi
+			mkdir geoip-db
+			cd geoip-db || exit 1
+			# - Download GeoLite2 databases using license key
+			# - Apply the correct, dated filename inside the checksum file to each download instead of a generic filename
+			# - Perform all checksums
+			GEOIP2_URLS=( \
+			"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key="$GEOIP2_LICENSE_KEY"&suffix=tar.gz" \
+			"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key="$GEOIP2_LICENSE_KEY"&suffix=tar.gz" \
+			"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key="$GEOIP2_LICENSE_KEY"&suffix=tar.gz" \
+			)
+			if [[ ! -d /opt/geoip ]]; then
+				for GEOIP2_URL in "${GEOIP2_URLS[@]}"; do
+					echo "=== FETCHING ==="
+					echo $GEOIP2_URL
+					wget -O sha256 "$GEOIP2_URL.sha256"
+					GEOIP2_FILENAME=$(cat sha256 | awk '{print $2}')
+					mv sha256 "$GEOIP2_FILENAME.sha256"
+					wget -O "$GEOIP2_FILENAME" "$GEOIP2_URL"
+					echo "=== CHECKSUM ==="
+					sha256sum -c "$GEOIP2_FILENAME.sha256"
+				done
+				tar -xf GeoLite2-ASN_*.tar.gz
+				tar -xf GeoLite2-City_*.tar.gz
+				tar -xf GeoLite2-Country_*.tar.gz
+				mkdir /opt/geoip
+				cd GeoLite2-ASN_*/ || exit 1
+				mv GeoLite2-ASN.mmdb /opt/geoip/
+				cd ../ || exit 1
+				cd GeoLite2-City_*/ || exit 1
+				mv GeoLite2-City.mmdb /opt/geoip/
+				cd ../ || exit 1
+				cd GeoLite2-Country_*/ || exit 1
+				mv GeoLite2-Country.mmdb /opt/geoip/
+			else
+				echo -e "GeoLite2 database files exists... Skipping download"
+			fi
+			# Download GeoIP.conf for use with geoipupdate
+			if [[ ! -f /usr/local/etc/GeoIP.conf ]]; then
+				cd /usr/local/etc || exit 1
+				wget https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/conf/GeoIP.conf
+				sed -i "s/YOUR_ACCOUNT_ID_HERE/${GEOIP2_ACCOUNT_ID}/g" GeoIP.conf
+				sed -i "s/YOUR_LICENSE_KEY_HERE/${GEOIP2_LICENSE_KEY}/g" GeoIP.conf
+			else
+				echo -e "GeoIP.conf file exists... Skipping"
+			fi
+			if [[ ! -f /etc/cron.d/geoipupdate ]]; then
+				# Install crontab to run twice a week
+				echo -e "40 23 * * 6,3 /usr/local/bin/geoipupdate" > /etc/cron.d/geoipupdate
+			else
+				echo -e "geoipupdate crontab file exists... Skipping"
+			fi
+		fi
 
 	# Cache Purge
 	if [[ $CACHEPURGE == 'y' ]]; then
@@ -310,6 +395,19 @@ case $OPTION in
 		wget https://github.com/openresty/lua-nginx-module/archive/v${LUA_NGINX_VER}.tar.gz
 		tar xaf v${LUA_NGINX_VER}.tar.gz
 
+		# lua-resty-core download
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/lua-resty-core/archive/v${LUA_RESTYCORE_VER}.tar.gz
+		tar xaf v${LUA_RESTYCORE_VER}.tar.gz
+		cd lua-resty-core-${LUA_RESTYCORE_VER} || exit 1
+		make install PREFIX=/etc/nginx
+
+		# lua-resty-lrucache download
+		cd /usr/local/src/nginx/modules || exit 1
+		wget https://github.com/openresty/lua-resty-lrucache/archive/v${LUA_RESTYLRUCACHE_VER}.tar.gz
+		tar xaf v${LUA_RESTYLRUCACHE_VER}.tar.gz
+		cd lua-resty-lrucache-${LUA_RESTYLRUCACHE_VER} || exit 1
+		make install PREFIX=/etc/nginx
 	fi
 
 	# LibreSSL
@@ -394,37 +492,10 @@ case $OPTION in
 	fi
 	cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
 
-	NGINX_OPTIONS="
-		--prefix=/etc/nginx \
-		--sbin-path=/usr/sbin/nginx \
-		--conf-path=/etc/nginx/nginx.conf \
-		--error-log-path=/var/log/nginx/error.log \
-		--http-log-path=/var/log/nginx/access.log \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/run/nginx.lock \
-		--http-client-body-temp-path=/var/cache/nginx/client_temp \
-		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-		--user=nginx \
-		--group=nginx \
-		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers"
-
-	NGINX_MODULES="--with-threads \
-		--with-file-aio \
-		--with-http_ssl_module \
-		--with-http_v2_module \
-		--with-http_mp4_module \
-		--with-http_auth_request_module \
-		--with-http_slice_module \
-		--with-http_stub_status_module \
-		--with-http_realip_module \
-		--with-http_sub_module"
-
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
 		NGINX_OPTIONS=$(
-			echo" $NGINX_OPTIONS"
+			echo " $NGINX_OPTIONS"
 			echo --with-ld-opt="-Wl,-rpath,/usr/local/lib/"
 		)
 	fi
@@ -691,7 +762,10 @@ case $OPTION in
 	if [[ ! -d /etc/nginx/conf.d ]]; then
 		mkdir -p /etc/nginx/conf.d
 	fi
-
+	if [[ -d /etc/nginx/conf.d && $LUA == 'y' ]]; then
+		# add necessary `lua_package_path` directive to `nginx.conf`, in the http context
+		echo -e 'lua_package_path "/etc/nginx/lib/lua/?.lua;;";' >/etc/nginx/conf.d/lua_package_path.conf
+	fi
 	# Restart Nginx
 	systemctl restart nginx
 
