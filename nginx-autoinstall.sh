@@ -6,25 +6,25 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-# Define versions
-NGINX_MAINLINE_VER=1.21.6
-NGINX_STABLE_VER=1.20.1
-LIBRESSL_VER=3.3.1
-OPENSSL_VER=1.1.1l
-NPS_VER=1.13.35.2
-HEADERMOD_VER=0.33
-LIBMAXMINDDB_VER=1.4.3
-GEOIP2_VER=3.3
-LUA_JIT_VER=2.1-20220310
-LUA_NGINX_VER=0.10.21rc2
-LUA_RESTYCORE_VER=0.1.23rc1
-LUA_RESTYLRUCACHE_VER=0.11
-NGINX_DEV_KIT=0.3.1
-HTTPREDIS_VER=0.3.9
-NGXECHO_VER=0.62
-
 # Define installation parameters for headless install (fallback if unspecifed)
 if [[ $HEADLESS == "y" ]]; then
+	# Define versions
+	NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
+	NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.20.1}
+	LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
+	OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
+	NPS_VER=${NPS_VER:-1.13.35.2}
+	HEADERMOD_VER=${HEADERMOD_VER:-0.33}
+	LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
+	GEOIP2_VER=${GEOIP2_VER:-3.3}
+	LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
+	LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.21rc2}
+	LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.23rc1}
+	LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.11}
+	NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.1}
+	HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.9}
+	NGXECHO_VER=${NGXECHO_VER:-0.62}
+	# Define options
 	OPTION=${OPTION:-1}
 	NGINX_VER=${NGINX_VER:-1}
 	PAGESPEED=${PAGESPEED:-n}
@@ -50,6 +50,32 @@ if [[ $HEADLESS == "y" ]]; then
 	SSL=${SSL:-1}
 	RM_CONF=${RM_CONF:-y}
 	RM_LOGS=${RM_LOGS:-y}
+	NGINX_OPTIONS=${NGINX_OPTIONS:-"
+		--prefix=/etc/nginx \
+		--sbin-path=/usr/sbin/nginx \
+		--conf-path=/etc/nginx/nginx.conf \
+		--error-log-path=/var/log/nginx/error.log \
+		--http-log-path=/var/log/nginx/access.log \
+		--pid-path=/var/run/nginx.pid \
+		--lock-path=/var/run/nginx.lock \
+		--http-client-body-temp-path=/var/cache/nginx/client_temp \
+		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+		--user=nginx \
+		--group=nginx \
+		--with-cc-opt=-Wno-deprecated-declarations \
+		--with-cc-opt=-Wno-ignored-qualifiers"}
+	# Define modules
+	NGINX_MODULES=${NGINX_MODULES:-"--with-threads \
+		--with-file-aio \
+		--with-http_ssl_module \
+		--with-http_v2_module \
+		--with-http_mp4_module \
+		--with-http_auth_request_module \
+		--with-http_slice_module \
+		--with-http_stub_status_module \
+		--with-http_realip_module \
+		--with-http_sub_module"}
 fi
 
 # Clean screen before launching menu
@@ -404,33 +430,6 @@ case $OPTION in
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx.conf
 	fi
 	cd /usr/local/src/nginx/nginx-${NGINX_VER} || exit 1
-
-	NGINX_OPTIONS="
-		--prefix=/etc/nginx \
-		--sbin-path=/usr/sbin/nginx \
-		--conf-path=/etc/nginx/nginx.conf \
-		--error-log-path=/var/log/nginx/error.log \
-		--http-log-path=/var/log/nginx/access.log \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/run/nginx.lock \
-		--http-client-body-temp-path=/var/cache/nginx/client_temp \
-		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-		--user=nginx \
-		--group=nginx \
-		--with-cc-opt=-Wno-deprecated-declarations \
-		--with-cc-opt=-Wno-ignored-qualifiers"
-
-	NGINX_MODULES="--with-threads \
-		--with-file-aio \
-		--with-http_ssl_module \
-		--with-http_v2_module \
-		--with-http_mp4_module \
-		--with-http_auth_request_module \
-		--with-http_slice_module \
-		--with-http_stub_status_module \
-		--with-http_realip_module \
-		--with-http_sub_module"
 
 	# Optional options
 	if [[ $LUA == 'y' ]]; then
