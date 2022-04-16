@@ -1,35 +1,40 @@
-## Headless
+# Headless
 
 - Change `=n` to `=y` to enable modules individually
 - Version numbers are configurable
 - Custom options in `NGINX_OPTIONS=`
- - See [Installation and Compile-Time Options](https://www.nginx.com/resources/wiki/start/topics/tutorials/installoptions/)
- - Change between stable and mainline with:
+  - See [Installation and Compile-Time Options](https://www.nginx.com/resources/wiki/start/topics/tutorials/installoptions/)
+  - Change between stable and mainline with:
     `NGINX_VER=STABLE` or `NGINX_VER=MAINLINE`
- - Change between SSL with:
+  - Change between SSL with:
     `SYSTEM`, `OPENSSL` or `LIBRESSL`
 
 - Custom/dynamic modules can be loaded in `NGINX_MODULES=`
   - See [NGINX 3rd Party Modules](https://www.nginx.com/resources/wiki/modules/)
   - Example: Download to /usr/local/src/nginx-custom-modules
-  - Load the module with `--add-module=/usr/local/src/nginx-custom-modules/module-name` in `NGINX_MODULES=` like so:
+  - Load the module with `--add-module=/usr/local/src/nginx-custom-modules/module-name`
+  in `NGINX_MODULES=` like so:
 
 ```shell
   NGINX_MODULES="--add-module=/usr/local/src/nginx-custom-modules/module-name" \
 ```
+
 Starting from NGINX 1.9.11, you can also compile modules as a dynamic module:
 
 ```shell
-  NGINX_MODULES="--add-dynamic-module=/usr/local/src/nginx-custom-modules/module-name" \
+  NGINX_MODULES=
+  "--add-dynamic-module=/usr/local/src/nginx-custom-modules/module-name" \
 ```
 
-Then you can explicitly load the module in your `nginx.conf` via the [load_module](http://nginx.org/en/docs/ngx_core_module.html#load_module) directive, for example,
+Then you can explicitly load the module in your `nginx.conf`
+via the [load_module](http://nginx.org/en/docs/ngx_core_module.html#load_module)
+directive, for example,
 
 ```shell
 load_module /usr/local/src/nginx-custom-modules/module-name_module.so;
 ```
 
-### Full headless config
+## Full headless config
 
 ```shell
 HEADLESS=y \
@@ -102,9 +107,9 @@ NGINX_MODULES="--with-threads \
 ./nginx-autoinstall.sh 2>&1 | tee nginx-installer.log
 ```
 
-# Configurations files
+## Configurations files
 
-## PageSpeed
+### PageSpeed
 
 Add this in your http block:
 
@@ -123,7 +128,7 @@ pagespeed FileCachePath /var/ngx_pagespeed_cache;
 
 More info here : <https://angristan.fr/compiler-installer-nginx-module-pagespeed-debian/>
 
-## Brotli
+### Brotli
 
 Add this in your http block :
 
@@ -135,7 +140,7 @@ brotli_comp_level 6;
 brotli_types *;
 ```
 
-## LibreSSL / OpenSSL 1.1+
+### LibreSSL / OpenSSL 1.1+
 
 You can now use ChaCha20 in addition to AES. Add this in your server block:
 
@@ -149,7 +154,7 @@ You can also use more secure curves :
 ssl_ecdh_curve X25519:P-521:P-384:P-256;
 ```
 
-## TLS 1.3
+### TLS 1.3
 
 TLS 1.3 needs special ciphers.
 
@@ -160,11 +165,11 @@ ssl_ciphers TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:TLS-AES-128-GCM-
 
 TLS- can be TLS13-.
 
-## GeoIP 2
+### GeoIP 2
 
 See <https://github.com/leev/ngx_http_geoip2_module#example-usage>
 
-## HTTP/3
+### HTTP/3
 
 See <https://github.com/cloudflare/quiche/tree/master/extras/nginx#readme>
 
@@ -187,7 +192,7 @@ server {
 }
 ```
 
-## Testcookie
+### Testcookie
 
 Example configuration in nginx.conf:
 
