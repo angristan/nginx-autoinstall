@@ -110,6 +110,8 @@ RM_LOGS=y \
 
 All the default variables are set at the beginning of the script.
 
+For more options, see full [headless config](https://github.com/angristan/nginx-autoinstall/blob/master/conf/README.md#Headless).
+
 ## LICENSE
 
 GPL v3.0
