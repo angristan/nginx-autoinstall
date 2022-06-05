@@ -447,6 +447,7 @@ case $OPTION in
 		make install
 		mkdir /etc/nginx/modsec
 		wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
+		wget -P /etc/nginx/modsec/ https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping
 		mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
 
 		# Enable ModSecurity in Nginx
