@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
+NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.23.0}
 NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
 LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
 OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
@@ -288,8 +288,7 @@ case $OPTION in
 	# More Headers
 	if [[ $HEADERMOD == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
-		tar xaf v${HEADERMOD_VER}.tar.gz
+		git clone https://github.com/openresty/headers-more-nginx-module
 	fi
 
 	# GeoIP
@@ -523,7 +522,7 @@ case $OPTION in
 	if [[ $HEADERMOD == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
-			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module-${HEADERMOD_VER}"
+			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module"
 		)
 	fi
 
