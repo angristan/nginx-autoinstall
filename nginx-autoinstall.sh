@@ -274,6 +274,7 @@ case $OPTION in
 		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 		wget "${psol_url}"
 		tar -xzvf "$(basename "${psol_url}")"
+		wget https://raw.githubusercontent.com/apache/incubator-pagespeed-ngx/master/src/ngx_pagespeed.cc -O ../incubator-pagespeed-ngx-${NPS_VER}-stable/src/ngx_pagespeed.cc
 	fi
 
 	#Brotli
