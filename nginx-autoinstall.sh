@@ -7,14 +7,14 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
+NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.23.1}
 NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
 LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
 OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
 NPS_VER=${NPS_VER:-1.13.35.2}
-HEADERMOD_VER=${HEADERMOD_VER:-0.33}
+HEADERMOD_VER=${HEADERMOD_VER:-0.34}
 LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
-GEOIP2_VER=${GEOIP2_VER:-3.3}
+GEOIP2_VER=${GEOIP2_VER:-3.4}
 LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
 LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.21rc2}
 LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.23rc1}
@@ -274,6 +274,7 @@ case $OPTION in
 		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 		wget "${psol_url}"
 		tar -xzvf "$(basename "${psol_url}")"
+		wget https://raw.githubusercontent.com/apache/incubator-pagespeed-ngx/master/src/ngx_pagespeed.cc -O ../incubator-pagespeed-ngx-${NPS_VER}-stable/src/ngx_pagespeed.cc
 	fi
 
 	#Brotli
@@ -288,8 +289,7 @@ case $OPTION in
 	# More Headers
 	if [[ $HEADERMOD == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
-		tar xaf v${HEADERMOD_VER}.tar.gz
+		git clone https://github.com/openresty/headers-more-nginx-module
 	fi
 
 	# GeoIP
@@ -523,7 +523,7 @@ case $OPTION in
 	if [[ $HEADERMOD == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
-			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module-${HEADERMOD_VER}"
+			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module"
 		)
 	fi
 
