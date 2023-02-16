@@ -8,20 +8,20 @@ fi
 
 # Define versions
 NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.23.3}
-NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
-LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
-OPENSSL_VER=${OPENSSL_VER:-3.0.8}
+NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.1}
+LIBRESSL_VER=${LIBRESSL_VER:-3.6.1}
+OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
 NPS_VER=${NPS_VER:-1.14.33.1-RC1}
-HEADERMOD_VER=${HEADERMOD_VER:-0.33}
-LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
-GEOIP2_VER=${GEOIP2_VER:-3.3}
-LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
-LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.23rc2}
-LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.25rc2}
+HEADERMOD_VER=${HEADERMOD_VER:-0.34}
+LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.7.1}
+GEOIP2_VER=${GEOIP2_VER:-3.4}
+LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220915}
+LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.22}
+LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.24}
 LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.13}
 NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.2}
-HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.9}
-NGXECHO_VER=${NGXECHO_VER:-0.63}
+HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.10}
+NGXECHO_VER=${NGXECHO_VER:-0.62}
 # Define options
 NGINX_OPTIONS=${NGINX_OPTIONS:-"
 	--prefix=/etc/nginx \
@@ -272,12 +272,14 @@ case $OPTION in
 	# PageSpeed
 	if [[ $PAGESPEED == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-wget https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VER}.zip
-		unzip v${NPS_VER}.zip
-		cd incubator-pagespeed-ngx-${NPS_VER} || exit 1
-		psol_url=https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-${NPS_VER}-apache-incubating-x64.tar.gz
+		wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip
+		unzip v${NPS_VER}-stable.zip
+		cd incubator-pagespeed-ngx-${NPS_VER}-stable || exit 1
+		psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
+		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 		wget "${psol_url}"
 		tar -xzvf "$(basename "${psol_url}")"
+		wget https://raw.githubusercontent.com/apache/incubator-pagespeed-ngx/master/src/ngx_pagespeed.cc -O ../incubator-pagespeed-ngx-${NPS_VER}-stable/src/ngx_pagespeed.cc
 	fi
 
 	#Brotli
@@ -286,7 +288,7 @@ wget https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VER}.zip
 		git clone https://github.com/google/ngx_brotli
 		cd ngx_brotli || exit 1
 		#git checkout v1.0.0rc
-		#git submodule update --init
+		git submodule update --init
 	fi
 
 	# More Headers
