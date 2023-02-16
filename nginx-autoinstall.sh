@@ -8,10 +8,10 @@ fi
 
 # Define versions
 NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.23.3}
-NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.1}
+NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
 LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
 OPENSSL_VER=${OPENSSL_VER:-3.0.8}
-NPS_VER=${NPS_VER:-1.13.35.2}
+NPS_VER=${NPS_VER:-1.14.33.1-RC1}
 HEADERMOD_VER=${HEADERMOD_VER:-0.33}
 LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
 GEOIP2_VER=${GEOIP2_VER:-3.3}
@@ -68,6 +68,7 @@ if [[ $HEADLESS == "y" ]]; then
 	WEBDAV=${WEBDAV:-n}
 	VTS=${VTS:-n}
 	RTMP=${RTMP:-n}
+	NCHAN=${NCHAN:-n}
 	TESTCOOKIE=${TESTCOOKIE:-n}
 	HTTP3=${HTTP3:-n}
 	MODSEC=${MODSEC:-n}
@@ -177,6 +178,9 @@ case $OPTION in
 		while [[ $RTMP != "y" && $RTMP != "n" ]]; do
 			read -rp "       nginx RTMP [y/n]: " -e -i n RTMP
 		done
+		while [[ $NCHAN != "y" && $NCHAN != "n" ]]; do
+			read -rp "       nginx NCHAN [y/n]: " -e -i n NCHAN
+		done
 		while [[ $TESTCOOKIE != "y" && $TESTCOOKIE != "n" ]]; do
 			read -rp "       nginx testcookie [y/n]: " -e -i n TESTCOOKIE
 		done
@@ -248,7 +252,8 @@ case $OPTION in
 
 	# Dependencies
 	apt-get update
-	apt-get install -y build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake
+	apt-get install -qy apt-utils build-essential ca-certificates wget curl libpcre3 libpcre3-dev autoconf unzip automake libtool tar git libssl-dev zlib1g-dev uuid-dev lsb-release libxml2-dev libxslt1-dev cmake gcc-10 g++-10
+	update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
 
 	if [[ $MODSEC == 'y' ]]; then
 		apt-get install -y apt-utils libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libyajl-dev pkgconf
@@ -267,11 +272,10 @@ case $OPTION in
 	# PageSpeed
 	if [[ $PAGESPEED == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/pagespeed/ngx_pagespeed/archive/v${NPS_VER}-stable.zip
-		unzip v${NPS_VER}-stable.zip
-		cd incubator-pagespeed-ngx-${NPS_VER}-stable || exit 1
-		psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VER}.tar.gz
-		[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+wget https://github.com/apache/incubator-pagespeed-ngx/archive/v${NPS_VER}.zip
+		unzip v${NPS_VER}.zip
+		cd incubator-pagespeed-ngx-${NPS_VER} || exit 1
+		psol_url=https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-${NPS_VER}-apache-incubating-x64.tar.gz
 		wget "${psol_url}"
 		tar -xzvf "$(basename "${psol_url}")"
 	fi
@@ -281,15 +285,14 @@ case $OPTION in
 		cd /usr/local/src/nginx/modules || exit 1
 		git clone https://github.com/google/ngx_brotli
 		cd ngx_brotli || exit 1
-		git checkout v1.0.0rc
-		git submodule update --init
+		#git checkout v1.0.0rc
+		#git submodule update --init
 	fi
 
 	# More Headers
 	if [[ $HEADERMOD == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERMOD_VER}.tar.gz
-		tar xaf v${HEADERMOD_VER}.tar.gz
+		git clone https://github.com/openresty/headers-more-nginx-module
 	fi
 
 	# GeoIP
@@ -447,6 +450,7 @@ case $OPTION in
 		make install
 		mkdir /etc/nginx/modsec
 		wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
+		wget -P /etc/nginx/modsec/ https://github.com/SpiderLabs/ModSecurity/raw/v3/master/unicode.mapping
 		mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
 
 		# Enable ModSecurity in Nginx
@@ -523,7 +527,7 @@ case $OPTION in
 	if [[ $HEADERMOD == 'y' ]]; then
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
-			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module-${HEADERMOD_VER}"
+			echo "--add-module=/usr/local/src/nginx/modules/headers-more-nginx-module"
 		)
 	fi
 
@@ -598,6 +602,13 @@ case $OPTION in
 			echo --add-module=/usr/local/src/nginx/modules/nginx-rtmp-module
 		)
 	fi
+	if [[ $NCHAN == 'y' ]]; then
+		git clone --quiet https://github.com/slact/nchan.git /usr/local/src/nginx/modules/nginx-nchan-module
+		NGINX_MODULES=$(
+			echo "$NGINX_MODULES"
+			echo --add-module=/usr/local/src/nginx/modules/nginx-nchan-module
+		)
+	fi
 
 	if [[ $TESTCOOKIE == 'y' ]]; then
 		git clone --depth 1 --quiet https://github.com/kyprizel/testcookie-nginx-module.git /usr/local/src/nginx/modules/testcookie-nginx-module
@@ -668,7 +679,26 @@ case $OPTION in
 	# HTTP3
 	if [[ $HTTP3 == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone --depth 1 --recursive https://github.com/cloudflare/quiche
+		#git clone --depth 1 --recursive https://github.com/cloudflare/quiche
+		#region Solve issue 218
+		# A recent commit to Quiche broke the HTTP/3 patches.  Thus, we need to
+		# revert to an older commit so that we can build it correctly.  This is
+		# a very bad idea, as we won't get any security fixes that might be put
+		# into Quiche.  However, it will let NGINX compile. Please periodically
+		# test and see if the `git reset` is still longer needed.
+		git clone --recursive https://github.com/cloudflare/quiche
+		cd quiche
+		git reset --hard 2649457a566e320bbb4edc74d5a26fd8f6a22547
+		cd deps
+
+		# Pulling Quiche back to an older commit deletes the included version
+		# of BoringSSL.  Clone the specific commit that Cloudflare uses.
+		git clone https://github.com/google/boringssl
+		cd boringssl
+		git reset --hard f1c75347daa2ea81a941e953f2263e0a4d970c8d
+
+		cd ../../..
+		#endregion
 		# Dependencies for BoringSSL and Quiche
 		apt-get install -y golang
 		# Rust is not packaged so that's the only way...
