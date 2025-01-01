@@ -155,3 +155,29 @@ testcookie_redirect_via_refresh off;
 Which turns off the html part.
 
 See <https://github.com/kyprizel/testcookie-nginx-module#testcookie_redirect_via_refresh>
+
+
+## Nchan
+
+See https://nchan.io/#getting-started
+
+Example configuration in nginx.conf:
+
+```
+#...
+http {  
+  server {
+    #...
+
+    location = /sub {
+      nchan_subscriber;
+      nchan_channel_id $arg_id;
+    }
+
+    location = /pub {
+      nchan_publisher;
+      nchan_channel_id $arg_id;
+    }
+  }
+}
+```
