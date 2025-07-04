@@ -6,22 +6,35 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
+# Install curl if not installed
+if ! [[ $(command -v 'curl') ]]; then
+	apt-get install curl
+fi
+# Get latest version from nginx.org
+curl_request() {
+	curl -s https://nginx.org/en/download.html |
+	grep -oP "(?<="$1" version).*?(?=[0-9]+\.[0-9]+\.[0-9](-[0-9])?</a)" |
+	grep -oP "[0-9]+\.[0-9]+\.[0-9](-[0-9])?"
+}
+latest_mainline=$(curl_request Mainline)
+latest_stable=$(curl_request Stable)
 # Define versions
-NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
-NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
-LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
-OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
+NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-$latest_mainline}
+NGINX_STABLE_VER=${NGINX_STABLE_VER:-$latest_stable}
+LIBRESSL_VER=${LIBRESSL_VER:-4.1.0}
+OPENSSL_VER=${OPENSSL_VER:-3.5.1}
 NPS_VER=${NPS_VER:-1.13.35.2}
-HEADERMOD_VER=${HEADERMOD_VER:-0.33}
-LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
-GEOIP2_VER=${GEOIP2_VER:-3.3}
-LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
-LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.21rc2}
-LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.23rc1}
-LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.11}
-NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.1}
+HEADERMOD_VER=${HEADERMOD_VER:-0.39}
+LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.12.2}
+GEOIP2_VER=${GEOIP2_VER:-3.4}
+LUA_JIT_VER=${LUA_JIT_VER:-2.1-20250529}
+LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.28}
+LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.31}
+LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.15}
+NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.4}
 HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.9}
-NGXECHO_VER=${NGXECHO_VER:-0.62}
+NGXECHO_VER=${NGXECHO_VER:-0.63}
+
 # Define options
 NGINX_OPTIONS=${NGINX_OPTIONS:-"
 	--prefix=/etc/nginx \
