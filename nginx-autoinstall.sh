@@ -7,21 +7,21 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Define versions
-NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.21.6}
-NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.22.0}
+NGINX_MAINLINE_VER=${NGINX_MAINLINE_VER:-1.29.7}
+NGINX_STABLE_VER=${NGINX_STABLE_VER:-1.28.3}
 LIBRESSL_VER=${LIBRESSL_VER:-3.3.1}
 OPENSSL_VER=${OPENSSL_VER:-1.1.1l}
 NPS_VER=${NPS_VER:-1.13.35.2}
-HEADERMOD_VER=${HEADERMOD_VER:-0.33}
-LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.4.3}
-GEOIP2_VER=${GEOIP2_VER:-3.3}
-LUA_JIT_VER=${LUA_JIT_VER:-2.1-20220310}
-LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.21rc2}
-LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.23rc1}
-LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.11}
-NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.1}
+HEADERMOD_VER=${HEADERMOD_VER:-0.39}
+LIBMAXMINDDB_VER=${LIBMAXMINDDB_VER:-1.12.2}
+GEOIP2_VER=${GEOIP2_VER:-3.4}
+LUA_JIT_VER=${LUA_JIT_VER:-2.1-20250529}
+LUA_NGINX_VER=${LUA_NGINX_VER:-0.10.28}
+LUA_RESTYCORE_VER=${LUA_RESTYCORE_VER:-0.1.32}
+LUA_RESTYLRUCACHE_VER=${LUA_RESTYLRUCACHE_VER:-0.15}
+NGINX_DEV_KIT=${NGINX_DEV_KIT:-0.3.4}
 HTTPREDIS_VER=${HTTPREDIS_VER:-0.3.9}
-NGXECHO_VER=${NGXECHO_VER:-0.62}
+NGXECHO_VER=${NGXECHO_VER:-0.63}
 # Define options
 NGINX_OPTIONS=${NGINX_OPTIONS:-"
 	--prefix=/etc/nginx \
@@ -50,7 +50,7 @@ NGINX_MODULES=${NGINX_MODULES:-"--with-threads \
 	--with-http_realip_module \
 	--with-http_sub_module"}
 
-# Define installation parameters for headless install (fallback if unspecifed)
+# Define installation parameters for headless install (fallback if unspecified)
 if [[ $HEADLESS == "y" ]]; then
 	# Define options
 	OPTION=${OPTION:-1}
@@ -279,10 +279,13 @@ case $OPTION in
 	#Brotli
 	if [[ $BROTLI == 'y' ]]; then
 		cd /usr/local/src/nginx/modules || exit 1
-		git clone https://github.com/google/ngx_brotli
-		cd ngx_brotli || exit 1
-		git checkout v1.0.0rc
-		git submodule update --init
+    	git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli
+        cmake -S ./ngx_brotli/deps/brotli \
+              -B ./ngx_brotli/deps/brotli/out \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DCMAKE_INSTALL_PREFIX=./ngx_brotli/deps/brotli/out/installed
+        cmake --build ./ngx_brotli/deps/brotli/out --parallel
 	fi
 
 	# More Headers
@@ -640,12 +643,12 @@ case $OPTION in
 
 	if [[ $SETMISC == 'y' ]]; then
 		git clone --depth 1 --quiet https://github.com/openresty/set-misc-nginx-module.git /usr/local/src/nginx/modules/set-misc-nginx-module
-	if [[ $LUA == 'n' ]]; then
-		NGINX_MODULES=$(
-			echo "$NGINX_MODULES"
-				echo --add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}
-		)
-	fi
+    	if [[ $LUA == 'n' ]]; then
+    		NGINX_MODULES=$(
+    			echo "$NGINX_MODULES"
+    				echo --add-module=/usr/local/src/nginx/modules/ngx_devel_kit-${NGINX_DEV_KIT}
+    		)
+    	fi
 		NGINX_MODULES=$(
 			echo "$NGINX_MODULES"
 			echo --add-module=/usr/local/src/nginx/modules/set-misc-nginx-module
@@ -737,21 +740,11 @@ case $OPTION in
 		wget https://raw.githubusercontent.com/Angristan/nginx-autoinstall/master/conf/nginx-logrotate -O nginx
 	fi
 
-	# Nginx's cache directory is not created by default
-	if [[ ! -d /var/cache/nginx ]]; then
-		mkdir -p /var/cache/nginx
-	fi
-
-	# We add the sites-* folders as some use them.
-	if [[ ! -d /etc/nginx/sites-available ]]; then
-		mkdir -p /etc/nginx/sites-available
-	fi
-	if [[ ! -d /etc/nginx/sites-enabled ]]; then
-		mkdir -p /etc/nginx/sites-enabled
-	fi
-	if [[ ! -d /etc/nginx/conf.d ]]; then
-		mkdir -p /etc/nginx/conf.d
-	fi
+	mkdir -p /var/cache/nginx
+	mkdir -p /etc/nginx/sites-available
+	mkdir -p /etc/nginx/sites-enabled
+	mkdir -p /etc/nginx/conf.d
+	
 	if [[ -d /etc/nginx/conf.d && $LUA == 'y' ]]; then
 		# add necessary `lua_package_path` directive to `nginx.conf`, in the http context
 		echo -e 'lua_package_path "/etc/nginx/lib/lua/?.lua;;";' >/etc/nginx/conf.d/lua_package_path.conf
